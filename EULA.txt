@@ -1,0 +1,42 @@
+END USER LICENSE AGREEMENT FOR MBTQ FINANCIAL PLATFORM
+
+IMPORTANT: PLEASE READ THIS END USER LICENSE AGREEMENT CAREFULLY BEFORE USING THE MBTQ FINANCIAL PLATFORM.
+
+This End User License Agreement ("Agreement") is a legal agreement between you (either an individual or a single entity) and MbTQ Financial Services ("Company") for the MbTQ Financial Platform software, which includes computer software, web services, and associated media, printed materials, and online or electronic documentation ("Software").
+
+1. LICENSE GRANT
+Subject to the terms of this Agreement, Company grants you a limited, non-exclusive, non-transferable license to use the Software for personal or business purposes.
+
+2. ACCESSIBILITY SERVICES
+The Software includes ASL (American Sign Language) interpretation services and Deaf First design features. These services are provided to enhance accessibility for deaf and hard-of-hearing users. The accuracy and availability of ASL interpretation may vary.
+
+3. FINANCIAL ADVICE DISCLAIMER
+The Software may provide financial information, tax guidance, and insurance options. This information:
+   a. Is not personalized financial advice
+   b. Should not be considered a substitute for professional financial consulting
+   c. May not be suitable for your particular financial situation
+   d. Is not guaranteed to be accurate, complete, or timely
+
+4. DATA COLLECTION AND PRIVACY
+The Software collects personal information and financial data as described in our Privacy Policy. This data is used to:
+   a. Provide and improve the Software's functionality
+   b. Generate financial recommendations
+   c. Facilitate tax filing services
+   d. Customize accessibility features
+
+5. APRIL API SERVICES
+The Software integrates with April API services for tax-related functionality. Use of these services is subject to April's own terms of service.
+
+6. BOOST INSURANCE SERVICES
+The Software may offer insurance products through Boost Insurance. Use of these services is subject to Boost Insurance's own terms and conditions.
+
+7. WARRANTY DISCLAIMER
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+
+8. LIMITATION OF LIABILITY
+IN NO EVENT SHALL COMPANY BE LIABLE FOR ANY SPECIAL, INCIDENTAL, INDIRECT, OR CONSEQUENTIAL DAMAGES WHATSOEVER ARISING OUT OF OR IN ANY WAY RELATED TO THE USE OF OR INABILITY TO USE THE SOFTWARE.
+
+9. ACCEPTANCE
+By using the Software, you signify your acceptance of this Agreement. If you do not agree to the terms of this Agreement, do not use the Software.
+
+Last Updated: April 11, 2025

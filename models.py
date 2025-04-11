@@ -16,10 +16,12 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     accessibility_settings = db.Column(db.JSON, default={})
+    eula_accepted = db.Column(db.Boolean, default=False)
     
     # Relationships
     financial_profiles = db.relationship('FinancialProfile', back_populates='user', cascade='all, delete-orphan')
     tax_documents = db.relationship('TaxDocument', back_populates='user', cascade='all, delete-orphan')
+    eula_acceptances = db.relationship('EULAAcceptance', back_populates='user', cascade='all, delete-orphan')
     
     def set_password(self, password):
         """Set user password"""
