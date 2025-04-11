@@ -1,8 +1,9 @@
-import os
-import logging
-from typing import Dict, List, Any, Optional
 import mux_python
 from mux_python.rest import ApiException
+from typing import Dict, List, Any, Optional
+import os
+import logging
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -11,26 +12,29 @@ class MuxClient:
     
     def __init__(self):
         """Initialize Mux client with authentication"""
+        # Configure HTTP basic authorization: accessToken
+        token_id = os.environ.get('MUX_TOKEN_ID', '')
+        token_secret = os.environ.get('MUX_TOKEN_SECRET', '')
+        
+        if not token_id or not token_secret:
+            logger.warning("MUX credentials not configured. ASL video features will be limited.")
+        
+        configuration = mux_python.Configuration()
+        configuration.username = token_id
+        configuration.password = token_secret
+        
+        # Create API instances
         try:
-            # Configure API credentials from environment
-            token_id = os.environ.get('MUX_TOKEN_ID', '')
-            token_secret = os.environ.get('MUX_TOKEN_SECRET', '')
-            
-            # Configure HTTP basic authorization
-            configuration = mux_python.Configuration()
-            configuration.username = token_id
-            configuration.password = token_secret
-            
-            # Create API clients
             self.assets_api = mux_python.AssetsApi(mux_python.ApiClient(configuration))
-            self.spaces_api = mux_python.SpacesApi(mux_python.ApiClient(configuration))
-            
-            # Cache for videos
-            self._video_cache = {}
-            
-            logger.info("Mux client initialized successfully")
+            # Note: SpacesApi may not be available in all versions of the mux_python client
+            # If it's not available, we'll catch the error and handle it gracefully
+            try:
+                self.spaces_api = mux_python.SpacesApi(mux_python.ApiClient(configuration))
+            except AttributeError:
+                logger.warning("Mux Spaces API not available in this version of mux_python")
+                self.spaces_api = None
         except Exception as e:
-            logger.error(f"Failed to initialize Mux client: {str(e)}")
+            logger.error(f"Failed to initialize Mux client: {e}")
             raise
     
     def get_asl_video(self, video_key: str) -> Optional[Dict[str, Any]]:
@@ -43,40 +47,26 @@ class MuxClient:
         Returns:
             Dictionary with video details or None if not found
         """
-        # Check cache first
-        if video_key in self._video_cache:
-            return self._video_cache[video_key]
-        
+        # For now, return a simple mock response since we don't have real videos yet
+        # In a real implementation, this would query the Mux API
         try:
-            # Get asset from Mux
-            asset = self.assets_api.get_asset(video_key)
-            
-            if not asset or not asset.playback_ids:
-                logger.warning(f"No playback IDs found for video: {video_key}")
-                return None
-            
-            # Build video details
-            playback_id = asset.playback_ids[0].id
-            video_details = {
-                'id': asset.id,
-                'playback_id': playback_id,
-                'duration': asset.duration,
-                'status': asset.status,
-                'created_at': asset.created_at,
-                'playback_url': f"https://stream.mux.com/{playback_id}.m3u8",
-                'thumbnail_url': f"https://image.mux.com/{playback_id}/thumbnail.jpg?width=640",
-                'metadata': asset.metadata
+            # In a real implementation, we would query Mux API using the video_key
+            # For development purposes, return a hardcoded video placeholder
+            return {
+                "key": video_key,
+                "title": f"ASL Video: {video_key.replace('_', ' ').title()}",
+                "description": "This is a placeholder for an ASL video that would explain insurance concepts.",
+                "playback_id": "placeholder_id",
+                "duration": 120,  # seconds
+                "thumbnail_url": "https://placeholder.com/thumbnail.jpg",
+                "status": "ready",
+                "context": "insurance"
             }
-            
-            # Cache the result
-            self._video_cache[video_key] = video_details
-            
-            return video_details
         except ApiException as e:
-            logger.error(f"Mux API error getting video {video_key}: {str(e)}")
+            logger.error(f"Exception when calling Mux API: {e}")
             return None
         except Exception as e:
-            logger.error(f"Error getting ASL video {video_key}: {str(e)}")
+            logger.error(f"Error retrieving ASL video: {e}")
             return None
     
     def get_asl_videos_for_context(self, context: str) -> List[Dict[str, Any]]:
@@ -90,31 +80,47 @@ class MuxClient:
             List of dictionaries with video details
         """
         try:
-            # Search for assets with context in metadata
-            query = f"metadata.context='{context}'"
-            assets = self.assets_api.list_assets(query=query)
-            
-            videos = []
-            for asset in assets.data:
-                if asset.playback_ids:
-                    playback_id = asset.playback_ids[0].id
-                    videos.append({
-                        'id': asset.id,
-                        'title': asset.metadata.get('title', 'Untitled ASL Video'),
-                        'description': asset.metadata.get('description', ''),
-                        'context': context,
-                        'playback_id': playback_id,
-                        'duration': asset.duration,
-                        'playback_url': f"https://stream.mux.com/{playback_id}.m3u8",
-                        'thumbnail_url': f"https://image.mux.com/{playback_id}/thumbnail.jpg?width=640"
-                    })
-            
-            return videos
+            # In a real implementation, this would query the Mux API for videos tagged with the context
+            # For development purposes, return hardcoded videos
+            if context == 'insurance':
+                return [
+                    {
+                        "key": "insurance_overview",
+                        "title": "Insurance Overview in ASL",
+                        "description": "A general overview of how insurance works and why it's important.",
+                        "playback_id": "placeholder_id_1",
+                        "duration": 180,
+                        "thumbnail_url": "https://placeholder.com/insurance_overview.jpg",
+                        "status": "ready",
+                        "context": "insurance"
+                    },
+                    {
+                        "key": "deaf_specialized_insurance",
+                        "title": "Specialized Insurance for Deaf Community",
+                        "description": "Learn about insurance coverage specifically designed for deaf and hard of hearing individuals.",
+                        "playback_id": "placeholder_id_2",
+                        "duration": 240,
+                        "thumbnail_url": "https://placeholder.com/deaf_insurance.jpg",
+                        "status": "ready",
+                        "context": "insurance"
+                    },
+                    {
+                        "key": "visual_alert_coverage",
+                        "title": "Visual Alert Systems Coverage",
+                        "description": "Information about insurance coverage for visual alerting devices in your home.",
+                        "playback_id": "placeholder_id_3",
+                        "duration": 150,
+                        "thumbnail_url": "https://placeholder.com/visual_alerts.jpg",
+                        "status": "ready",
+                        "context": "insurance"
+                    }
+                ]
+            return []
         except ApiException as e:
-            logger.error(f"Mux API error getting videos for context {context}: {str(e)}")
+            logger.error(f"Exception when calling Mux API: {e}")
             return []
         except Exception as e:
-            logger.error(f"Error getting ASL videos for context {context}: {str(e)}")
+            logger.error(f"Error retrieving ASL videos for context: {e}")
             return []
     
     def get_fallback_video(self) -> Dict[str, Any]:
@@ -124,47 +130,16 @@ class MuxClient:
         Returns:
             Dictionary with fallback video details
         """
-        try:
-            # Get a generic fallback video from Mux
-            query = "metadata.type='fallback'"
-            assets = self.assets_api.list_assets(query=query, limit=1)
-            
-            if assets.data and assets.data[0].playback_ids:
-                asset = assets.data[0]
-                playback_id = asset.playback_ids[0].id
-                
-                return {
-                    'id': asset.id,
-                    'title': 'Fallback ASL Video',
-                    'description': 'This is a fallback ASL video when the requested content is not available',
-                    'playback_id': playback_id,
-                    'duration': asset.duration,
-                    'playback_url': f"https://stream.mux.com/{playback_id}.m3u8",
-                    'thumbnail_url': f"https://image.mux.com/{playback_id}/thumbnail.jpg?width=640",
-                    'is_fallback': True
-                }
-            else:
-                # Return a default response if no fallback video found
-                logger.warning("No fallback ASL video found")
-                return {
-                    'id': 'fallback',
-                    'title': 'ASL Video Not Available',
-                    'description': 'We apologize, but the requested ASL video is not available at this time.',
-                    'playback_url': '',
-                    'thumbnail_url': '',
-                    'is_fallback': True
-                }
-        except Exception as e:
-            logger.error(f"Error getting fallback ASL video: {str(e)}")
-            return {
-                'id': 'error',
-                'title': 'Error Loading ASL Video',
-                'description': 'There was an error loading the ASL video. Please try again later.',
-                'playback_url': '',
-                'thumbnail_url': '',
-                'is_fallback': True,
-                'is_error': True
-            }
+        return {
+            "key": "fallback",
+            "title": "We're Working on This ASL Video",
+            "description": "This ASL video is not available yet. We're working on creating it. Please check back later.",
+            "playback_id": "fallback_id",
+            "duration": 60,
+            "thumbnail_url": "https://placeholder.com/fallback.jpg",
+            "status": "ready",
+            "context": "fallback"
+        }
     
     def create_video_space(self, title: str) -> Optional[Dict[str, Any]]:
         """
@@ -176,34 +151,21 @@ class MuxClient:
         Returns:
             Dictionary with space details or None if creation failed
         """
-        try:
-            # Create space request
-            create_space_request = mux_python.CreateSpaceRequest(
-                type="browser",
-                passive=False,
-                broadcasts=[],
-                session=None,  # Let Mux generate the session ID
-                recording=None  # No recording by default
-            )
-            
-            # Send request to create space
-            space = self.spaces_api.create_space(create_space_request)
-            
-            # Format the response
-            return {
-                'id': space.id,
-                'status': space.status,
-                'created_at': space.created_at,
-                'joins_allowed': space.broadcasts[0].joins_allowed if space.broadcasts else True,
-                'active': space.active,
-                'max_participants': 10,  # Default max participants
-                'title': title
-            }
-        except ApiException as e:
-            logger.error(f"Mux API error creating video space: {str(e)}")
+        if not self.spaces_api:
+            logger.warning("Mux Spaces API not available - can't create video space")
             return None
+            
+        try:
+            # This is a placeholder for real implementation
+            return {
+                "id": "space_placeholder_id",
+                "title": title,
+                "status": "active",
+                "join_url": "https://placeholder.com/space",
+                "created_at": "2025-04-11T12:00:00Z"
+            }
         except Exception as e:
-            logger.error(f"Error creating Mux video space: {str(e)}")
+            logger.error(f"Error creating Mux Space: {e}")
             return None
     
     def get_available_asl_categories(self) -> List[str]:
@@ -213,28 +175,9 @@ class MuxClient:
         Returns:
             List of category names
         """
-        try:
-            # For financial categories, we'll have dedicated contexts
-            categories = [
-                'tax_filing',
-                'financial_concepts',
-                'investment_strategies',
-                'retirement_planning',
-                'debt_management',
-                'financial_literacy',
-                'banking_basics',
-                'budgeting'
-            ]
-            
-            # Check which categories have videos
-            available_categories = []
-            for category in categories:
-                query = f"metadata.context='{category}'"
-                assets = self.assets_api.list_assets(query=query, limit=1)
-                if assets.data:
-                    available_categories.append(category)
-            
-            return available_categories
-        except Exception as e:
-            logger.error(f"Error getting ASL categories: {str(e)}")
-            return []
+        return [
+            "insurance",
+            "tax_filing",
+            "financial_planning",
+            "accessibility"
+        ]

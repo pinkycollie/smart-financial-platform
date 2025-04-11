@@ -1,0 +1,356 @@
+{% extends "layout.html" %}
+
+{% block title %}Insurance Bundles - MbTQ{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/insurance">Insurance</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Integration Bundles</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="fas fa-cubes me-2"></i> Insurance Integration Bundles
+                <button class="btn btn-outline-info btn-sm ms-2" data-asl-video="insurance_bundles">
+                    <i class="fas fa-sign-language"></i> Watch in ASL
+                </button>
+            </h1>
+        </div>
+        
+        <div class="alert alert-info">
+            <div class="d-flex">
+                <div class="me-3">
+                    <i class="fas fa-info-circle fa-2x"></i>
+                </div>
+                <div>
+                    <h5>Integrated Coverage Framework</h5>
+                    <p>Our specialized insurance bundles combine multiple insurance products designed specifically for the deaf community, providing comprehensive coverage that addresses the unique situations that span traditional insurance boundaries.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Integration Framework Diagram -->
+<div class="row mb-5">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info-subtle">
+                <h4 class="mb-0">
+                    <i class="fas fa-project-diagram me-2"></i>
+                    Integration Framework
+                    <button class="btn btn-sm btn-outline-info float-end" data-asl-video="integration_framework">
+                        <i class="fas fa-sign-language"></i>
+                    </button>
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 text-center mb-4">
+                        <div class="p-4 bg-dark rounded mb-3">
+                            <h5 class="text-light mb-3">Deaf First Integration Framework</h5>
+                            <img src="{{ url_for('static', filename='img/insurance_integration_framework.png') }}" 
+                                 alt="Insurance Integration Framework" 
+                                 class="img-fluid" 
+                                 onerror="this.src='https://via.placeholder.com/800x400?text=Insurance+Integration+Framework'; this.onerror='';">
+                        </div>
+                        <p class="text-muted">Our specialized insurance bundles address the holistic needs of deaf and hard of hearing individuals.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Integration Bundles -->
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">Available Integration Bundles</h2>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Communication Access Bundle -->
+    <div class="col-lg-6">
+        <div class="card h-100 deaf-accessible">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Communication Access Bundle</h4>
+                <button class="btn btn-sm btn-outline-light" data-asl-video="communication_access_bundle">
+                    <i class="fas fa-sign-language"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="badge bg-success mb-3">15% Bundle Discount</div>
+                <p class="lead">Comprehensive coverage for communication access across all domains of life.</p>
+                
+                <h5 class="mt-4">Bundle Components:</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="card bg-light h-100">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary">Primary Coverage</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check-circle text-success me-2"></i> Health Insurance Enhancement</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i> Specialized Liability Coverage</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light h-100">
+                            <div class="card-body">
+                                <h6 class="card-title text-secondary">Supporting Coverage</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-plus-circle text-info me-2"></i> Business Coverage for Deaf Entrepreneurs</li>
+                                    <li><i class="fas fa-plus-circle text-info me-2"></i> Property & Casualty Insurance</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h5>Integration Rationale:</h5>
+                <p>Comprehensive approach to communication access across all life domains; Recognition that communication barriers cross traditional insurance lines.</p>
+                
+                <h5>Expected Outcomes:</h5>
+                <ul class="insurance-feature-list mb-4">
+                    <li>Seamless coverage for communication needs regardless of setting</li>
+                    <li>Elimination of coverage gaps for interpreters/CART/etc.</li>
+                    <li>Coordinated claims handling across multiple coverage types</li>
+                </ul>
+                
+                <div class="text-center">
+                    <a href="{{ url_for('insurance.bundle_detail', bundle_code='COMM_ACCESS') }}" class="btn btn-primary">
+                        <i class="fas fa-info-circle me-1"></i> Bundle Details
+                    </a>
+                    <a href="{{ url_for('insurance.get_bundle_quote', bundle_code='COMM_ACCESS') }}" class="btn btn-success ms-2">
+                        <i class="fas fa-calculator me-1"></i> Get Bundle Quote
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Technology Ecosystem Protection -->
+    <div class="col-lg-6">
+        <div class="card h-100 deaf-accessible">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Technology Ecosystem Protection</h4>
+                <button class="btn btn-sm btn-outline-light" data-asl-video="technology_ecosystem_protection">
+                    <i class="fas fa-sign-language"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="badge bg-success mb-3">12% Bundle Discount</div>
+                <p class="lead">Protection for the entire technology ecosystem that deaf and hard of hearing individuals rely on.</p>
+                
+                <h5 class="mt-4">Bundle Components:</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="card bg-light h-100">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary">Primary Coverage</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check-circle text-success me-2"></i> Property & Casualty Insurance</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i> Service Animal & Assistive Device Coverage</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i> Business Coverage for Deaf Entrepreneurs</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light h-100">
+                            <div class="card-body">
+                                <h6 class="card-title text-secondary">Supporting Coverage</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-plus-circle text-info me-2"></i> Health Insurance Enhancement</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h5>Integration Rationale:</h5>
+                <p>Modern Deaf living relies on an interconnected technology ecosystem that spans traditional coverage boundaries.</p>
+                
+                <h5>Expected Outcomes:</h5>
+                <ul class="insurance-feature-list mb-4">
+                    <li>Protection against technology ecosystem disruption</li>
+                    <li>Recognition of full replacement value across settings</li>
+                    <li>Rapid replacement protocol for critical communication devices</li>
+                </ul>
+                
+                <div class="text-center">
+                    <a href="{{ url_for('insurance.bundle_detail', bundle_code='TECH_ECOSYSTEM') }}" class="btn btn-primary">
+                        <i class="fas fa-info-circle me-1"></i> Bundle Details
+                    </a>
+                    <a href="{{ url_for('insurance.get_bundle_quote', bundle_code='TECH_ECOSYSTEM') }}" class="btn btn-success ms-2">
+                        <i class="fas fa-calculator me-1"></i> Get Bundle Quote
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Professional Development Pathway (Coming Soon) -->
+    <div class="col-lg-6">
+        <div class="card h-100 deaf-accessible">
+            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Professional Development Pathway</h4>
+                <span class="badge bg-warning text-dark">Coming Soon</span>
+            </div>
+            <div class="card-body">
+                <p class="lead">Career advancement protection that integrates education, business protection, and disability considerations.</p>
+                
+                <h5 class="mt-4">Planned Bundle Components:</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="card bg-light h-100">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary">Primary Coverage</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check-circle text-success me-2"></i> Business Coverage for Deaf Entrepreneurs</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i> Education Coverage</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i> Disability Insurance</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light h-100">
+                            <div class="card-body">
+                                <h6 class="card-title text-secondary">Supporting Coverage</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-plus-circle text-info me-2"></i> Legal Expense Coverage</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h5>Integration Rationale:</h5>
+                <p>Career advancement requires specialized integration of education, business protection, and disability considerations.</p>
+                
+                <h5>Expected Outcomes:</h5>
+                <ul class="insurance-feature-list mb-4">
+                    <li>Enhanced career advancement</li>
+                    <li>Protection against discrimination impacts</li>
+                    <li>Reduced entrepreneurial failure rate</li>
+                </ul>
+                
+                <div class="text-center">
+                    <button class="btn btn-secondary" disabled>
+                        <i class="fas fa-clock me-1"></i> Coming Soon
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Family Communication Security (Coming Soon) -->
+    <div class="col-lg-6">
+        <div class="card h-100 deaf-accessible">
+            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Family Communication Security</h4>
+                <span class="badge bg-warning text-dark">Coming Soon</span>
+            </div>
+            <div class="card-body">
+                <p class="lead">Protection for family communication access spanning health, education, and life insurance needs.</p>
+                
+                <h5 class="mt-4">Planned Bundle Components:</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="card bg-light h-100">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary">Primary Coverage</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check-circle text-success me-2"></i> Health Insurance Enhancement</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i> Education Coverage</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i> Life Insurance for Deaf Individuals</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light h-100">
+                            <div class="card-body">
+                                <h6 class="card-title text-secondary">Supporting Coverage</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-plus-circle text-info me-2"></i> Property & Casualty Insurance</li>
+                                    <li><i class="fas fa-plus-circle text-info me-2"></i> Legal Expense Coverage</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h5>Integration Rationale:</h5>
+                <p>Family communication access represents unique consideration across traditional insurance lines.</p>
+                
+                <h5>Expected Outcomes:</h5>
+                <ul class="insurance-feature-list mb-4">
+                    <li>Family resilience during crises</li>
+                    <li>Enhanced family communication security</li>
+                    <li>Protection against family communication breakdown</li>
+                </ul>
+                
+                <div class="text-center">
+                    <button class="btn btn-secondary" disabled>
+                        <i class="fas fa-clock me-1"></i> Coming Soon
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Why Integrated Coverage -->
+<div class="row mt-5">
+    <div class="col-md-12">
+        <div class="card bg-dark text-white">
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h3>Why Choose Integrated Insurance Coverage?</h3>
+                        <p class="lead">Traditional insurance products create coverage gaps for deaf and hard of hearing individuals, especially around communication access.</p>
+                        
+                        <ul class="insurance-feature-list mb-4">
+                            <li>Eliminate coverage gaps between traditional insurance categories</li>
+                            <li>Save money with bundle discounts and coordinated coverage</li>
+                            <li>Simplify claims with a single point of contact across multiple coverage types</li>
+                            <li>Get coverage that actually understands Deaf culture and communication needs</li>
+                        </ul>
+                        
+                        <button class="btn btn-info" data-asl-video="integrated_coverage_benefits">
+                            <i class="fas fa-sign-language me-1"></i> Learn More in ASL
+                        </button>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <i class="fas fa-puzzle-piece fa-6x text-info mb-3"></i>
+                        <p class="small">Our integrated approach ensures comprehensive coverage, designed with the Deaf community in mind.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-play the insurance bundles ASL video when page loads
+        // Only if user has ASL videos enabled
+        const aslVideosEnabled = localStorage.getItem('asl_videos_enabled') !== 'false';
+        if (aslVideosEnabled) {
+            setTimeout(() => {
+                showASLVideo('insurance_bundles');
+            }, 1000); // Small delay to ensure page is fully loaded
+        }
+    });
+</script>
+{% endblock %}

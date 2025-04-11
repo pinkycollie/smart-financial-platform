@@ -1,197 +1,111 @@
-/**
- * MbTQ Financial Platform - Main Stylesheet
- * Deaf First design approach with accessibility features
- */
+/* Custom styles for MbTQ Financial Platform */
 
-/* Accessibility Toolbar */
-.accessibility-toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 1030;
-    border-bottom: 1px solid var(--bs-border-color);
-}
-
-/* Visual Cues for Deaf Users */
-.visual-cue {
-    position: relative;
-}
-
-.visual-cue::after {
-    content: '👋';
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    animation: pulse 2s infinite;
-    opacity: 0.8;
-}
-
-@keyframes pulse {
-    0% { transform: scale(0.9); opacity: 0.7; }
-    50% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(0.9); opacity: 0.7; }
-}
-
-/* ASL Video Button */
-.asl-video-btn {
-    position: relative;
-    padding-right: 2.5rem;
-}
-
-.asl-video-btn::after {
-    content: '👐';
-    position: absolute;
-    right: 0.5rem;
-    font-size: 1rem;
-}
-
-/* Accessibility-enhanced Cards */
-.card.deaf-accessible {
-    border-left: 4px solid var(--bs-info);
-}
-
-.card.deaf-accessible .card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.card.deaf-accessible .card-header::before {
-    content: '👐';
-    margin-right: 0.5rem;
-}
-
-/* Form Enhancements for Accessibility */
-.form-label.required::after {
-    content: '*';
-    color: var(--bs-danger);
-    margin-left: 0.25rem;
-}
-
-/* Visual Alert System */
-.visual-alert {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    max-width: 350px;
-    z-index: 1050;
-    background-color: var(--bs-dark);
-    border-left: 5px solid var(--bs-info);
-    padding: 15px;
-    border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transform: translateX(400px);
-    transition: transform 0.3s ease-out;
-}
-
-.visual-alert.show {
-    transform: translateX(0);
-}
-
-.visual-alert-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background-color: var(--bs-info);
-    border-radius: 50%;
-    margin-right: 15px;
-}
-
-.visual-alert-content {
-    flex: 1;
-}
-
-/* Insurance-specific styles */
-.insurance-feature-list {
-    list-style: none;
-    padding-left: 0;
-}
-
-.insurance-feature-list li {
-    padding: 8px 0;
-    border-bottom: 1px solid var(--bs-border-color);
-}
-
-.insurance-feature-list li:last-child {
-    border-bottom: none;
-}
-
-.insurance-feature-list li::before {
-    content: '✓';
-    color: var(--bs-info);
-    font-weight: bold;
-    margin-right: 10px;
+/* ASL-related styles */
+.asl-video-button {
+    cursor: pointer;
 }
 
 .deaf-specialized-badge {
-    background-color: var(--bs-info);
+    background-color: var(--bs-success);
     color: white;
+    font-size: 0.75rem;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
-    display: inline-flex;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.deaf-accessible {
+    position: relative;
+}
+
+.deaf-accessible .card-header {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    font-size: 0.85rem;
 }
 
-.deaf-specialized-badge::before {
-    content: '👐';
-    margin-right: 0.25rem;
-}
-
-/* Premium Display */
+/* Insurance related styles */
 .premium-display {
-    background-color: rgba(var(--bs-info-rgb), 0.1);
-    border: 1px solid var(--bs-info);
-    border-radius: 0.375rem;
-    padding: 1rem;
-    margin: 1rem 0;
     text-align: center;
+    margin-bottom: 2rem;
 }
 
 .premium-amount {
-    font-size: 2rem;
+    font-size: 2.5rem;
     font-weight: bold;
     color: var(--bs-info);
 }
 
-/* Coverage Plan Comparison */
-.coverage-comparison {
-    margin: 2rem 0;
+.insurance-feature-list li {
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-left: 1.5rem;
 }
 
-.coverage-option {
-    padding: 0.5rem;
-    border: 1px solid var(--bs-border-color);
-    border-radius: 0.375rem;
-    transition: all 0.2s ease;
+.insurance-feature-list li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--bs-info);
+    font-weight: bold;
 }
 
-.coverage-option:hover {
-    border-color: var(--bs-info);
-    background-color: rgba(var(--bs-info-rgb), 0.05);
+/* Form styles */
+.required:after {
+    content: "*";
+    color: var(--bs-danger);
+    margin-left: 4px;
 }
 
-.coverage-option.selected {
-    border-color: var(--bs-info);
-    background-color: rgba(var(--bs-info-rgb), 0.1);
+/* Hero sections */
+.hero-section {
+    padding: 5rem 0;
+    background-color: var(--bs-dark);
+    border-radius: 0.5rem;
+    margin-bottom: 3rem;
 }
 
-/* Footer */
-.footer {
-    border-top: 1px solid var(--bs-border-color);
-    padding-top: 1.5rem;
-    margin-top: 3rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .premium-amount {
-        font-size: 1.5rem;
+/* Animation for ASL video player */
+@keyframes asl-pulse {
+    0% {
+        transform: scale(1);
     }
-    
-    .accessibility-toolbar {
-        flex-direction: column;
-        padding: 0.5rem;
+    50% {
+        transform: scale(1.05);
     }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.asl-video-active {
+    animation: asl-pulse 2s infinite;
+    border: 2px solid var(--bs-info);
+}
+
+/* Accessibility features */
+.high-contrast-text {
+    color: white;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+/* Custom card styles */
+.feature-card {
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Testimonial styling */
+.testimonial-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--bs-info-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

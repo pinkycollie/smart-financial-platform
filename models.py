@@ -164,21 +164,114 @@ class InsuranceProduct(db.Model):
     product_code = db.Column(db.String(50), unique=True, nullable=False)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
-    coverage_type = db.Column(db.String(50))
+    coverage_type = db.Column(db.String(50))  # health, property_casualty, liability, business, etc.
+    coverage_category = db.Column(db.String(50))  # Standard or DeafFirst
     minimum_premium = db.Column(db.Float)
     maximum_coverage = db.Column(db.Float)
     asl_video_id = db.Column(db.String(100))  # Mux video ID for ASL explanation
     active = db.Column(db.Boolean, default=True)
     is_deaf_specialized = db.Column(db.Boolean, default=False)  # Specialized for deaf/HOH users
     accessibility_features = db.Column(db.JSON)  # Features specific to deaf/HOH users
+    mandatory_components = db.Column(db.JSON)  # Required components of this insurance product
+    optional_components = db.Column(db.JSON)  # Optional add-ons available
+    deaf_first_differentiation = db.Column(db.Text)  # How this differs from standard market products
+    annual_cost_range = db.Column(db.String(50))  # Estimated annual cost range
+    potential_carriers = db.Column(db.JSON)  # Potential insurance carriers offering this product
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     
     # Relationships
     policies = db.relationship('InsurancePolicy', back_populates='product')
+    bundle_products = db.relationship('InsuranceBundleProduct', back_populates='product')
     
     def __repr__(self):
         return f"<InsuranceProduct {self.name}>"
+
+
+class InsuranceBundle(db.Model):
+    """Insurance bundles that combine multiple products for comprehensive coverage"""
+    __tablename__ = 'insurance_bundles'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    bundle_code = db.Column(db.String(50), unique=True, nullable=False)
+    description = db.Column(db.Text)
+    integration_point = db.Column(db.String(100))  # e.g., Communication Access Bundle
+    integration_rationale = db.Column(db.Text)  # Why these products are bundled together
+    implementation_requirements = db.Column(db.Text)  # Required for implementation
+    expected_outcome = db.Column(db.Text)  # Expected benefits of the bundle
+    discount_percentage = db.Column(db.Float, default=0.0)  # Bundle discount
+    asl_video_id = db.Column(db.String(100))  # Mux video ID for ASL explanation
+    active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    
+    # Relationships
+    bundle_products = db.relationship('InsuranceBundleProduct', back_populates='bundle')
+    user_bundles = db.relationship('UserInsuranceBundle', back_populates='bundle')
+    
+    def __repr__(self):
+        return f"<InsuranceBundle {self.name}>"
+
+
+class InsuranceBundleProduct(db.Model):
+    """Many-to-many relationship between bundles and products with additional attributes"""
+    __tablename__ = 'insurance_bundle_products'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    bundle_id = db.Column(db.Integer, db.ForeignKey('insurance_bundles.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('insurance_products.id'), nullable=False)
+    is_primary = db.Column(db.Boolean, default=False)  # Whether this is a primary or supporting product
+    custom_discount = db.Column(db.Float)  # Product-specific discount within bundle
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    bundle = db.relationship('InsuranceBundle', back_populates='bundle_products')
+    product = db.relationship('InsuranceProduct', back_populates='bundle_products')
+    
+    def __repr__(self):
+        return f"<BundleProduct {self.bundle_id}:{self.product_id}>"
+
+
+class UserInsuranceBundle(db.Model):
+    """Users' insurance bundles purchased"""
+    __tablename__ = 'user_insurance_bundles'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    bundle_id = db.Column(db.Integer, db.ForeignKey('insurance_bundles.id'), nullable=False)
+    bundle_number = db.Column(db.String(100), unique=True)
+    status = db.Column(db.String(20), default='pending')  # pending, active, cancelled, expired
+    total_premium = db.Column(db.Float, nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    
+    # Relationships
+    user = db.relationship('User', backref=db.backref('insurance_bundles', lazy='dynamic'))
+    bundle = db.relationship('InsuranceBundle', back_populates='user_bundles')
+    bundle_policies = db.relationship('BundlePolicyLink', back_populates='user_bundle')
+    
+    def __repr__(self):
+        return f"<UserInsuranceBundle {self.bundle_number} for User {self.user_id}>"
+
+
+class BundlePolicyLink(db.Model):
+    """Links between user bundles and individual policies"""
+    __tablename__ = 'bundle_policy_links'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_bundle_id = db.Column(db.Integer, db.ForeignKey('user_insurance_bundles.id'), nullable=False)
+    policy_id = db.Column(db.Integer, db.ForeignKey('insurance_policies.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    user_bundle = db.relationship('UserInsuranceBundle', back_populates='bundle_policies')
+    policy = db.relationship('InsurancePolicy', backref=db.backref('bundle_links', lazy='dynamic'))
+    
+    def __repr__(self):
+        return f"<BundlePolicyLink {self.user_bundle_id}:{self.policy_id}>"
 
 
 class InsurancePolicy(db.Model):

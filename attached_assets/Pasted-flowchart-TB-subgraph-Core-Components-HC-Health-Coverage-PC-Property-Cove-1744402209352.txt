@@ -1,0 +1,94 @@
+flowchart TB
+    subgraph "Core Components"
+        HC["Health Coverage"] 
+        PC["Property Coverage"]
+        LC["Liability Coverage"]
+        BC["Business Coverage"]
+        DC["Disability Coverage"]
+        SAC["Service Animal/Assistive\nDevice Coverage"]
+        LEC["Legal Expense Coverage"]
+        EDC["Education Coverage"]
+    end
+
+    subgraph "Integration Framework"
+        CAB["Communication\nAccess Bundle"]
+        TEP["Technology\nEcosystem Protection"]
+        PDP["Professional\nDevelopment Pathway"]
+        FCS["Family Communication\nSecurity"]
+        AMP["Accessibility\nModification Platform"]
+    end
+
+    subgraph "Market Partners"
+        CARRIERS["Global Insurance Carriers"]
+        TECH["Technology Partners"]
+        COMMUNITY["Deaf Community Organizations"]
+        REGULATORY["Regulatory Framework"]
+    end
+
+    subgraph "Metrics System"
+        FM["Financial Metrics"]
+        IM["Impact Metrics"] 
+        CM["Customer Satisfaction"]
+        GM["Growth Metrics"]
+    end
+    
+    %% Core Components to Integration Framework
+    HC --> CAB
+    HC --> FCS
+    HC --> AMP
+    
+    PC --> TEP
+    PC --> AMP
+    
+    LC --> CAB
+    LC --> PDP
+    
+    BC --> TEP
+    BC --> PDP
+    BC --> AMP
+    
+    DC --> PDP
+    DC --> TEP
+    
+    SAC --> TEP
+    SAC --> AMP
+    
+    LEC --> CAB
+    LEC --> PDP
+    LEC --> FCS
+    
+    EDC --> PDP
+    EDC --> FCS
+    
+    %% Integration Framework to Market Partners
+    CAB --> CARRIERS
+    TEP --> CARRIERS
+    PDP --> CARRIERS
+    FCS --> CARRIERS
+    AMP --> CARRIERS
+    
+    CAB --> TECH
+    TEP --> TECH
+    PDP --> TECH
+    FCS --> TECH
+    AMP --> TECH
+    
+    CAB --> COMMUNITY
+    TEP --> COMMUNITY
+    PDP --> COMMUNITY
+    FCS --> COMMUNITY
+    AMP --> COMMUNITY
+    
+    CAB --> REGULATORY
+    TEP --> REGULATORY
+    PDP --> REGULATORY
+    FCS --> REGULATORY
+    AMP --> REGULATORY
+    
+    %% Market Partners to Metrics
+    CARRIERS --> FM
+    TECH --> IM
+    COMMUNITY --> CM
+    REGULATORY --> GM
+    
+    classDef core fill:#a8d5ba,stroke:#178

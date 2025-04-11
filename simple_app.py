@@ -1,5 +1,6 @@
-from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
+from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from sqlalchemy.orm import DeclarativeBase
 import os
 import logging
@@ -19,6 +20,16 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_pre_ping": True,
 }
 
+# Configure API services
+app.config['MUX_TOKEN_ID'] = os.environ.get('MUX_TOKEN_ID', '')
+app.config['MUX_TOKEN_SECRET'] = os.environ.get('MUX_TOKEN_SECRET', '')
+app.config['APRIL_API_URL'] = os.environ.get('APRIL_API_URL', 'https://api.getapril.com')
+app.config['APRIL_CLIENT_ID'] = os.environ.get('APRIL_CLIENT_ID', '')
+app.config['APRIL_CLIENT_SECRET'] = os.environ.get('APRIL_CLIENT_SECRET', '')
+app.config['BOOST_API_URL'] = os.environ.get('BOOST_API_URL', 'https://api.boostinsurance.io')
+app.config['BOOST_CLIENT_ID'] = os.environ.get('BOOST_CLIENT_ID', '')
+app.config['BOOST_CLIENT_SECRET'] = os.environ.get('BOOST_CLIENT_SECRET', '')
+
 # Initialize database
 class Base(DeclarativeBase):
     pass
@@ -26,26 +37,28 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
+# Initialize login manager
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+login_manager.login_message_category = 'info'
+
+@login_manager.user_loader
+def load_user(user_id):
+    from models import User
+    return User.query.get(int(user_id))
+
+# Import routes modules
+from routes.fintech.insurance import insurance_bp
+
+# Register blueprints
+app.register_blueprint(insurance_bp)
+
 # Define routes
 @app.route('/')
 def index():
-    return jsonify({
-        'message': 'MbTQ Financial Platform API',
-        'status': 'running',
-        'version': '1.0.0',
-        'endpoints': {
-            'fintech': {
-                'tax_filing': '/fintech/tax-filing',
-                'financial_profile': '/fintech/financial-profile',
-                'dashboard': '/fintech/dashboard'
-            },
-            'accessibility': {
-                'asl_videos': '/accessibility/asl-videos',
-                'deaf_support_bot': '/accessibility/deaf-support-bot',
-                'settings': '/accessibility/settings'
-            }
-        }
-    })
+    """Home page of the MbTQ Financial Platform"""
+    return render_template('index.html', title='MbTQ Financial Platform')
 
 @app.route('/fintech/dashboard')
 def fintech_dashboard():

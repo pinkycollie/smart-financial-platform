@@ -3,40 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}MbTQ - Financial Services for All{% endblock %}</title>
-    <!-- Replit-themed bootstrap CSS -->
+    <title>{% block title %}MbTQ Financial Platform{% endblock %}</title>
+    <!-- Bootstrap CSS (Replit-themed dark) -->
     <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    {% block styles %}{% endblock %}
+    {% block head %}{% endblock %}
+    <style>
+        /* Custom styles to supplement Bootstrap */
+        .deaf-specialized-badge {
+            background-color: var(--bs-success);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .deaf-accessible {
+            position: relative;
+        }
+        
+        .deaf-accessible .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .premium-display {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .premium-amount {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--bs-info);
+        }
+        
+        .insurance-feature-list li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .insurance-feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--bs-info);
+            font-weight: bold;
+        }
+        
+        .required:after {
+            content: "*";
+            color: var(--bs-danger);
+            margin-left: 4px;
+        }
+    </style>
 </head>
 <body>
-    <!-- Deaf First Accessibility Toolbar -->
-    <div class="accessibility-toolbar bg-secondary text-white px-3 py-2">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div>
-                <button id="asl-video-toggle" class="btn btn-sm btn-outline-light" title="Toggle ASL Videos">
-                    <i class="fas fa-sign-language"></i> ASL Videos
-                </button>
-                <button id="visual-alerts-toggle" class="btn btn-sm btn-outline-light ms-2" title="Toggle Visual Alerts">
-                    <i class="fas fa-bell"></i> Visual Alerts
-                </button>
-            </div>
-            <div>
-                <a href="/deaf-support" class="btn btn-sm btn-info">
-                    <i class="fas fa-comment-dots"></i> ASL Support
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Navigation -->
+    <!-- Main Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <i class="fas fa-chart-line"></i> MbTQ
+                <i class="fas fa-chart-line me-2"></i>MbTQ
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -44,79 +78,76 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
+                        <a class="nav-link" href="/">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/tax"><i class="fas fa-file-invoice-dollar"></i> Tax</a>
+                    <!-- Fintech Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Financial Services
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/fintech/dashboard">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="/fintech/tax-filing">Tax Filing</a></li>
+                            <li><a class="dropdown-item" href="/fintech/financial-profile">Financial Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/insurance">Insurance</a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/finance"><i class="fas fa-piggy-bank"></i> Finance</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/insurance"><i class="fas fa-shield-alt"></i> Insurance</a>
+                    <!-- Accessibility Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Deaf First
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/accessibility/asl-videos">ASL Videos</a></li>
+                            <li><a class="dropdown-item" href="/accessibility/deaf-support-bot">Support Bot</a></li>
+                            <li><a class="dropdown-item" href="/accessibility/settings">Accessibility Settings</a></li>
+                        </ul>
                     </li>
                 </ul>
+                <!-- User Menu (right side) -->
                 <ul class="navbar-nav">
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i> {{ current_user.username }}
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>{{ current_user.username }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                            <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                            <li><a class="dropdown-item" href="/profile">My Profile</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/logout">Logout</a></li>
                         </ul>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                        <a class="nav-link" href="/login">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/register"><i class="fas fa-user-plus"></i> Register</a>
+                        <a class="nav-link" href="/register">
+                            <i class="fas fa-user-plus me-1"></i>Register
+                        </a>
                     </li>
                     {% endif %}
+                    <!-- ASL Video Toggle -->
+                    <li class="nav-item ms-2">
+                        <button class="btn btn-sm btn-outline-info" id="aslVideoToggle">
+                            <i class="fas fa-sign-language"></i>
+                            <span id="aslStatusText">ASL On</span>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
-
-    <!-- ASL Video Modal -->
-    <div class="modal fade" id="asl-video-modal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="asl-video-title">ASL Video</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="asl-video-player" class="ratio ratio-16x9">
-                        <!-- Video player will be inserted here -->
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="d-flex align-items-center me-auto">
-                        <label for="video-speed" class="form-label me-2 mb-0">Speed:</label>
-                        <select id="video-speed" class="form-select form-select-sm" style="width: 80px;">
-                            <option value="0.75">0.75x</option>
-                            <option value="1" selected>1x</option>
-                            <option value="1.25">1.25x</option>
-                            <option value="1.5">1.5x</option>
-                        </select>
-                    </div>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Flash Messages -->
     <div class="container mt-3">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
-        <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show">
+        <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show" role="alert">
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -126,111 +157,205 @@
     </div>
 
     <!-- Main Content -->
-    <main class="container my-4">
+    <main class="container py-4">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="footer mt-auto py-3 bg-dark text-center">
+    <footer class="bg-dark text-light py-4 mt-5">
         <div class="container">
-            <span class="text-muted">
-                &copy; 2025 MbTQ Financial Services | 
-                <a href="/eula" class="text-muted">EULA</a> | 
-                <a href="/privacy" class="text-muted">Privacy Policy</a> |
-                <a href="#" class="text-muted" data-asl-video="about_mbtq">About MbTQ</a>
-            </span>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5><i class="fas fa-chart-line me-2"></i>MbTQ Financial</h5>
+                    <p class="small">A financial platform designed with Deaf First principles, making tax and financial services accessible to the deaf and hard of hearing community.</p>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <h6>Services</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="/fintech/tax-filing" class="text-decoration-none text-secondary">Tax Filing</a></li>
+                        <li><a href="/fintech/financial-profile" class="text-decoration-none text-secondary">Financial Profiles</a></li>
+                        <li><a href="/insurance" class="text-decoration-none text-secondary">Insurance</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <h6>Accessibility</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="/accessibility/asl-videos" class="text-decoration-none text-secondary">ASL Videos</a></li>
+                        <li><a href="/accessibility/deaf-support-bot" class="text-decoration-none text-secondary">Support Bot</a></li>
+                        <li><a href="/accessibility/settings" class="text-decoration-none text-secondary">Settings</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <h6>Company</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="/about" class="text-decoration-none text-secondary">About Us</a></li>
+                        <li><a href="/contact" class="text-decoration-none text-secondary">Contact</a></li>
+                        <li><a href="/privacy" class="text-decoration-none text-secondary">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <h6>Legal</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="/terms" class="text-decoration-none text-secondary">Terms of Service</a></li>
+                        <li><a href="/eula" class="text-decoration-none text-secondary">EULA</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary">
+            <div class="row">
+                <div class="col-md-6 small text-secondary">
+                    &copy; 2025 MbTQ Financial Technologies. All rights reserved.
+                </div>
+                <div class="col-md-6 text-md-end small">
+                    <a href="#" class="text-decoration-none text-secondary me-3">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="text-decoration-none text-secondary me-3">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-decoration-none text-secondary me-3">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-decoration-none text-secondary">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
         </div>
     </footer>
 
-    <!-- JavaScript Libraries -->
+    <!-- ASL Video Modal -->
+    <div class="modal fade" id="aslVideoModal" tabindex="-1" aria-labelledby="aslVideoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="aslVideoModalLabel">ASL Video</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="aslVideoContainer">
+                        <div class="placeholder-container text-center p-5">
+                            <i class="fas fa-sign-language fa-3x mb-3 text-info"></i>
+                            <h4>ASL Video</h4>
+                            <p class="text-muted">Loading ASL video content...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <div>
+                        <button class="btn btn-sm btn-secondary me-2" id="aslSlower">
+                            <i class="fas fa-minus"></i> Slower
+                        </button>
+                        <button class="btn btn-sm btn-secondary" id="aslFaster">
+                            <i class="fas fa-plus"></i> Faster
+                        </button>
+                    </div>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & jQuery Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.9.2/dist/htmx.min.js"></script>
-    <script src="{{ url_for('static', filename='js/asl-video-player.js') }}"></script>
-    
-    <!-- Page-specific JavaScript -->
-    {% block scripts %}{% endblock %}
-    
-    <!-- Accessibility Script -->
+    <!-- Custom Scripts -->
     <script>
+        // ASL Video Toggle Functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // Setup ASL video triggers
-            document.querySelectorAll('[data-asl-video]').forEach(element => {
-                element.addEventListener('click', function(e) {
-                    e.preventDefault();
+            // Initialize ASL video preference from localStorage or default to enabled
+            let aslVideosEnabled = localStorage.getItem('asl_videos_enabled');
+            if (aslVideosEnabled === null) {
+                localStorage.setItem('asl_videos_enabled', 'true');
+                aslVideosEnabled = 'true';
+            }
+            
+            // Update toggle button text
+            updateAslToggleButton(aslVideosEnabled === 'true');
+            
+            // ASL Toggle Button Click Handler
+            const aslToggleBtn = document.getElementById('aslVideoToggle');
+            if (aslToggleBtn) {
+                aslToggleBtn.addEventListener('click', function() {
+                    const currentStatus = localStorage.getItem('asl_videos_enabled') === 'true';
+                    const newStatus = !currentStatus;
+                    localStorage.setItem('asl_videos_enabled', newStatus ? 'true' : 'false');
+                    updateAslToggleButton(newStatus);
+                });
+            }
+            
+            // Set up ASL video trigger buttons
+            setupAslVideoButtons();
+        });
+        
+        function updateAslToggleButton(enabled) {
+            const toggleBtn = document.getElementById('aslVideoToggle');
+            const statusText = document.getElementById('aslStatusText');
+            
+            if (toggleBtn && statusText) {
+                toggleBtn.classList.remove('btn-outline-info', 'btn-outline-secondary');
+                toggleBtn.classList.add(enabled ? 'btn-outline-info' : 'btn-outline-secondary');
+                statusText.innerText = enabled ? 'ASL On' : 'ASL Off';
+            }
+        }
+        
+        function setupAslVideoButtons() {
+            // Add click event for all buttons with data-asl-video attribute
+            document.querySelectorAll('[data-asl-video]').forEach(button => {
+                button.addEventListener('click', function() {
                     const videoKey = this.getAttribute('data-asl-video');
                     showASLVideo(videoKey);
                 });
             });
-            
-            // Toggle ASL video functionality
-            const aslToggle = document.getElementById('asl-video-toggle');
-            if (aslToggle) {
-                aslToggle.addEventListener('click', function() {
-                    const enabled = !aslToggle.classList.contains('active');
-                    aslToggle.classList.toggle('active');
-                    localStorage.setItem('asl_videos_enabled', enabled);
-                    
-                    // Update appearance
-                    if (enabled) {
-                        aslToggle.classList.add('btn-light');
-                        aslToggle.classList.remove('btn-outline-light');
-                    } else {
-                        aslToggle.classList.remove('btn-light');
-                        aslToggle.classList.add('btn-outline-light');
-                    }
-                });
-                
-                // Set initial state based on user preference
-                const aslEnabled = localStorage.getItem('asl_videos_enabled') !== 'false';
-                if (aslEnabled) {
-                    aslToggle.classList.add('active', 'btn-light');
-                    aslToggle.classList.remove('btn-outline-light');
-                }
-            }
-            
-            // Toggle visual alerts functionality
-            const alertsToggle = document.getElementById('visual-alerts-toggle');
-            if (alertsToggle) {
-                alertsToggle.addEventListener('click', function() {
-                    const enabled = !alertsToggle.classList.contains('active');
-                    alertsToggle.classList.toggle('active');
-                    localStorage.setItem('visual_alerts_enabled', enabled);
-                    
-                    // Update appearance
-                    if (enabled) {
-                        alertsToggle.classList.add('btn-light');
-                        alertsToggle.classList.remove('btn-outline-light');
-                    } else {
-                        alertsToggle.classList.remove('btn-light');
-                        alertsToggle.classList.add('btn-outline-light');
-                    }
-                });
-                
-                // Set initial state based on user preference
-                const alertsEnabled = localStorage.getItem('visual_alerts_enabled') !== 'false';
-                if (alertsEnabled) {
-                    alertsToggle.classList.add('active', 'btn-light');
-                    alertsToggle.classList.remove('btn-outline-light');
-                }
-            }
-        });
-
-        // Show ASL video function (placeholder, will be defined in asl-video-player.js)
+        }
+        
         function showASLVideo(videoKey) {
-            // Basic implementation (will be enhanced in the actual JS file)
-            const modal = new bootstrap.Modal(document.getElementById('asl-video-modal'));
-            document.getElementById('asl-video-title').textContent = 'Loading ASL Video...';
-            document.getElementById('asl-video-player').innerHTML = 
-                `<div class="d-flex justify-content-center align-items-center h-100">
-                   <div class="spinner-border text-info" role="status">
-                     <span class="visually-hidden">Loading...</span>
-                   </div>
-                 </div>`;
+            // Check if ASL videos are enabled
+            if (localStorage.getItem('asl_videos_enabled') !== 'true') {
+                console.log('ASL videos are disabled');
+                return;
+            }
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('aslVideoModal'));
             modal.show();
             
-            // In the full implementation this would fetch the video from the API
-            console.log(`Requesting ASL video: ${videoKey}`);
+            // Fetch video data
+            fetch(`/insurance/asl-videos/${videoKey}`)
+                .then(response => response.json())
+                .then(videoData => {
+                    console.log('Loaded ASL video data:', videoData);
+                    
+                    // Update modal title
+                    document.getElementById('aslVideoModalLabel').innerText = videoData.title;
+                    
+                    // In a real implementation, this would embed a Mux player or similar
+                    // For now, we just show placeholder content
+                    const videoContainer = document.getElementById('aslVideoContainer');
+                    videoContainer.innerHTML = `
+                        <div class="text-center">
+                            <div class="p-4 bg-dark rounded mb-3">
+                                <i class="fas fa-sign-language fa-4x text-info mb-3"></i>
+                                <h4>${videoData.title}</h4>
+                                <p>${videoData.description}</p>
+                                <div class="bg-info-subtle p-3 mt-4 rounded">
+                                    <p class="mb-0"><strong>Note:</strong> This is a placeholder for the actual ASL video that would be played here.</p>
+                                </div>
+                            </div>
+                            <p class="text-muted small">Video ID: ${videoData.key}</p>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error fetching ASL video:', error);
+                    document.getElementById('aslVideoContainer').innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Error loading ASL video. Please try again later.
+                        </div>
+                    `;
+                });
         }
     </script>
+    {% block scripts %}{% endblock %}
 </body>
 </html>

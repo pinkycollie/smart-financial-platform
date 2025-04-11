@@ -1,1 +1,1 @@
-# Deaf First services package - prioritizing Deaf culture and ASL communication
+# Deaf First Services Package
