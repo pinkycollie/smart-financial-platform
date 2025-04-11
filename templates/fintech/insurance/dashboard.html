@@ -1,0 +1,245 @@
+{% extends "layout.html" %}
+
+{% block title %}Insurance Dashboard - MbTQ{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="mb-4">
+            <i class="fas fa-shield-alt"></i> Insurance Center
+            <button class="btn btn-outline-info btn-sm ms-2" data-asl-video="insurance_overview">
+                <i class="fas fa-sign-language"></i> Watch in ASL
+            </button>
+        </h1>
+        
+        <div class="alert alert-info">
+            <div class="d-flex">
+                <div class="me-3">
+                    <i class="fas fa-info-circle fa-2x"></i>
+                </div>
+                <div>
+                    <h5>Specialized Insurance for Deaf Community</h5>
+                    <p>We've partnered with Boost Insurance to offer insurance products designed specifically for the deaf and hard of hearing community. Our policies include coverage for visual alerting devices, sign language interpreter services, and more.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ASL Video Categories -->
+<div class="row mt-4 mb-5">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info-subtle">
+                <h4 class="mb-0"><i class="fas fa-video"></i> ASL Insurance Guides</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% if asl_videos %}
+                        {% for video in asl_videos %}
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ video.title }}</h5>
+                                        <p class="card-text">{{ video.description }}</p>
+                                        <button class="btn btn-info" data-asl-video="{{ video.key }}">
+                                            <i class="fas fa-play-circle"></i> Watch Video
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12">
+                            <p class="text-muted">No ASL videos available at this time.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- My Policies & Available Products -->
+<div class="row">
+    <!-- My Insurance Policies -->
+    <div class="col-lg-7">
+        <div class="card deaf-accessible mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">My Insurance Policies</h4>
+                <button class="btn btn-sm btn-outline-info" data-asl-video="my_policies">
+                    <i class="fas fa-sign-language"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                {% if policies %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Policy Number</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Premium</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for policy in policies %}
+                                    <tr>
+                                        <td>{{ policy.policy_number }}</td>
+                                        <td>{{ policy.product.name }}</td>
+                                        <td>
+                                            <span class="badge {{ policy.status == 'active' and 'bg-success' or 'bg-secondary' }}">
+                                                {{ policy.status|capitalize }}
+                                            </span>
+                                        </td>
+                                        <td>${{ "%.2f"|format(policy.premium_amount) }}</td>
+                                        <td>
+                                            <a href="{{ url_for('insurance.policy_detail', policy_id=policy.id) }}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-info-circle"></i> Details
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-shield-alt fa-3x mb-3 text-muted"></i>
+                        <p>You don't have any insurance policies yet.</p>
+                        <p>Browse our available products below to get coverage that meets your needs.</p>
+                    </div>
+                {% endif %}
+            </div>
+            {% if policies %}
+                <div class="card-footer">
+                    <a href="{{ url_for('insurance.policy_list') }}" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> View All Policies
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Available Products -->
+    <div class="col-lg-5">
+        <div class="card deaf-accessible mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">Available Insurance Products</h4>
+                <button class="btn btn-sm btn-outline-info" data-asl-video="available_products">
+                    <i class="fas fa-sign-language"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                {% if products %}
+                    <div class="list-group">
+                        {% for product in products %}
+                            <div class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <h5 class="mb-1">{{ product.name }}</h5>
+                                    {% if product.is_deaf_specialized %}
+                                        <span class="deaf-specialized-badge">Deaf Specialized</span>
+                                    {% endif %}
+                                </div>
+                                <p class="mb-1">{{ product.description }}</p>
+                                <small class="text-muted">
+                                    Starting at ${{ "%.2f"|format(product.minimum_premium) }}/month
+                                </small>
+                                <div class="mt-2">
+                                    <a href="{{ url_for('insurance.product_detail', product_id=product.id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-info-circle"></i> Details
+                                    </a>
+                                    <a href="{{ url_for('insurance.get_quote', product_id=product.id) }}" class="btn btn-sm btn-info">
+                                        <i class="fas fa-calculator"></i> Get Quote
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-store fa-3x mb-3 text-muted"></i>
+                        <p>No insurance products are available at this time.</p>
+                        <p>Please check back later for new offerings.</p>
+                    </div>
+                {% endif %}
+            </div>
+            {% if products %}
+                <div class="card-footer">
+                    <a href="{{ url_for('insurance.product_list') }}" class="btn btn-secondary">
+                        <i class="fas fa-th-list"></i> Browse All Products
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Benefits of Insurance for Deaf Community -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info-subtle">
+                <h4 class="mb-0">Benefits for Deaf and Hard of Hearing Community</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-bell fa-3x text-info mb-3"></i>
+                                <h5 class="card-title">Visual Alert Systems Coverage</h5>
+                                <p class="card-text">Our home insurance policies include coverage for visual alerting devices for doorbells, smoke detectors, and other critical home systems.</p>
+                                <button class="btn btn-outline-info mt-2" data-asl-video="visual_alert_coverage">
+                                    <i class="fas fa-sign-language"></i> Learn More in ASL
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-hands fa-3x text-info mb-3"></i>
+                                <h5 class="card-title">Interpreter Services</h5>
+                                <p class="card-text">Coverage for sign language interpreter services when dealing with emergency services, insurance claims, or other situations requiring communication assistance.</p>
+                                <button class="btn btn-outline-info mt-2" data-asl-video="interpreter_coverage">
+                                    <i class="fas fa-sign-language"></i> Learn More in ASL
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-tablet-alt fa-3x text-info mb-3"></i>
+                                <h5 class="card-title">Communication Device Coverage</h5>
+                                <p class="card-text">Enhanced coverage for communication devices and technology specially designed for deaf and hard of hearing individuals.</p>
+                                <button class="btn btn-outline-info mt-2" data-asl-video="communication_device_coverage">
+                                    <i class="fas fa-sign-language"></i> Learn More in ASL
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-play the insurance overview ASL video when page loads
+        // Only if the user has ASL videos enabled in their preferences
+        const aslVideosEnabled = localStorage.getItem('asl_videos_enabled') !== 'false';
+        if (aslVideosEnabled) {
+            setTimeout(() => {
+                showASLVideo('insurance_overview');
+            }, 1000); // Small delay to ensure page is fully loaded
+        }
+    });
+</script>
+{% endblock %}

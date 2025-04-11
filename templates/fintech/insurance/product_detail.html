@@ -1,0 +1,256 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ product.name }} - MbTQ Insurance{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/insurance">Insurance</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('insurance.product_list') }}">Products</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                {{ product.name }}
+                {% if product.is_deaf_specialized %}
+                    <span class="deaf-specialized-badge ms-2">Deaf Specialized</span>
+                {% endif %}
+            </h1>
+            
+            <button class="btn btn-info" data-asl-video="{{ product.product_code|lower }}_details">
+                <i class="fas fa-sign-language me-1"></i> Watch in ASL
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Product Details -->
+    <div class="col-lg-8">
+        <div class="card deaf-accessible mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">Coverage Details</h4>
+                <button class="btn btn-sm btn-outline-info" data-asl-video="{{ product.product_code|lower }}_coverage">
+                    <i class="fas fa-sign-language"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <p class="lead">{{ product.description }}</p>
+                
+                <h5 class="mt-4">Key Features</h5>
+                <ul class="insurance-feature-list">
+                    <!-- Generate features based on product type -->
+                    {% if product.coverage_type == 'home' %}
+                        <li>Protection for your home and personal property</li>
+                        <li>Liability coverage for accidents on your property</li>
+                        <li>Additional living expenses if your home becomes uninhabitable</li>
+                        {% if product.is_deaf_specialized %}
+                            <li>Coverage for visual alerting systems (doorbells, smoke detectors)</li>
+                            <li>Interpreter services for claim processing and emergencies</li>
+                        {% endif %}
+                    {% elif product.coverage_type == 'auto' %}
+                        <li>Comprehensive collision coverage</li>
+                        <li>Personal injury protection</li>
+                        <li>Uninsured/underinsured motorist coverage</li>
+                        {% if product.is_deaf_specialized %}
+                            <li>Vehicle modifications for communication accessibility</li>
+                            <li>Specialized driver discounts for defensive driving certification</li>
+                        {% endif %}
+                    {% elif product.coverage_type == 'health' %}
+                        <li>Supplemental health coverage</li>
+                        <li>Emergency medical expenses</li>
+                        <li>Prescription medication coverage</li>
+                        {% if product.is_deaf_specialized %}
+                            <li>Coverage for interpreter services during medical appointments</li>
+                            <li>Specialized hearing and communication device coverage</li>
+                            <li>Coverage for service animals trained to assist deaf individuals</li>
+                        {% endif %}
+                    {% else %}
+                        <li>Comprehensive coverage tailored to your needs</li>
+                        <li>24/7 customer service</li>
+                        <li>Easy claims processing</li>
+                    {% endif %}
+                </ul>
+                
+                {% if product.is_deaf_specialized and product.accessibility_features %}
+                    <h5 class="mt-4">Deaf Accessibility Features</h5>
+                    <div class="card bg-info-subtle mb-3">
+                        <div class="card-body">
+                            <ul class="insurance-feature-list">
+                                {% for feature, enabled in product.accessibility_features.items() %}
+                                    {% if enabled %}
+                                        <li>{{ feature|replace('_', ' ')|title }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <h5 class="mt-4">Coverage Amount</h5>
+                <p>Maximum coverage amount: ${{ "{:,.2f}".format(product.maximum_coverage) }}</p>
+                
+                <h5 class="mt-4">Policy Terms</h5>
+                <p>Our standard policies are for 12 months with the option to pay monthly, quarterly, or annually.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pricing and Action Card -->
+    <div class="col-lg-4">
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-header bg-info-subtle">
+                <h4 class="mb-0">Premium Information</h4>
+            </div>
+            <div class="card-body">
+                <div class="premium-display">
+                    <p class="mb-1">Starting at</p>
+                    <div class="premium-amount">${{ "%.2f"|format(product.minimum_premium) }}</div>
+                    <p class="text-muted">per month</p>
+                </div>
+                
+                <ul class="list-group list-group-flush mb-4">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Deductible options</span>
+                        <span>$250 - $1,000</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Payment frequency</span>
+                        <span>Monthly, Quarterly, Annual</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Contract length</span>
+                        <span>12 months</span>
+                    </li>
+                </ul>
+                
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('insurance.get_quote', product_id=product.id) }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-calculator me-1"></i> Get Personalized Quote
+                    </a>
+                    
+                    {% if product_video %}
+                        <button class="btn btn-outline-info" data-asl-video="{{ product.product_code|lower }}_pricing">
+                            <i class="fas fa-sign-language me-1"></i> Learn About Pricing in ASL
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info-subtle">
+                <h4 class="mb-0">Frequently Asked Questions</h4>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                What makes this product different for deaf and hard of hearing individuals?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <div class="d-flex align-items-start">
+                                    <div class="flex-grow-1">
+                                        <p>Our insurance products for deaf and hard of hearing individuals include specialized coverage for:</p>
+                                        <ul>
+                                            <li>Visual alerting devices for home safety</li>
+                                            <li>Communication technology and devices</li>
+                                            <li>Sign language interpreter services for claims and emergencies</li>
+                                            <li>Service animals trained to assist deaf individuals</li>
+                                        </ul>
+                                        <p>These coverages address the unique needs of the deaf community that traditional insurance products often overlook.</p>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-info ms-3 align-self-start" data-asl-video="deaf_specialized_faq">
+                                        <i class="fas fa-sign-language"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                How do I file a claim?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <div class="d-flex align-items-start">
+                                    <div class="flex-grow-1">
+                                        <p>Filing a claim is easy:</p>
+                                        <ol>
+                                            <li>Log in to your MbTQ account</li>
+                                            <li>Navigate to your policy details</li>
+                                            <li>Click on "File a Claim"</li>
+                                            <li>Fill out the claim information</li>
+                                            <li>Submit your claim</li>
+                                        </ol>
+                                        <p>You can also request ASL interpreter services for video calls with claims adjusters at no additional cost.</p>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-info ms-3 align-self-start" data-asl-video="filing_claims">
+                                        <i class="fas fa-sign-language"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                Can I customize my coverage?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <div class="d-flex align-items-start">
+                                    <div class="flex-grow-1">
+                                        <p>Yes, all our insurance products are customizable:</p>
+                                        <ul>
+                                            <li>Adjust your coverage limits</li>
+                                            <li>Select different deductible amounts</li>
+                                            <li>Add specialized coverages for your specific needs</li>
+                                            <li>Bundle multiple policies for additional savings</li>
+                                        </ul>
+                                        <p>During the quote process, you'll have the opportunity to customize your coverage to fit your exact needs and budget.</p>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-info ms-3 align-self-start" data-asl-video="custom_coverage">
+                                        <i class="fas fa-sign-language"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-play the product ASL video when page loads if enabled
+        const aslVideosEnabled = localStorage.getItem('asl_videos_enabled') !== 'false';
+        if (aslVideosEnabled) {
+            setTimeout(() => {
+                showASLVideo('{{ product.product_code|lower }}_details');
+            }, 1000);
+        }
+    });
+</script>
+{% endblock %}

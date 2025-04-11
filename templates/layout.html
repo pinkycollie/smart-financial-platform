@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MbTQ - Financial Services for All{% endblock %}</title>
+    <!-- Replit-themed bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% block styles %}{% endblock %}
+</head>
+<body>
+    <!-- Deaf First Accessibility Toolbar -->
+    <div class="accessibility-toolbar bg-secondary text-white px-3 py-2">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>
+                <button id="asl-video-toggle" class="btn btn-sm btn-outline-light" title="Toggle ASL Videos">
+                    <i class="fas fa-sign-language"></i> ASL Videos
+                </button>
+                <button id="visual-alerts-toggle" class="btn btn-sm btn-outline-light ms-2" title="Toggle Visual Alerts">
+                    <i class="fas fa-bell"></i> Visual Alerts
+                </button>
+            </div>
+            <div>
+                <a href="/deaf-support" class="btn btn-sm btn-info">
+                    <i class="fas fa-comment-dots"></i> ASL Support
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-chart-line"></i> MbTQ
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tax"><i class="fas fa-file-invoice-dollar"></i> Tax</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/finance"><i class="fas fa-piggy-bank"></i> Finance</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/insurance"><i class="fas fa-shield-alt"></i> Insurance</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle"></i> {{ current_user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                            <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register"><i class="fas fa-user-plus"></i> Register</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ASL Video Modal -->
+    <div class="modal fade" id="asl-video-modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="asl-video-title">ASL Video</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="asl-video-player" class="ratio ratio-16x9">
+                        <!-- Video player will be inserted here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="d-flex align-items-center me-auto">
+                        <label for="video-speed" class="form-label me-2 mb-0">Speed:</label>
+                        <select id="video-speed" class="form-select form-select-sm" style="width: 80px;">
+                            <option value="0.75">0.75x</option>
+                            <option value="1" selected>1x</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <main class="container my-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-dark text-center">
+        <div class="container">
+            <span class="text-muted">
+                &copy; 2025 MbTQ Financial Services | 
+                <a href="/eula" class="text-muted">EULA</a> | 
+                <a href="/privacy" class="text-muted">Privacy Policy</a> |
+                <a href="#" class="text-muted" data-asl-video="about_mbtq">About MbTQ</a>
+            </span>
+        </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.9.2/dist/htmx.min.js"></script>
+    <script src="{{ url_for('static', filename='js/asl-video-player.js') }}"></script>
+    
+    <!-- Page-specific JavaScript -->
+    {% block scripts %}{% endblock %}
+    
+    <!-- Accessibility Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup ASL video triggers
+            document.querySelectorAll('[data-asl-video]').forEach(element => {
+                element.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const videoKey = this.getAttribute('data-asl-video');
+                    showASLVideo(videoKey);
+                });
+            });
+            
+            // Toggle ASL video functionality
+            const aslToggle = document.getElementById('asl-video-toggle');
+            if (aslToggle) {
+                aslToggle.addEventListener('click', function() {
+                    const enabled = !aslToggle.classList.contains('active');
+                    aslToggle.classList.toggle('active');
+                    localStorage.setItem('asl_videos_enabled', enabled);
+                    
+                    // Update appearance
+                    if (enabled) {
+                        aslToggle.classList.add('btn-light');
+                        aslToggle.classList.remove('btn-outline-light');
+                    } else {
+                        aslToggle.classList.remove('btn-light');
+                        aslToggle.classList.add('btn-outline-light');
+                    }
+                });
+                
+                // Set initial state based on user preference
+                const aslEnabled = localStorage.getItem('asl_videos_enabled') !== 'false';
+                if (aslEnabled) {
+                    aslToggle.classList.add('active', 'btn-light');
+                    aslToggle.classList.remove('btn-outline-light');
+                }
+            }
+            
+            // Toggle visual alerts functionality
+            const alertsToggle = document.getElementById('visual-alerts-toggle');
+            if (alertsToggle) {
+                alertsToggle.addEventListener('click', function() {
+                    const enabled = !alertsToggle.classList.contains('active');
+                    alertsToggle.classList.toggle('active');
+                    localStorage.setItem('visual_alerts_enabled', enabled);
+                    
+                    // Update appearance
+                    if (enabled) {
+                        alertsToggle.classList.add('btn-light');
+                        alertsToggle.classList.remove('btn-outline-light');
+                    } else {
+                        alertsToggle.classList.remove('btn-light');
+                        alertsToggle.classList.add('btn-outline-light');
+                    }
+                });
+                
+                // Set initial state based on user preference
+                const alertsEnabled = localStorage.getItem('visual_alerts_enabled') !== 'false';
+                if (alertsEnabled) {
+                    alertsToggle.classList.add('active', 'btn-light');
+                    alertsToggle.classList.remove('btn-outline-light');
+                }
+            }
+        });
+
+        // Show ASL video function (placeholder, will be defined in asl-video-player.js)
+        function showASLVideo(videoKey) {
+            // Basic implementation (will be enhanced in the actual JS file)
+            const modal = new bootstrap.Modal(document.getElementById('asl-video-modal'));
+            document.getElementById('asl-video-title').textContent = 'Loading ASL Video...';
+            document.getElementById('asl-video-player').innerHTML = 
+                `<div class="d-flex justify-content-center align-items-center h-100">
+                   <div class="spinner-border text-info" role="status">
+                     <span class="visually-hidden">Loading...</span>
+                   </div>
+                 </div>`;
+            modal.show();
+            
+            // In the full implementation this would fetch the video from the API
+            console.log(`Requesting ASL video: ${videoKey}`);
+        }
+    </script>
+</body>
+</html>

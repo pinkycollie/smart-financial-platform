@@ -1,0 +1,273 @@
+{% extends "layout.html" %}
+
+{% block title %}Get Quote - {{ product.name }} - MbTQ Insurance{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/insurance">Insurance</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('insurance.product_list') }}">Products</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('insurance.product_detail', product_id=product.id) }}">{{ product.name }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Get Quote</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                Get a Quote
+                {% if product.is_deaf_specialized %}
+                    <span class="deaf-specialized-badge ms-2">Deaf Specialized</span>
+                {% endif %}
+            </h1>
+            
+            <button class="btn btn-info" data-asl-video="{{ product.product_code|lower }}_quote_process">
+                <i class="fas fa-sign-language me-1"></i> Watch in ASL
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Quote Form -->
+    <div class="col-lg-8">
+        <div class="card deaf-accessible mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">{{ product.name }} - Quote Form</h4>
+                <button class="btn btn-sm btn-outline-info" data-asl-video="quote_form_help">
+                    <i class="fas fa-sign-language"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <p class="lead mb-4">Please provide the following information to get your personalized quote for {{ product.name }}.</p>
+                
+                <form method="POST" action="{{ url_for('insurance.get_quote', product_id=product.id) }}">
+                    <!-- Hidden CSRF token -->
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                    
+                    <!-- Coverage Info Section -->
+                    <div class="mb-4">
+                        <h5 class="mb-3">Coverage Information</h5>
+                        
+                        <!-- Coverage Amount -->
+                        <div class="mb-3">
+                            <label for="coverage_amount" class="form-label required">Coverage Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="coverage_amount" name="coverage_amount" 
+                                       min="{{ product.minimum_premium * 100 }}" max="{{ product.maximum_coverage }}" 
+                                       step="1000" required
+                                       value="{{ product.minimum_premium * 1000 }}">
+                            </div>
+                            <div class="form-text">
+                                Amount of coverage you want, between ${{ "{:,.0f}".format(product.minimum_premium * 100) }} and ${{ "{:,.0f}".format(product.maximum_coverage) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Coverage Term -->
+                        <div class="mb-3">
+                            <label for="coverage_term" class="form-label required">Coverage Term (months)</label>
+                            <select class="form-select" id="coverage_term" name="coverage_term" required>
+                                <option value="12" selected>12 months (1 year)</option>
+                                <option value="24">24 months (2 years)</option>
+                                <option value="36">36 months (3 years)</option>
+                            </select>
+                            <div class="form-text">
+                                Length of time your policy will be in effect
+                            </div>
+                        </div>
+                        
+                        <!-- Deductible -->
+                        <div class="mb-3">
+                            <label for="deductible" class="form-label required">Deductible</label>
+                            <select class="form-select" id="deductible" name="deductible" required>
+                                <option value="250">$250</option>
+                                <option value="500" selected>$500</option>
+                                <option value="1000">$1,000</option>
+                                <option value="2500">$2,500</option>
+                            </select>
+                            <div class="form-text">
+                                Amount you pay out of pocket before insurance covers costs
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Deaf/HoH Specific Options -->
+                    {% if product.is_deaf_specialized %}
+                        <div class="mb-4 card bg-info-subtle">
+                            <div class="card-body">
+                                <h5 class="mb-3">Deaf/Hard of Hearing Specific Coverages</h5>
+                                <p>Select the additional coverages you'd like to include:</p>
+                                
+                                {% if product.coverage_type == 'home' %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="visual_alerts" name="deaf_coverages[]" value="signaling_device" checked>
+                                        <label class="form-check-label" for="visual_alerts">
+                                            Visual Alert Systems
+                                            <small class="d-block text-muted">Coverage for visual alerting devices like doorbells, smoke detectors, etc.</small>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="interpreter" name="deaf_coverages[]" value="interpreter_services" checked>
+                                        <label class="form-check-label" for="interpreter">
+                                            Interpreter Services
+                                            <small class="d-block text-muted">Coverage for sign language interpreter services during claims or emergencies</small>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="comm_devices" name="deaf_coverages[]" value="communication_devices" checked>
+                                        <label class="form-check-label" for="comm_devices">
+                                            Communication Devices
+                                            <small class="d-block text-muted">Enhanced coverage for specialized communication devices</small>
+                                        </label>
+                                    </div>
+                                {% elif product.coverage_type == 'auto' %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="visual_alerts" name="deaf_coverages[]" value="signaling_device" checked>
+                                        <label class="form-check-label" for="visual_alerts">
+                                            Vehicle Visual Alert Systems
+                                            <small class="d-block text-muted">Coverage for visual alert modifications to your vehicle</small>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="interpreter" name="deaf_coverages[]" value="interpreter_services" checked>
+                                        <label class="form-check-label" for="interpreter">
+                                            Roadside Interpreter Services
+                                            <small class="d-block text-muted">Coverage for sign language interpreter services during emergencies</small>
+                                        </label>
+                                    </div>
+                                {% elif product.coverage_type == 'health' %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="interpreter" name="deaf_coverages[]" value="interpreter_services" checked>
+                                        <label class="form-check-label" for="interpreter">
+                                            Medical Interpreter Services
+                                            <small class="d-block text-muted">Coverage for sign language interpreters during medical appointments</small>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="comm_devices" name="deaf_coverages[]" value="communication_devices" checked>
+                                        <label class="form-check-label" for="comm_devices">
+                                            Specialized Medical Devices
+                                            <small class="d-block text-muted">Coverage for specialized hearing and communication devices</small>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service_animal" name="deaf_coverages[]" value="service_animals" checked>
+                                        <label class="form-check-label" for="service_animal">
+                                            Service Animal Coverage
+                                            <small class="d-block text-muted">Coverage for service animals trained to assist deaf individuals</small>
+                                        </label>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="mt-3">
+                                    <button type="button" class="btn btn-sm btn-outline-info" data-asl-video="deaf_coverages_explained">
+                                        <i class="fas fa-sign-language"></i> Learn About These Coverages in ASL
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-calculator me-1"></i> Calculate My Quote
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Product Summary -->
+    <div class="col-lg-4">
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-header bg-info-subtle">
+                <h4 class="mb-0">Product Summary</h4>
+            </div>
+            <div class="card-body">
+                <h5>{{ product.name }}</h5>
+                <p>{{ product.description }}</p>
+                
+                <div class="mb-3">
+                    <span class="badge bg-info">{{ product.coverage_type|capitalize }}</span>
+                    {% if product.is_deaf_specialized %}
+                        <span class="badge bg-success">Deaf Specialized</span>
+                    {% endif %}
+                </div>
+                
+                <h6>Key Features</h6>
+                <ul class="insurance-feature-list small">
+                    <!-- Generate features based on product type -->
+                    {% if product.coverage_type == 'home' %}
+                        <li>Protection for your home and personal property</li>
+                        <li>Liability coverage for accidents on your property</li>
+                        {% if product.is_deaf_specialized %}
+                            <li>Coverage for visual alerting systems</li>
+                        {% endif %}
+                    {% elif product.coverage_type == 'auto' %}
+                        <li>Comprehensive collision coverage</li>
+                        <li>Personal injury protection</li>
+                        {% if product.is_deaf_specialized %}
+                            <li>Vehicle modifications for accessibility</li>
+                        {% endif %}
+                    {% elif product.coverage_type == 'health' %}
+                        <li>Supplemental health coverage</li>
+                        <li>Emergency medical expenses</li>
+                        {% if product.is_deaf_specialized %}
+                            <li>Interpreter services and specialized devices</li>
+                        {% endif %}
+                    {% else %}
+                        <li>Comprehensive coverage tailored to your needs</li>
+                        <li>Easy claims processing</li>
+                    {% endif %}
+                </ul>
+                
+                <p class="small text-muted mt-4">
+                    This is a quote only. Your actual premium will be calculated based on the information you provide.
+                </p>
+                
+                <button class="btn btn-outline-info w-100" data-asl-video="{{ product.product_code|lower }}_details">
+                    <i class="fas fa-sign-language me-1"></i> Learn More in ASL
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-play the quote process ASL video when page loads if enabled
+        const aslVideosEnabled = localStorage.getItem('asl_videos_enabled') !== 'false';
+        if (aslVideosEnabled) {
+            setTimeout(() => {
+                showASLVideo('{{ product.product_code|lower }}_quote_process');
+            }, 1000);
+        }
+        
+        // Update coverage amount value display
+        const coverageAmountInput = document.getElementById('coverage_amount');
+        if (coverageAmountInput) {
+            coverageAmountInput.addEventListener('input', function() {
+                const value = parseFloat(this.value);
+                if (!isNaN(value)) {
+                    // Format with commas for thousands
+                    this.value = value.toLocaleString('en-US', {
+                        maximumFractionDigits: 0,
+                        useGrouping: false
+                    });
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
