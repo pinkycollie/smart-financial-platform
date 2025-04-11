@@ -1,0 +1,62 @@
+Basic Lingo
+Personal Lines
+
+Any kind of insurance that covers individuals against loss that results from death, injury, or loss of property is considered Personal Lines. These insurance lines generally protect people and their families from losses they could not afford to cover on their own. Personal insurance lines make it possible to do things such as driving a car and owning a home without risking financial ruin.
+
+Commercial Lines
+
+Types of insurance products designed for businesses are considered Commercial Lines. For example, management liability insurance or contractors general liability insurance.
+
+Agent ID
+
+As a Boost Partner you will be provided with a single Agent ID (representing your agency license) that allows you to run your insurance business through the Boost PAS. The use of that Agent ID is also extended to any insurance agents or customers utilizing your front end to conduct business in connection with your Product(s) at Boost.
+
+Appointments
+
+A Boost Appointment grants you (or your agent) the ability to sell products in a specific state and ensures compliance within those jurisdictions. Each Appointment will require that you are properly licensed as a producer of insurance and authorized to transact business in that specific state. The Growth and Operations Teams at Boost will collect and verify regulatory licenses from the appropriate individuals and manage the configuration on our end.
+
+Customer
+
+For the purposes of this guide, a Customer is the end user who actually purchases the insurance.
+
+Product
+
+The overall line of business for the type of insurance being sold (e.g. Pet Insurance). Ultimately, which Boost Product(s) you want to sell is the first decision you need to make.
+
+Rate
+
+The actual price a Customer will pay for their requested insurance. Rates are determined mathematically by evaluating Customer Rating Factors (defined below) and the specific insurance Coverage(s) requested.
+
+Quote
+
+For a Customer the Quote and Rate may be interchangeable as both refer to the price they would pay for insurance. Within the Boost backend the Quote resource serves as a container for the specific insurance configuration desired by a Customer. So the Rate is actually a part of the overall Quote.
+
+Coverages
+
+Represent a loss or liability (e.g. Dog Sniffle Coverage) that the Customer is insured against by a policy. In the Boost Platform API Coverages can be mandatory as a part of purchasing a policy or can be optionally added to a base Policy.
+
+Endorsement
+
+Any modifications of Coverage to the base Policy issuing agreements are considered Endorsements to the Policy. Endorsements can serve to either increase or decrease overall insurance Coverage. They are electable by the Customer and are modeled as Coverages in the Boost Platform. Endorsements can be added before Policy issuance or at midterm to alter a Policy that’s already inforce.
+
+Insured Risk
+
+In the Boost PAS the Insured Risk is whatever is actually being insured. The Insured Risk for Dog Sniffle Coverage is the actual dog being insured.
+
+Rating Factors
+
+Rating Factors are the details about the Customer and the Insured Risk. They are used to determine eligibility under the program and to provide an accurate Rate and Quote to the Customer. As an example, a Pet Insurance program would require the Customer to provide details about their Pet. Factors like their pet’s age and breed are required in order to receive an accurate Rate. Rating factors are modeled as Insured Risks in the Boost Platform.
+
+Application Document
+
+Think of an Application Document as a physical or digital representation of all the factors and parameters that a Customer had to provide on your front end in order to generate a valid Quote. It includes details about the named insured, the covered loss or liability, and the customer's selected endorsements. In some cases this document must be digitally signed by the applicant.
+
+Policy
+
+Terms and Conditions surrounding the specific Coverage(s) purchased by a Customer are defined by the Policy. Policies are delivered to Customers in a Policy Document packet that contains all Policy details as well as any notices required by the state. Policies are generally in effect for 1 year.
+
+In the backend the Policy takes the place of the Quote as the shell that contains all of the Customer’s information as well as the Coverages they have requested. The Coverages and Entities remain the same as they were in the Quote.
+
+Claim
+
+A Claim is a formal request by an Entity to an insurance company for Coverage or compensation for a covered loss for a Policy event. Boost partners with several Third Party Administrators (TPA), fully licensed claims specialists, to offer a full suite of Claims capabilities.

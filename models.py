@@ -136,3 +136,72 @@ class FinancialRecommendation(db.Model):
     
     def __repr__(self):
         return f"<FinancialRecommendation {self.recommendation_type} for Profile {self.financial_profile_id}>"
+
+
+class EULAAcceptance(db.Model):
+    """Records of user EULA acceptances"""
+    __tablename__ = 'eula_acceptances'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    eula_version = db.Column(db.String(50), nullable=False)
+    accepted_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    ip_address = db.Column(db.String(50))
+    user_agent = db.Column(db.String(255))
+    
+    # Relationship
+    user = db.relationship('User', back_populates='eula_acceptances')
+    
+    def __repr__(self):
+        return f"<EULAAcceptance v{self.eula_version} for User {self.user_id}>"
+
+
+class InsuranceProduct(db.Model):
+    """Insurance products available through Boost Insurance API"""
+    __tablename__ = 'insurance_products'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    product_code = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    coverage_type = db.Column(db.String(50))
+    minimum_premium = db.Column(db.Float)
+    maximum_coverage = db.Column(db.Float)
+    asl_video_id = db.Column(db.String(100))  # Mux video ID for ASL explanation
+    active = db.Column(db.Boolean, default=True)
+    is_deaf_specialized = db.Column(db.Boolean, default=False)  # Specialized for deaf/HOH users
+    accessibility_features = db.Column(db.JSON)  # Features specific to deaf/HOH users
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    
+    # Relationships
+    policies = db.relationship('InsurancePolicy', back_populates='product')
+    
+    def __repr__(self):
+        return f"<InsuranceProduct {self.name}>"
+
+
+class InsurancePolicy(db.Model):
+    """User insurance policies purchased through Boost Insurance API"""
+    __tablename__ = 'insurance_policies'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('insurance_products.id'), nullable=False)
+    policy_number = db.Column(db.String(100), unique=True)
+    external_id = db.Column(db.String(100))  # Boost Insurance API identifier
+    status = db.Column(db.String(20), default='pending')  # pending, active, cancelled, expired
+    coverage_amount = db.Column(db.Float, nullable=False)
+    premium_amount = db.Column(db.Float, nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
+    policy_data = db.Column(db.JSON)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    
+    # Relationships
+    user = db.relationship('User', backref=db.backref('insurance_policies', lazy='dynamic'))
+    product = db.relationship('InsuranceProduct', back_populates='policies')
+    
+    def __repr__(self):
+        return f"<InsurancePolicy {self.policy_number} for User {self.user_id}>"
