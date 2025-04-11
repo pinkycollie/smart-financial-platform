@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}April - ASL Support Bot{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="fw-bold">ASL Support Bot</h1>
+            <p class="lead">Get help with April's financial services through our ASL support bot. All responses include ASL videos.</p>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="row">
+        <!-- Bot Interface -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h3 class="h5 mb-0 fw-bold">ASL Support Bot</h3>
+                    <div>
+                        <button class="btn btn-sm btn-outline-danger" onclick="clearBotHistory()">
+                            <i class="fas fa-trash me-1"></i>Clear History
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div id="deaf-support-bot" class="deaf-support-bot" data-context="{{ request.args.get('context', '') }}">
+                        <div class="bot-messages p-3" style="height: 500px; overflow-y: auto;">
+                            {% if history %}
+                                {% for msg in history %}
+                                    {% if msg.role == 'user' %}
+                                        <div class="message user-message">
+                                            <div class="message-content">
+                                                <p>{{ msg.message }}</p>
+                                            </div>
+                                            <div class="message-avatar">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
+                                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                    <circle cx="12" cy="7" r="4"></circle>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="message bot-message">
+                                            <div class="message-avatar">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity">
+                                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                                </svg>
+                                            </div>
+                                            <div class="message-content">
+                                                <p>{{ msg.message }}</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="bot-input">
+                            <form id="deaf-support-message-form">
+                                <div class="input-group">
+                                    <input type="text" id="deaf-support-message" class="form-control" placeholder="Type your question here..." aria-label="Message" required>
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bot Information -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-transparent">
+                    <h3 class="h5 mb-0 fw-bold">How It Works</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <h4 class="h6 fw-bold"><i class="fas fa-robot text-primary me-2"></i>ASL Support Bot</h4>
+                        <p>Our ASL support bot provides answers to your questions with ASL videos. Ask about any of April's financial services.</p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4 class="h6 fw-bold"><i class="fas fa-hands text-primary me-2"></i>ASL Video Responses</h4>
+                        <p>Every response includes an ASL video explanation. You can adjust playback speed and replay videos as needed.</p>
+                    </div>
+                    
+                    <div>
+                        <h4 class="h6 fw-bold"><i class="fas fa-video text-primary me-2"></i>Live ASL Interpreter</h4>
+                        <p>Need more help? Request a live ASL interpreter for personalized assistance.</p>
+                        <div class="d-grid">
+                            <button id="request-live-asl-button" class="btn btn-primary" onclick="requestLiveASLSupport()">
+                                <i class="fas fa-video me-2"></i>Request Live ASL
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <h3 class="h5 mb-0 fw-bold">Suggested Topics</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary bot-suggestion">How does tax filing work?</button>
+                        <button class="btn btn-outline-primary bot-suggestion">What documents do I need for taxes?</button>
+                        <button class="btn btn-outline-primary bot-suggestion">How do I create a financial profile?</button>
+                        <button class="btn btn-outline-primary bot-suggestion">What investment recommendations do you offer?</button>
+                        <button class="btn btn-outline-primary bot-suggestion">How can I access ASL videos?</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Deaf Support Bot JS -->
+<script src="{{ url_for('static', filename='js/deaf-support-bot.js') }}"></script>
+{% endblock %}

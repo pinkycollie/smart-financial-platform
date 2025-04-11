@@ -1,0 +1,393 @@
+{% extends "base.html" %}
+
+{% block title %}April - Financial Profile{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="fw-bold">Financial Profile</h1>
+            <p class="lead">Create and manage your financial profiles with The Estimator service. Get personalized recommendations explained in ASL.</p>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="row">
+        <!-- Financial Profile Form -->
+        <div class="col-lg-7 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <h3 class="h5 mb-0 fw-bold">Create Financial Profile</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('fintech.financial_profile') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">Basic Information</h5>
+                            <div class="mb-3">
+                                <label for="{{ form.annual_income.id }}" class="form-label">Annual Income ($)</label>
+                                {{ form.annual_income(class="form-control", placeholder="e.g. 50000") }}
+                                {% if form.annual_income.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.annual_income.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.filing_status.id }}" class="form-label">Filing Status</label>
+                                {{ form.filing_status(class="form-select") }}
+                                {% if form.filing_status.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.filing_status.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.dependents.id }}" class="form-label">Number of Dependents</label>
+                                {{ form.dependents(class="form-control", placeholder="e.g. 0") }}
+                                {% if form.dependents.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.dependents.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">Investments</h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="{{ form.stocks.id }}" class="form-label">Stocks ($)</label>
+                                    {{ form.stocks(class="form-control", placeholder="e.g. 10000") }}
+                                    {% if form.stocks.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.stocks.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="{{ form.bonds.id }}" class="form-label">Bonds ($)</label>
+                                    {{ form.bonds(class="form-control", placeholder="e.g. 5000") }}
+                                    {% if form.bonds.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.bonds.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="{{ form.real_estate.id }}" class="form-label">Real Estate ($)</label>
+                                    {{ form.real_estate(class="form-control", placeholder="e.g. 250000") }}
+                                    {% if form.real_estate.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.real_estate.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">Retirement Accounts</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.retirement_401k.id }}" class="form-label">401(k) Balance ($)</label>
+                                    {{ form.retirement_401k(class="form-control", placeholder="e.g. 75000") }}
+                                    {% if form.retirement_401k.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.retirement_401k.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.retirement_ira.id }}" class="form-label">IRA Balance ($)</label>
+                                    {{ form.retirement_ira(class="form-control", placeholder="e.g. 25000") }}
+                                    {% if form.retirement_ira.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.retirement_ira.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Financial Profile Information -->
+        <div class="col-lg-5 mb-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-transparent">
+                    <h3 class="h5 mb-0 fw-bold">How Financial Profiles Work</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="steps">
+                        <div class="step d-flex mb-4">
+                            <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">1</div>
+                            <div>
+                                <h4 class="h6 fw-bold">Create Your Profile</h4>
+                                <p>Enter your financial information using the form. This helps us understand your financial situation.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step d-flex mb-4">
+                            <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">2</div>
+                            <div>
+                                <h4 class="h6 fw-bold">Get 360° Financial Analysis</h4>
+                                <p>We analyze your financial information to create a complete financial profile.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step d-flex">
+                            <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">3</div>
+                            <div>
+                                <h4 class="h6 fw-bold">Receive Personalized Recommendations</h4>
+                                <p>Based on your profile, we provide personalized financial recommendations, all explained in ASL.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <h3 class="h5 mb-0 fw-bold">ASL Support</h3>
+                </div>
+                <div class="card-body p-4">
+                    <p>Get help with creating your financial profile:</p>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('accessibility.deaf_support_bot_page') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-robot me-2"></i>Ask ASL Support Bot
+                        </a>
+                        <button class="btn btn-outline-primary" id="request-profile-asl-button" onclick="requestLiveASL('financial_profile')">
+                            <i class="fas fa-video me-2"></i>Request Live ASL Interpreter
+                        </button>
+                        <a href="{{ url_for('accessibility.asl_videos') }}?category=financial_profile" class="btn btn-outline-primary">
+                            <i class="fas fa-film me-2"></i>View Financial Profile ASL Videos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Existing Profiles Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h3 class="h5 mb-0 fw-bold">Your Financial Profiles</h3>
+                    <span class="badge bg-primary">{{ profiles|length }} Profiles</span>
+                </div>
+                <div class="card-body p-4">
+                    {% if profiles %}
+                        <div class="row row-cols-1 row-cols-md-2 g-4">
+                            {% for profile in profiles %}
+                            <div class="col">
+                                <div class="financial-profile-card">
+                                    <div class="financial-profile-header">
+                                        <h5 class="mb-0">Financial Profile #{{ profile.id }}</h5>
+                                        <p class="text-muted mb-0">Created on {{ profile.created_at.strftime('%b %d, %Y') }}</p>
+                                    </div>
+                                    <div class="financial-profile-body">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Annual Income:</span>
+                                                <span class="fw-bold">${{ profile.annual_income|round(2) }}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Filing Status:</span>
+                                                <span class="fw-bold">{{ profile.filing_status }}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>Dependents:</span>
+                                                <span class="fw-bold">{{ profile.dependents }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="financial-profile-footer">
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-primary" onclick="getRecommendations({{ profile.id }})">
+                                                View Recommendations
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <div class="display-6 text-muted mb-3">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <h4>No financial profiles yet</h4>
+                            <p class="text-muted">Create your first financial profile using the form to receive personalized recommendations.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recommendations Section (Hidden initially) -->
+    <div class="row mt-4" id="recommendationsSection" style="display: none;">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <h3 class="h5 mb-0 fw-bold">Your Financial Recommendations</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div id="recommendationsContainer">
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading recommendations...</span>
+                            </div>
+                            <p class="mt-2">Loading your personalized recommendations...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Get recommendations for a profile
+    function getRecommendations(profileId) {
+        // Show recommendations section
+        const recommendationsSection = document.getElementById('recommendationsSection');
+        recommendationsSection.style.display = 'block';
+        
+        // Scroll to recommendations
+        recommendationsSection.scrollIntoView({ behavior: 'smooth' });
+        
+        // Show loading state
+        document.getElementById('recommendationsContainer').innerHTML = `
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading recommendations...</span>
+                </div>
+                <p class="mt-2">Loading your personalized recommendations...</p>
+            </div>
+        `;
+        
+        // This would normally fetch recommendations via AJAX
+        fetch(`/fintech/api/get-recommendations/${profileId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    displayRecommendations(data.recommendations);
+                } else {
+                    showRecommendationsError(data.error || 'Failed to load recommendations');
+                }
+            })
+            .catch(err => {
+                console.error('Error getting recommendations:', err);
+                showRecommendationsError('An error occurred while loading recommendations. Please try again later.');
+            });
+    }
+    
+    // Display recommendations
+    function displayRecommendations(recommendations) {
+        const container = document.getElementById('recommendationsContainer');
+        
+        if (!recommendations || recommendations.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-5">
+                    <div class="display-6 text-muted mb-3">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h4>No recommendations available yet</h4>
+                    <p class="text-muted">We're still analyzing your financial profile. Check back soon for personalized recommendations.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Build recommendations HTML
+        let html = '<div class="row row-cols-1 row-cols-md-2 g-4">';
+        
+        recommendations.forEach(rec => {
+            html += `
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-transparent">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-square bg-primary-subtle text-body-emphasis d-inline-flex align-items-center justify-content-center fs-4 me-3 rounded-circle" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <h5 class="mb-0">${rec.title}</h5>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p>${rec.description}</p>
+                            ${rec.potential_impact ? `
+                                <div class="alert alert-success">
+                                    <i class="fas fa-chart-line me-2"></i>Potential Impact: $${rec.potential_impact.toLocaleString()}
+                                </div>
+                            ` : ''}
+                            ${rec.asl_video_id ? `
+                                <div class="mt-3">
+                                    <h6 class="fw-bold">ASL Explanation</h6>
+                                    <div class="asl-video-container" data-asl-video-id="${rec.asl_video_id}"></div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        container.innerHTML = html;
+        
+        // Initialize ASL videos
+        initASLVideoPlayer();
+    }
+    
+    // Show recommendations error
+    function showRecommendationsError(errorMessage) {
+        const container = document.getElementById('recommendationsContainer');
+        container.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i>${errorMessage}
+            </div>
+            <div class="text-center mt-3">
+                <button class="btn btn-primary" onclick="window.location.reload()">
+                    <i class="fas fa-redo me-2"></i>Try Again
+                </button>
+            </div>
+        `;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}April - Accessibility Settings{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="fw-bold">Accessibility Settings</h1>
+            <p class="lead">Customize your accessibility preferences for a better experience with April's financial services.</p>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="row">
+        <!-- Settings Form -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <h3 class="h5 mb-0 fw-bold">Your Accessibility Preferences</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('accessibility.accessibility_settings') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        
+                        <!-- ASL Video Settings -->
+                        <div class="mb-4">
+                            <h4 class="h6 fw-bold border-bottom pb-2 mb-3">ASL Video Settings</h4>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="asl_video_enabled" name="asl_video_enabled" {% if preferences.asl_video_enabled %}checked{% endif %}>
+                                <label class="form-check-label" for="asl_video_enabled">Enable ASL Videos</label>
+                                <div class="form-text">Show ASL instruction videos throughout the platform.</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="preferred_video_speed" class="form-label">Preferred Video Speed</label>
+                                <select class="form-select" id="preferred_video_speed" name="preferred_video_speed">
+                                    <option value="0.75" {% if preferences.preferred_video_speed == 0.75 %}selected{% endif %}>0.75x (Slower)</option>
+                                    <option value="1.0" {% if preferences.preferred_video_speed == 1.0 %}selected{% endif %}>1.0x (Normal)</option>
+                                    <option value="1.25" {% if preferences.preferred_video_speed == 1.25 %}selected{% endif %}>1.25x (Faster)</option>
+                                    <option value="1.5" {% if preferences.preferred_video_speed == 1.5 %}selected{% endif %}>1.5x (Fastest)</option>
+                                </select>
+                                <div class="form-text">Set your preferred playback speed for ASL videos.</div>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="asl_autoplay" name="asl_autoplay" {% if preferences.asl_video_enabled %}checked{% endif %}>
+                                <label class="form-check-label" for="asl_autoplay">Autoplay ASL Videos</label>
+                                <div class="form-text">Automatically play ASL videos when they appear.</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Support Bot Settings -->
+                        <div class="mb-4">
+                            <h4 class="h6 fw-bold border-bottom pb-2 mb-3">Support Bot Settings</h4>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="deaf_support_bot_enabled" name="deaf_support_bot_enabled" {% if preferences.deaf_support_bot_enabled %}checked{% endif %}>
+                                <label class="form-check-label" for="deaf_support_bot_enabled">Enable ASL Support Bot</label>
+                                <div class="form-text">Show the ASL support bot assistant throughout the platform.</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Visual Alert Settings -->
+                        <div class="mb-4">
+                            <h4 class="h6 fw-bold border-bottom pb-2 mb-3">Visual Alert Settings</h4>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="visual_alerts_enabled" name="visual_alerts_enabled" {% if preferences.visual_alerts_enabled %}checked{% endif %}>
+                                <label class="form-check-label" for="visual_alerts_enabled">Enable Visual Alerts</label>
+                                <div class="form-text">Show visual alerts and notifications for important information.</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="color_contrast_preference" class="form-label">Color Contrast Preference</label>
+                                <select class="form-select" id="color_contrast_preference" name="color_contrast_preference">
+                                    <option value="standard" {% if preferences.color_contrast_preference == 'standard' %}selected{% endif %}>Standard</option>
+                                    <option value="high" {% if preferences.color_contrast_preference == 'high' %}selected{% endif %}>High Contrast</option>
+                                    <option value="subtle" {% if preferences.color_contrast_preference == 'subtle' %}selected{% endif %}>Subtle Contrast</option>
+                                </select>
+                                <div class="form-text">Set your preferred color contrast for better visibility.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Save Preferences</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Settings Information -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-transparent">
+                    <h3 class="h5 mb-0 fw-bold">About Accessibility Settings</h3>
+                </div>
+                <div class="card-body p-4">
+                    <p>These settings allow you to customize your experience with April's financial services. Your preferences will be saved and applied across the platform.</p>
+                    
+                    <div class="mt-4">
+                        <h4 class="h6 fw-bold"><i class="fas fa-hands text-primary me-2"></i>ASL Video Support</h4>
+                        <p>Control how ASL videos are displayed and played throughout the platform.</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h4 class="h6 fw-bold"><i class="fas fa-robot text-primary me-2"></i>ASL Support Bot</h4>
+                        <p>Configure the ASL support bot to provide assistance with ASL video responses.</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h4 class="h6 fw-bold"><i class="fas fa-bell text-primary me-2"></i>Visual Alerts</h4>
+                        <p>Customize visual alerts and notifications for better awareness of important information.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <h3 class="h5 mb-0 fw-bold">Need Help?</h3>
+                </div>
+                <div class="card-body p-4">
+                    <p>If you need assistance with your accessibility settings, our support team is here to help:</p>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('accessibility.deaf_support_bot_page') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-robot me-2"></i>Ask ASL Support Bot
+                        </a>
+                        <button class="btn btn-outline-primary" id="request-settings-asl-button" onclick="requestLiveASL('accessibility_settings')">
+                            <i class="fas fa-video me-2"></i>Request Live ASL Interpreter
+                        </button>
+                        <a href="{{ url_for('accessibility.asl_videos') }}?category=accessibility_settings" class="btn btn-outline-primary">
+                            <i class="fas fa-film me-2"></i>View Accessibility ASL Videos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Save settings to local storage when form is submitted
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function() {
+            localStorage.setItem('asl-enabled', document.getElementById('asl_video_enabled').checked);
+            localStorage.setItem('asl-autoplay', document.getElementById('asl_autoplay').checked);
+            localStorage.setItem('asl-playback-speed', document.getElementById('preferred_video_speed').value);
+            localStorage.setItem('visual-alerts-enabled', document.getElementById('visual_alerts_enabled').checked);
+        });
+        
+        // Initialize form with localStorage values if available
+        const aslEnabled = localStorage.getItem('asl-enabled');
+        if (aslEnabled !== null) {
+            document.getElementById('asl_video_enabled').checked = aslEnabled === 'true';
+        }
+        
+        const aslAutoplay = localStorage.getItem('asl-autoplay');
+        if (aslAutoplay !== null) {
+            document.getElementById('asl_autoplay').checked = aslAutoplay === 'true';
+        }
+        
+        const aslSpeed = localStorage.getItem('asl-playback-speed');
+        if (aslSpeed) {
+            document.getElementById('preferred_video_speed').value = aslSpeed;
+        }
+        
+        const visualAlerts = localStorage.getItem('visual-alerts-enabled');
+        if (visualAlerts !== null) {
+            document.getElementById('visual_alerts_enabled').checked = visualAlerts === 'true';
+        }
+    });
+</script>
+{% endblock %}

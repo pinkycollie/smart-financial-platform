@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+
+{% block title %}April - Financial Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="fw-bold">Financial Dashboard</h1>
+            <p class="lead">Welcome back, {{ user.first_name if user.first_name else user.username }}! Here's an overview of your financial information.</p>
+        </div>
+    </div>
+    
+    <!-- Summary Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card bg-primary-subtle border-0 h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-square bg-primary text-white d-inline-flex align-items-center justify-content-center fs-4 me-3 rounded-circle" style="width: 48px; height: 48px;">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <h3 class="h5 fw-bold mb-0">Tax Documents</h3>
+                    </div>
+                    <p>Manage your tax documents and filings through The Filer service.</p>
+                    <div class="d-grid mt-3">
+                        <a href="{{ url_for('fintech.tax_filing') }}" class="btn btn-primary">Go to Tax Filing</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card bg-info-subtle border-0 h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-square bg-info text-white d-inline-flex align-items-center justify-content-center fs-4 me-3 rounded-circle" style="width: 48px; height: 48px;">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <h3 class="h5 fw-bold mb-0">Financial Profiles</h3>
+                    </div>
+                    <p>Manage your 360° financial profiles with The Estimator service.</p>
+                    <div class="d-grid mt-3">
+                        <a href="{{ url_for('fintech.financial_profile') }}" class="btn btn-info">Manage Profiles</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card bg-success-subtle border-0 h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-square bg-success text-white d-inline-flex align-items-center justify-content-center fs-4 me-3 rounded-circle" style="width: 48px; height: 48px;">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3 class="h5 fw-bold mb-0">Recommendations</h3>
+                    </div>
+                    <p>View personalized financial recommendations from The Optimizer service.</p>
+                    <div class="d-grid mt-3">
+                        <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#recommendationsSection">
+                            View Recommendations
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Financial Profiles Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="h5 mb-0 fw-bold">Your Financial Profiles</h3>
+                        <a href="{{ url_for('fintech.financial_profile') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus me-1"></i> Create New Profile
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div id="profilesContainer">
+                        <!-- If no profiles -->
+                        <div class="text-center py-5">
+                            <div class="display-6 text-muted mb-3">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <h4>No financial profiles yet</h4>
+                            <p class="text-muted">Create a financial profile to get personalized recommendations.</p>
+                            <a href="{{ url_for('fintech.financial_profile') }}" class="btn btn-primary mt-2">
+                                Create Your First Profile
+                            </a>
+                        </div>
+                        
+                        <!-- If profiles exist (hidden for now, would be populated dynamically) -->
+                        <div class="profiles-list d-none">
+                            <!-- Profile cards would go here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tax Documents Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="h5 mb-0 fw-bold">Your Tax Documents</h3>
+                        <a href="{{ url_for('fintech.tax_filing') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus me-1"></i> Add Document
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div id="documentsContainer">
+                        <!-- If no documents -->
+                        <div class="text-center py-5">
+                            <div class="display-6 text-muted mb-3">
+                                <i class="fas fa-file-invoice"></i>
+                            </div>
+                            <h4>No tax documents yet</h4>
+                            <p class="text-muted">Add your tax documents to start filing with April.</p>
+                            <a href="{{ url_for('fintech.tax_filing') }}" class="btn btn-primary mt-2">
+                                Add Your First Document
+                            </a>
+                        </div>
+                        
+                        <!-- If documents exist (hidden for now, would be populated dynamically) -->
+                        <div class="documents-list d-none">
+                            <!-- Document cards would go here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recommendations Section (Collapsed by default) -->
+    <div class="collapse" id="recommendationsSection">
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent">
+                        <h3 class="h5 mb-0 fw-bold">Your Financial Recommendations</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="recommendationsContainer">
+                            <!-- If no recommendations -->
+                            <div class="text-center py-5">
+                                <div class="display-6 text-muted mb-3">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <h4>No recommendations yet</h4>
+                                <p class="text-muted">Create a financial profile to get personalized recommendations.</p>
+                                <a href="{{ url_for('fintech.financial_profile') }}" class="btn btn-primary mt-2">
+                                    Create Financial Profile
+                                </a>
+                            </div>
+                            
+                            <!-- If recommendations exist (hidden for now, would be populated dynamically) -->
+                            <div class="recommendations-list d-none">
+                                <!-- Recommendation cards would go here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ASL Support Bot -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="h5 mb-0 fw-bold">ASL Support</h3>
+                        <a href="{{ url_for('accessibility.deaf_support_bot_page') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-external-link-alt me-1"></i> Open Full Chat
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="h6 fw-bold mb-3">Need Help with Something?</h4>
+                            <p>Our ASL support bot can answer your questions with ASL videos. You can also request a live ASL interpreter if you need more assistance.</p>
+                            <div class="d-grid gap-2 d-md-flex mt-3">
+                                <a href="{{ url_for('accessibility.deaf_support_bot_page') }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-comment-dots me-1"></i> Chat with ASL Bot
+                                </a>
+                                <button id="request-dashboard-asl-button" class="btn btn-outline-primary" onclick="requestLiveASL('dashboard')">
+                                    <i class="fas fa-video me-1"></i> Request Live ASL
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="h6 fw-bold mb-3">Popular ASL Videos</h4>
+                            <div class="list-group">
+                                <a href="{{ url_for('accessibility.asl_videos') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                                    <i class="fas fa-play-circle me-3 text-primary"></i>
+                                    <span>How to Create a Financial Profile</span>
+                                </a>
+                                <a href="{{ url_for('accessibility.asl_videos') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                                    <i class="fas fa-play-circle me-3 text-primary"></i>
+                                    <span>Tax Filing Process Overview</span>
+                                </a>
+                                <a href="{{ url_for('accessibility.asl_videos') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                                    <i class="fas fa-play-circle me-3 text-primary"></i>
+                                    <span>Understanding Your Recommendations</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Load user profiles and documents via AJAX (simulated here)
+    document.addEventListener('DOMContentLoaded', function() {
+        // This would normally be an AJAX call to get the data
+        // For now, we'll keep the empty states visible
+        
+        // Track page view for optimization
+        // This would normally call the API endpoint
+        console.log('Tracking dashboard page view for optimization');
+    });
+    
+    // Function to load recommendations for a profile
+    function loadRecommendations(profileId) {
+        fetch(`/fintech/api/get-recommendations/${profileId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    displayRecommendations(data.recommendations);
+                } else {
+                    console.error('Error loading recommendations:', data.error);
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+            });
+    }
+    
+    // Function to display recommendations
+    function displayRecommendations(recommendations) {
+        const container = document.querySelector('.recommendations-list');
+        container.innerHTML = '';
+        
+        if (recommendations && recommendations.length > 0) {
+            container.classList.remove('d-none');
+            document.querySelector('#recommendationsContainer .text-center').classList.add('d-none');
+            
+            recommendations.forEach(rec => {
+                const card = document.createElement('div');
+                card.className = 'card mb-3 shadow-sm';
+                
+                card.innerHTML = `
+                    <div class="card-body">
+                        <h5 class="card-title">${rec.title}</h5>
+                        <p class="card-text">${rec.description}</p>
+                        ${rec.asl_video_id ? 
+                            `<div class="asl-video-container mt-3" data-asl-video-id="${rec.asl_video_id}"></div>` : ''}
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+            
+            // Initialize ASL videos
+            initASLVideoPlayer();
+        }
+    }
+</script>
+{% endblock %}

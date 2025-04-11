@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}April - Financial Services with ASL Accessibility{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Hero Section -->
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <h1 class="display-5 fw-bold mb-3">Financial Services with Built-In ASL Accessibility</h1>
+            <p class="lead mb-4">April offers tax filing, financial planning, and investment tools designed specifically with the Deaf community in mind. All features are fully accessible through ASL videos.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('fintech.dashboard') }}" class="btn btn-primary btn-lg px-4 me-md-2">Dashboard</a>
+                {% else %}
+                <a href="#" class="btn btn-primary btn-lg px-4 me-md-2">Sign Up</a>
+                <a href="#" class="btn btn-outline-secondary btn-lg px-4">Learn More</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card bg-dark border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="asl-video-container" data-asl-video-id="welcome_video">
+                        <div class="text-center p-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading ASL welcome video...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row g-4 py-5">
+        <div class="col-12 mb-3">
+            <h2 class="text-center fw-bold">Our Services</h2>
+            <p class="text-center lead">Explore April's financial tools designed with ASL accessibility</p>
+        </div>
+
+        <!-- The Filer -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="icon-square bg-primary-subtle text-body-emphasis d-inline-flex align-items-center justify-content-center fs-4 mb-3 rounded-circle" style="width: 64px; height: 64px;">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <h3 class="card-title h5 fw-bold">The Filer</h3>
+                    <p class="card-text">Increase deposits with embedded tax filing services explained in ASL.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0">
+                    <a href="{{ url_for('fintech.tax_filing') if current_user.is_authenticated else '#' }}" class="btn btn-outline-primary">Start Filing</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Estimator -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="icon-square bg-primary-subtle text-body-emphasis d-inline-flex align-items-center justify-content-center fs-4 mb-3 rounded-circle" style="width: 64px; height: 64px;">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3 class="card-title h5 fw-bold">The Estimator</h3>
+                    <p class="card-text">360° financial profiles and cross-sell opportunities with ASL guidance.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0">
+                    <a href="{{ url_for('fintech.financial_profile') if current_user.is_authenticated else '#' }}" class="btn btn-outline-primary">Create Profile</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Optimizer -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="icon-square bg-primary-subtle text-body-emphasis d-inline-flex align-items-center justify-content-center fs-4 mb-3 rounded-circle" style="width: 64px; height: 64px;">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="card-title h5 fw-bold">The Optimizer</h3>
+                    <p class="card-text">Increase product engagement year-round with personalized recommendations in ASL.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0">
+                    <a href="{{ url_for('fintech.dashboard') if current_user.is_authenticated else '#' }}" class="btn btn-outline-primary">Optimize</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- AprilPro -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="icon-square bg-primary-subtle text-body-emphasis d-inline-flex align-items-center justify-content-center fs-4 mb-3 rounded-circle" style="width: 64px; height: 64px;">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3 class="card-title h5 fw-bold">AprilPro</h3>
+                    <p class="card-text">Provide filing services to your clients with built-in ASL accessibility.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0">
+                    <a href="#" class="btn btn-outline-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ASL Accessibility Section -->
+    <div class="row py-5 my-5 bg-primary-subtle rounded-3">
+        <div class="col-lg-6 p-4 p-lg-5">
+            <h2 class="fw-bold mb-4">Built for the Deaf Community</h2>
+            <p class="lead mb-4">Our complete financial platform includes ASL videos for every feature, a dedicated deaf support bot, and live interpreter sessions when you need them.</p>
+            <div class="row g-4 mt-3">
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-hands fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold">ASL Videos</h5>
+                            <p>Every feature comes with detailed ASL video instructions.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-robot fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold">ASL Support Bot</h5>
+                            <p>Get immediate help with our AI assistant that responds in ASL.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-video fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold">Live Interpreters</h5>
+                            <p>Connect with a live ASL interpreter when you need personalized help.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="me-3 text-primary">
+                            <i class="fas fa-universal-access fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold">Visual Feedback</h5>
+                            <p>Visual alerts and notifications designed for Deaf users.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 d-flex align-items-center justify-content-center p-4 p-lg-5">
+            <div class="card bg-dark border-0 shadow w-100">
+                <div class="card-body p-4">
+                    <div class="asl-video-container" data-asl-video-id="accessibility_overview">
+                        <div class="text-center p-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading ASL accessibility video...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Industries Section -->
+    <div class="row py-5">
+        <div class="col-12 mb-4 text-center">
+            <h2 class="fw-bold">Industries We Serve</h2>
+            <p class="lead">Specialized financial solutions with ASL accessibility</p>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-square bg-primary-subtle d-inline-flex align-items-center justify-content-center fs-4 me-3 rounded-circle" style="width: 48px; height: 48px;">
+                            <i class="fas fa-landmark"></i>
+                        </div>
+                        <h3 class="h5 fw-bold mb-0">Wealth Management</h3>
+                    </div>
+                    <p>Incorporate tax-informed strategies into your client offerings with ASL support for deaf clients.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-4">
+                    <a href="#" class="btn btn-sm btn-outline-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-square bg-primary-subtle d-inline-flex align-items-center justify-content-center fs-4 me-3 rounded-circle" style="width: 48px; height: 48px;">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <h3 class="h5 fw-bold mb-0">Fintech</h3>
+                    </div>
+                    <p>Differentiate your offering by adding tax to your product suite with comprehensive ASL accessibility.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-4">
+                    <a href="#" class="btn btn-sm btn-outline-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-square bg-primary-subtle d-inline-flex align-items-center justify-content-center fs-4 me-3 rounded-circle" style="width: 48px; height: 48px;">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <h3 class="h5 fw-bold mb-0">Financial Services</h3>
+                    </div>
+                    <p>Build long-lasting multi-product relationships with accessible financial tools for all clients.</p>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-4">
+                    <a href="#" class="btn btn-sm btn-outline-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row py-5">
+        <div class="col-12 text-center">
+            <div class="card bg-dark border-0 shadow-lg">
+                <div class="card-body p-5">
+                    <h2 class="fw-bold mb-3">Ready to get started?</h2>
+                    <p class="lead mb-4">Join April today and experience financial services designed for the Deaf community.</p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('fintech.dashboard') }}" class="btn btn-primary btn-lg px-4">Go to Dashboard</a>
+                        {% else %}
+                        <a href="#" class="btn btn-primary btn-lg px-4">Sign Up Now</a>
+                        <a href="#" class="btn btn-outline-light btn-lg px-4">Contact Sales</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize homepage-specific scripts
+    document.addEventListener('DOMContentLoaded', function() {
+        // Any homepage-specific initialization can go here
+    });
+</script>
+{% endblock %}

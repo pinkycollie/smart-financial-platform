@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}April Fintech - ASL Accessible Financial Services{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body data-bs-theme="dark" {% if current_user.is_authenticated %}data-user-id="{{ current_user.id }}"{% endif %} {% if asl_video %}data-asl-video-id="{{ asl_video.video_id }}"{% endif %}>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <span class="fw-bold">april</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('fintech.dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('fintech.tax_filing') }}">Tax Filing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('fintech.financial_profile') }}">Financial Profile</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accessibilityDropdown" role="button" data-bs-toggle="dropdown">
+                            Accessibility
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('accessibility.asl_videos') }}">ASL Videos</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('accessibility.deaf_support_bot_page') }}">ASL Support Bot</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('accessibility.accessibility_settings') }}">Settings</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> {{ current_user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('accessibility.accessibility_settings') }}"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <a class="nav-link" href="#">Login</a>
+                    <a class="nav-link" href="#">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ASL Help Button (Fixed) -->
+    {% if current_user.is_authenticated %}
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
+        <button id="asl-help-button" class="btn btn-primary rounded-circle shadow" style="width: 60px; height: 60px;" data-bs-toggle="modal" data-bs-target="#aslHelpModal">
+            <i class="fas fa-hands fs-4"></i>
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="container my-4">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div id="alert-container">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show visual-alert-flash" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <!-- Page ASL Video -->
+        {% if asl_video %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card bg-light-subtle shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="card-title mb-0">ASL Instructions</h5>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="toggle-asl-video">
+                                <i class="fas fa-compress"></i> Minimize
+                            </button>
+                        </div>
+                        <div id="asl-video-container" class="asl-video-container" data-video-id="{{ asl_video.video_id }}">
+                            <div class="text-center p-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">Loading ASL video...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Page Content -->
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- ASL Help Modal -->
+    {% if current_user.is_authenticated %}
+    <div class="modal fade" id="aslHelpModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">ASL Support</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-grid gap-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-hands fs-1 mb-3 text-primary"></i>
+                                        <h5>ASL Support Bot</h5>
+                                        <p>Get help through our ASL support bot with pre-recorded videos</p>
+                                        <a href="{{ url_for('accessibility.deaf_support_bot_page') }}" class="btn btn-primary">Open ASL Bot</a>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-video fs-1 mb-3 text-primary"></i>
+                                        <h5>ASL Video Library</h5>
+                                        <p>Browse all available ASL instruction videos</p>
+                                        <a href="{{ url_for('accessibility.asl_videos') }}" class="btn btn-primary">View Library</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-user-tie fs-1 mb-3 text-primary"></i>
+                                    <h5>Live ASL Interpreter</h5>
+                                    <p>Request a live ASL interpreter for personal assistance</p>
+                                    <button id="request-asl-button" class="btn btn-primary" onclick="requestLiveASL('user_support')">
+                                        Request Live ASL
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ASL Session Modal -->
+    <div class="modal fade" id="asl-session-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Live ASL Session Ready</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i> Your ASL interpreter session is ready!
+                    </div>
+                    <p>Click the link below to join your live ASL interpreter session:</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="asl-session-link" readonly>
+                        <button class="btn btn-outline-secondary" type="button" onclick="copySessionLink()">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <div class="d-grid">
+                        <a href="#" class="btn btn-primary" id="join-session-button" target="_blank">Join Session</a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Footer -->
+    <footer class="footer bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>april</h5>
+                    <p>Financial services with built-in ASL accessibility.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none">Privacy Policy</a></li>
+                        <li><a href="#" class="text-decoration-none">Terms of Service</a></li>
+                        <li><a href="#" class="text-decoration-none">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Accessibility</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url_for('accessibility.asl_videos') }}" class="text-decoration-none">ASL Videos</a></li>
+                        <li><a href="{{ url_for('accessibility.deaf_support_bot_page') }}" class="text-decoration-none">ASL Support Bot</a></li>
+                        <li><a href="{{ url_for('accessibility.accessibility_settings') }}" class="text-decoration-none">Settings</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2023 April. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Mux Player JS -->
+    <script src="{{ url_for('static', filename='js/mux-player.js') }}"></script>
+    
+    <!-- Accessibility JS -->
+    <script src="{{ url_for('static', filename='js/accessibility.js') }}"></script>
+    
+    <!-- Main Scripts -->
+    <script>
+        // Toggle ASL video container
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.getElementById('toggle-asl-video');
+            const videoContainer = document.getElementById('asl-video-container');
+            
+            if (toggleButton && videoContainer) {
+                toggleButton.addEventListener('click', function() {
+                    if (videoContainer.style.display === 'none') {
+                        videoContainer.style.display = 'block';
+                        toggleButton.innerHTML = '<i class="fas fa-compress"></i> Minimize';
+                    } else {
+                        videoContainer.style.display = 'none';
+                        toggleButton.innerHTML = '<i class="fas fa-expand"></i> Expand';
+                    }
+                });
+            }
+        });
+        
+        // Copy ASL session link
+        function copySessionLink() {
+            const linkInput = document.getElementById('asl-session-link');
+            linkInput.select();
+            document.execCommand('copy');
+            
+            // Show copied tooltip
+            const copyBtn = linkInput.nextElementSibling;
+            const originalHtml = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => {
+                copyBtn.innerHTML = originalHtml;
+            }, 2000);
+        }
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

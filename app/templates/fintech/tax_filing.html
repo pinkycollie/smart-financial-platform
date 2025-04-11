@@ -1,0 +1,330 @@
+{% extends "base.html" %}
+
+{% block title %}April - Tax Filing{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="fw-bold">Tax Filing</h1>
+            <p class="lead">Submit and manage your tax documents with The Filer service. All instructions are available in ASL.</p>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="row">
+        <!-- Document Upload Form -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <h3 class="h5 mb-0 fw-bold">Upload Tax Document</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('fintech.tax_filing') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.document_type.id }}" class="form-label">Document Type</label>
+                            {{ form.document_type(class="form-select") }}
+                            {% if form.document_type.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.document_type.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.tax_year.id }}" class="form-label">Tax Year</label>
+                            {{ form.tax_year(class="form-control", placeholder="e.g. 2023") }}
+                            {% if form.tax_year.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.tax_year.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.employer.id }}" class="form-label">Employer/Payer Name</label>
+                            {{ form.employer(class="form-control", placeholder="e.g. ABC Company") }}
+                            {% if form.employer.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.employer.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.income.id }}" class="form-label">Income Amount ($)</label>
+                                {{ form.income(class="form-control", placeholder="e.g. 50000") }}
+                                {% if form.income.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.income.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.withholding.id }}" class="form-label">Tax Withholding ($)</label>
+                                {{ form.withholding(class="form-control", placeholder="e.g. 10000") }}
+                                {% if form.withholding.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.withholding.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tax Filing Information -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-transparent">
+                    <h3 class="h5 mb-0 fw-bold">How Tax Filing Works</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="steps">
+                        <div class="step d-flex mb-4">
+                            <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">1</div>
+                            <div>
+                                <h4 class="h6 fw-bold">Submit Your Tax Documents</h4>
+                                <p>Upload your W-2, 1099s, and other tax documents using the form. You can add multiple documents as needed.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step d-flex mb-4">
+                            <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">2</div>
+                            <div>
+                                <h4 class="h6 fw-bold">Review Your Information</h4>
+                                <p>We'll organize your tax information and create a summary for your review, with ASL video explanations.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step d-flex mb-4">
+                            <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">3</div>
+                            <div>
+                                <h4 class="h6 fw-bold">Complete Your Filing</h4>
+                                <p>After reviewing your information, complete your filing process with guided ASL instructions.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step d-flex">
+                            <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">4</div>
+                            <div>
+                                <h4 class="h6 fw-bold">Receive Filing Status</h4>
+                                <p>Track your filing status and receive updates with ASL video notifications.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <h3 class="h5 mb-0 fw-bold">Need Help?</h3>
+                </div>
+                <div class="card-body p-4">
+                    <p>Get assistance with your tax filing through our ASL support options:</p>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('accessibility.deaf_support_bot_page') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-robot me-2"></i>Ask ASL Support Bot
+                        </a>
+                        <button class="btn btn-outline-primary" id="request-tax-asl-button" onclick="requestLiveASL('tax_filing')">
+                            <i class="fas fa-video me-2"></i>Request Live ASL Interpreter
+                        </button>
+                        <a href="{{ url_for('accessibility.asl_videos') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-film me-2"></i>View Tax Filing ASL Videos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Uploaded Documents Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h3 class="h5 mb-0 fw-bold">Your Tax Documents</h3>
+                    <span class="badge bg-primary">{{ documents|length }} Documents</span>
+                </div>
+                <div class="card-body p-4">
+                    {% if documents %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Document Type</th>
+                                        <th>Tax Year</th>
+                                        <th>Employer/Payer</th>
+                                        <th>Income</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for doc in documents %}
+                                    <tr>
+                                        <td>{{ doc.document_type }}</td>
+                                        <td>{{ doc.year }}</td>
+                                        <td>{{ doc.document_data.employer }}</td>
+                                        <td>${{ doc.document_data.income|round(2) }}</td>
+                                        <td>
+                                            <span class="badge status-{{ doc.status }}">{{ doc.status }}</span>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="viewDocument({{ doc.id }})">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <div class="display-6 text-muted mb-3">
+                                <i class="fas fa-file-invoice"></i>
+                            </div>
+                            <h4>No tax documents yet</h4>
+                            <p class="text-muted">Upload your tax documents using the form above to get started.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                {% if documents %}
+                <div class="card-footer bg-transparent">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button class="btn btn-primary" onclick="startFiling()">
+                            <i class="fas fa-file-invoice me-2"></i>Complete Tax Filing
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Document View Modal -->
+<div class="modal fade" id="documentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tax Document Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="documentDetails">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading document details...</p>
+                    </div>
+                </div>
+                <!-- ASL Video explanation -->
+                <div class="mt-4">
+                    <h6 class="fw-bold">ASL Explanation</h6>
+                    <div class="asl-video-container" data-asl-video-id="tax_document_details"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // View document details
+    function viewDocument(documentId) {
+        // This would normally fetch document details via AJAX
+        const documentModal = new bootstrap.Modal(document.getElementById('documentModal'));
+        
+        // Show loading indicator
+        document.getElementById('documentDetails').innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Loading document details...</p>
+            </div>
+        `;
+        
+        documentModal.show();
+        
+        // Simulate loading document details
+        setTimeout(() => {
+            document.getElementById('documentDetails').innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">W-2 - Wage and Tax Statement</h5>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <p><strong>Tax Year:</strong> 2023</p>
+                                <p><strong>Employer:</strong> ABC Company</p>
+                                <p><strong>Income:</strong> $50,000.00</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Status:</strong> <span class="badge status-pending">pending</span></p>
+                                <p><strong>Withholding:</strong> $8,500.00</p>
+                                <p><strong>Submitted:</strong> Jan 15, 2023</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Initialize ASL video
+            initASLVideoPlayer();
+        }, 1000);
+    }
+    
+    // Start filing process
+    function startFiling() {
+        // This would normally initiate the filing process via AJAX
+        // For now, we'll just show a message
+        
+        // Track user engagement
+        console.log('Tracking tax filing initiation for optimization');
+        
+        // Show confirmation
+        const alertContainer = document.getElementById('alert-container') || document.createElement('div');
+        alertContainer.id = 'alert-container';
+        alertContainer.innerHTML = `
+            <div class="alert alert-success alert-dismissible fade show visual-alert-flash" role="alert">
+                <strong>Tax filing initiated!</strong> We'll process your documents and guide you through the next steps.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+        
+        // Add to page if not already there
+        if (!document.getElementById('alert-container')) {
+            document.querySelector('.container').prepend(alertContainer);
+        }
+    }
+</script>
+{% endblock %}

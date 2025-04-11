@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}April - ASL Video Library{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="fw-bold">ASL Video Library</h1>
+            <p class="lead">Browse our collection of ASL videos explaining April's financial services and features.</p>
+        </div>
+    </div>
+    
+    <!-- Video Categories -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <h3 class="h5 mb-0 fw-bold">Video Categories</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        {% for category, videos in categories.items() %}
+                        <div class="col">
+                            <div class="card h-100 bg-light-subtle shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-3 text-capitalize">
+                                        {% if category == 'tax_filing' %}
+                                        <i class="fas fa-file-invoice text-primary me-2"></i>Tax Filing
+                                        {% elif category == 'financial_profile' %}
+                                        <i class="fas fa-user-circle text-primary me-2"></i>Financial Profiles
+                                        {% elif category == 'investment_recommendations' %}
+                                        <i class="fas fa-chart-line text-primary me-2"></i>Investment Recommendations
+                                        {% elif category == 'retirement_planning' %}
+                                        <i class="fas fa-umbrella-beach text-primary me-2"></i>Retirement Planning
+                                        {% elif category == 'tax_documents' %}
+                                        <i class="fas fa-file-alt text-primary me-2"></i>Tax Documents
+                                        {% elif category == 'emergency_fund' %}
+                                        <i class="fas fa-piggy-bank text-primary me-2"></i>Emergency Fund
+                                        {% elif category == 'debt_management' %}
+                                        <i class="fas fa-hand-holding-usd text-primary me-2"></i>Debt Management
+                                        {% elif category == 'insurance_coverage' %}
+                                        <i class="fas fa-shield-alt text-primary me-2"></i>Insurance Coverage
+                                        {% else %}
+                                        <i class="fas fa-folder text-primary me-2"></i>{{ category.replace('_', ' ').title() }}
+                                        {% endif %}
+                                    </h5>
+                                    <p class="card-text">{{ videos|length }} ASL videos available</p>
+                                    <a href="#{{ category }}" class="btn btn-primary stretched-link">View Videos</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Video Sections by Category -->
+    {% for category, videos in categories.items() %}
+    <div class="row mb-5" id="{{ category }}">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent">
+                    <h3 class="h5 mb-0 fw-bold text-capitalize">
+                        {% if category == 'tax_filing' %}
+                        <i class="fas fa-file-invoice text-primary me-2"></i>Tax Filing
+                        {% elif category == 'financial_profile' %}
+                        <i class="fas fa-user-circle text-primary me-2"></i>Financial Profiles
+                        {% elif category == 'investment_recommendations' %}
+                        <i class="fas fa-chart-line text-primary me-2"></i>Investment Recommendations
+                        {% elif category == 'retirement_planning' %}
+                        <i class="fas fa-umbrella-beach text-primary me-2"></i>Retirement Planning
+                        {% elif category == 'tax_documents' %}
+                        <i class="fas fa-file-alt text-primary me-2"></i>Tax Documents
+                        {% elif category == 'emergency_fund' %}
+                        <i class="fas fa-piggy-bank text-primary me-2"></i>Emergency Fund
+                        {% elif category == 'debt_management' %}
+                        <i class="fas fa-hand-holding-usd text-primary me-2"></i>Debt Management
+                        {% elif category == 'insurance_coverage' %}
+                        <i class="fas fa-shield-alt text-primary me-2"></i>Insurance Coverage
+                        {% else %}
+                        <i class="fas fa-folder text-primary me-2"></i>{{ category.replace('_', ' ').title() }}
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    {% if videos %}
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                            {% for video in videos %}
+                            <div class="col">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">{{ video.title }}</h5>
+                                        <p class="text-muted mb-3">{{ video.description }}</p>
+                                        <div class="asl-video-container" data-asl-video-id="{{ video.playback_id }}"></div>
+                                    </div>
+                                    <div class="card-footer bg-transparent">
+                                        <small class="text-muted">Duration: {{ video.duration|round|int }} seconds</small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <div class="display-6 text-muted mb-3">
+                                <i class="fas fa-video-slash"></i>
+                            </div>
+                            <h4>No videos available</h4>
+                            <p class="text-muted">We're working on adding ASL videos for this category. Check back soon.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    
+    <!-- Request Video Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-primary-subtle border-0 shadow-sm">
+                <div class="card-body p-4 text-center">
+                    <h3 class="h4 mb-3 fw-bold">Need a specific ASL explanation?</h3>
+                    <p class="mb-4">Can't find the ASL video you need? Let us know what financial topic you'd like explained in ASL.</p>
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                <button class="btn btn-primary" id="request-video-button" onclick="requestLiveASL('video_request')">
+                                    <i class="fas fa-video me-2"></i>Request Live ASL Interpreter
+                                </button>
+                                <a href="{{ url_for('accessibility.deaf_support_bot_page') }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-robot me-2"></i>Ask ASL Support Bot
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize all ASL videos on the page
+        initASLVideoPlayer();
+    });
+</script>
+{% endblock %}
