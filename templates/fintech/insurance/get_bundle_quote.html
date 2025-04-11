@@ -1,0 +1,229 @@
+{% extends "layout.html" %}
+
+{% block title %}Get Bundle Quote - {{ bundle.name }} - MbTQ Insurance{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/insurance">Insurance</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('insurance.bundles') }}">Integration Bundles</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('insurance.bundle_detail', bundle_code=bundle.bundle_code) }}">{{ bundle.name }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Get Quote</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                Get a Bundle Quote
+            </h1>
+            
+            <button class="btn btn-info" data-asl-video="{{ bundle.bundle_code|lower }}_quote_process">
+                <i class="fas fa-sign-language me-1"></i> Watch in ASL
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Bundle Quote Form -->
+    <div class="col-lg-8">
+        <div class="card deaf-accessible mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">{{ bundle.name }} - Quote Form</h4>
+                <button class="btn btn-sm btn-outline-info" data-asl-video="bundle_quote_form_help">
+                    <i class="fas fa-sign-language"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <p class="lead mb-4">Please provide the following information to get your personalized quote for the {{ bundle.name }}.</p>
+                
+                <form method="POST" action="{{ url_for('insurance.get_bundle_quote', bundle_code=bundle.bundle_code) }}">
+                    <!-- Hidden CSRF token -->
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+                    
+                    <!-- Bundle Components Selection -->
+                    <div class="mb-4">
+                        <h5 class="mb-3">Bundle Components</h5>
+                        <p>Select which products you want to include in your bundle:</p>
+                        
+                        <!-- Primary Products (Required) -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-primary-subtle">
+                                <h6 class="mb-0">Primary Components (Required)</h6>
+                            </div>
+                            <div class="card-body">
+                                {% for product in primary_products %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" 
+                                               id="product_{{ product.id }}" 
+                                               name="primary_products[]" 
+                                               value="{{ product.id }}"
+                                               checked disabled>
+                                        <label class="form-check-label" for="product_{{ product.id }}">
+                                            <strong>{{ product.name }}</strong>
+                                            <small class="d-block text-muted">${{ "%.2f"|format(product.minimum_premium) }}/month (minimum)</small>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                                <small class="text-muted">Primary components are required to maintain the integrity of the bundle.</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Supporting Products (Optional) -->
+                        <div class="card">
+                            <div class="card-header bg-secondary-subtle">
+                                <h6 class="mb-0">Supporting Components (Optional)</h6>
+                            </div>
+                            <div class="card-body">
+                                {% for product in supporting_products %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" 
+                                               id="product_{{ product.id }}" 
+                                               name="supporting_products[]" 
+                                               value="{{ product.id }}"
+                                               checked>
+                                        <label class="form-check-label" for="product_{{ product.id }}">
+                                            <strong>{{ product.name }}</strong>
+                                            <small class="d-block text-muted">${{ "%.2f"|format(product.minimum_premium) }}/month (minimum)</small>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                                <small class="text-muted">Supporting components are optional and can be added or removed as needed.</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Coverage Information -->
+                    <div class="mb-4">
+                        <h5 class="mb-3">Coverage Information</h5>
+                        
+                        <!-- Coverage Term -->
+                        <div class="mb-3">
+                            <label for="coverage_term" class="form-label required">Coverage Term (months)</label>
+                            <select class="form-select" id="coverage_term" name="coverage_term" required>
+                                <option value="12" selected>12 months (1 year)</option>
+                                <option value="24">24 months (2 years)</option>
+                                <option value="36">36 months (3 years)</option>
+                            </select>
+                            <div class="form-text">
+                                Length of time your bundle will be in effect
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Frequency -->
+                        <div class="mb-3">
+                            <label for="payment_frequency" class="form-label required">Payment Frequency</label>
+                            <select class="form-select" id="payment_frequency" name="payment_frequency" required>
+                                <option value="monthly" selected>Monthly</option>
+                                <option value="quarterly">Quarterly (3% discount)</option>
+                                <option value="annually">Annually (5% discount)</option>
+                            </select>
+                            <div class="form-text">
+                                How often you want to be billed for your bundle
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Implementation Requirements -->
+                    <div class="mb-4 card bg-info-subtle">
+                        <div class="card-body">
+                            <h5 class="mb-3">Implementation Requirements</h5>
+                            <p>To properly implement this bundle for your specific needs, we need to gather additional information:</p>
+                            
+                            <div class="mb-3">
+                                <label for="implementation_needs" class="form-label">Specific Needs Assessment</label>
+                                <textarea class="form-control" id="implementation_needs" name="implementation_needs" rows="3" placeholder="Please describe your specific needs for this bundle..."></textarea>
+                                <div class="form-text">
+                                    This helps us tailor the bundle to your unique situation
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Communication Preferences</label>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="preferred_asl" name="communication_preferences[]" value="asl" checked>
+                                    <label class="form-check-label" for="preferred_asl">
+                                        ASL (American Sign Language)
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="preferred_email" name="communication_preferences[]" value="email" checked>
+                                    <label class="form-check-label" for="preferred_email">
+                                        Email
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="preferred_text" name="communication_preferences[]" value="text">
+                                    <label class="form-check-label" for="preferred_text">
+                                        Text Messages
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="preferred_videocall" name="communication_preferences[]" value="videocall">
+                                    <label class="form-check-label" for="preferred_videocall">
+                                        Video Calls
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-calculator me-1"></i> Calculate My Bundle Quote
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bundle Summary -->
+    <div class="col-lg-4">
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Bundle Summary</h4>
+            </div>
+            <div class="card-body">
+                <h5>{{ bundle.name }}</h5>
+                <p>{{ bundle.description }}</p>
+                
+                <div class="mb-3">
+                    <span class="badge bg-success">{{ bundle.discount_percentage }}% Bundle Discount</span>
+                </div>
+                
+                <h6>Integration Point:</h6>
+                <p class="small">{{ bundle.integration_point }}</p>
+                
+                <h6>Expected Outcomes:</h6>
+                <p class="small">{{ bundle.expected_outcome }}</p>
+                
+                <div class="alert alert-info mt-3 small">
+                    <i class="fas fa-info-circle me-1"></i> By bundling these insurance products together, you get comprehensive coverage that addresses the unique challenges faced by deaf and hard of hearing individuals across multiple domains.
+                </div>
+                
+                <button class="btn btn-outline-info w-100 mt-2" data-asl-video="{{ bundle.bundle_code|lower }}_details">
+                    <i class="fas fa-sign-language me-1"></i> Learn More in ASL
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-play the bundle quote process ASL video when page loads if enabled
+        const aslVideosEnabled = localStorage.getItem('asl_videos_enabled') !== 'false';
+        if (aslVideosEnabled) {
+            setTimeout(() => {
+                showASLVideo('{{ bundle.bundle_code|lower }}_quote_process');
+            }, 1000);
+        }
+    });
+</script>
+{% endblock %}

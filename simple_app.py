@@ -107,6 +107,8 @@ import models
 
 # Create tables
 with app.app_context():
+    # Drop all tables if they exist and recreate
+    db.drop_all()
     db.create_all()
 
 if __name__ == '__main__':

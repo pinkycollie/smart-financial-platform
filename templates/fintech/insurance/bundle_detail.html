@@ -1,0 +1,361 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ bundle.name }} - MbTQ Insurance{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/insurance">Insurance</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('insurance.bundles') }}">Integration Bundles</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ bundle.name }}</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>{{ bundle.name }}</h1>
+            
+            <button class="btn btn-info" data-asl-video="{{ bundle.bundle_code|lower }}_details">
+                <i class="fas fa-sign-language me-1"></i> Watch in ASL
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Bundle Details -->
+    <div class="col-lg-8">
+        <div class="card deaf-accessible mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">Bundle Overview</h4>
+                <button class="btn btn-sm btn-outline-info" data-asl-video="{{ bundle.bundle_code|lower }}_overview">
+                    <i class="fas fa-sign-language"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <p class="lead">{{ bundle.description }}</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h5>Integration Point:</h5>
+                        <p>{{ bundle.integration_point }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Bundle Discount:</h5>
+                        <p><span class="badge bg-success">{{ bundle.discount_percentage }}% off individual product prices</span></p>
+                    </div>
+                </div>
+                
+                <h5 class="mt-4">Integration Rationale:</h5>
+                <p>{{ bundle.integration_rationale }}</p>
+                
+                <h5 class="mt-4">Implementation Requirements:</h5>
+                <p>{{ bundle.implementation_requirements }}</p>
+                
+                <h5 class="mt-4">Expected Outcomes:</h5>
+                <p>{{ bundle.expected_outcome }}</p>
+                
+                <div class="alert alert-info mt-4">
+                    <h5><i class="fas fa-info-circle me-2"></i> What makes this bundle different?</h5>
+                    <p>Traditional insurance products create coverage gaps for deaf and hard of hearing individuals, especially around communication access. This integrated bundle ensures comprehensive protection that spans traditional insurance boundaries.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Included Products -->
+        <div class="card mb-4">
+            <div class="card-header bg-info-subtle">
+                <h4 class="mb-0">Included Products</h4>
+            </div>
+            <div class="card-body">
+                <!-- Primary Products -->
+                <h5>Primary Coverage Components:</h5>
+                {% if primary_products %}
+                    <div class="row row-cols-1 row-cols-md-2 g-3 mb-4">
+                        {% for product in primary_products %}
+                            <div class="col">
+                                <div class="card h-100">
+                                    <div class="card-header bg-primary-subtle">
+                                        <h5 class="card-title mb-0">{{ product.name }}</h5>
+                                        {% if product.is_deaf_specialized %}
+                                            <span class="deaf-specialized-badge mt-1">Deaf Specialized</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">{{ product.description }}</p>
+                                        <h6>Key Coverage Elements:</h6>
+                                        <ul class="insurance-feature-list small">
+                                            {% for key, value in product.mandatory_components.items() %}
+                                                <li>{{ value }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        <a href="{{ url_for('insurance.product_detail', product_id=product.id) }}" class="btn btn-sm btn-primary mt-2">
+                                            View Product Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">No primary products defined for this bundle.</p>
+                {% endif %}
+                
+                <!-- Supporting Products -->
+                <h5>Supporting Coverage Components:</h5>
+                {% if supporting_products %}
+                    <div class="row row-cols-1 row-cols-md-2 g-3">
+                        {% for product in supporting_products %}
+                            <div class="col">
+                                <div class="card h-100">
+                                    <div class="card-header bg-secondary-subtle">
+                                        <h5 class="card-title mb-0">{{ product.name }}</h5>
+                                        {% if product.is_deaf_specialized %}
+                                            <span class="deaf-specialized-badge mt-1">Deaf Specialized</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">{{ product.description }}</p>
+                                        <h6>Key Coverage Elements:</h6>
+                                        <ul class="insurance-feature-list small">
+                                            {% for key, value in product.mandatory_components.items() %}
+                                                <li>{{ value }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        <a href="{{ url_for('insurance.product_detail', product_id=product.id) }}" class="btn btn-sm btn-secondary mt-2">
+                                            View Product Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">No supporting products defined for this bundle.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pricing and Action Card -->
+    <div class="col-lg-4">
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-header bg-primary">
+                <h4 class="mb-0 text-white">Bundle Pricing</h4>
+            </div>
+            <div class="card-body">
+                <div class="premium-display">
+                    <p class="mb-1">Starting from</p>
+                    <div class="premium-amount">${{ total_min_premium|default('189.00') }}</div>
+                    <p class="text-muted">per month</p>
+                    <span class="badge bg-success">Save {{ bundle.discount_percentage }}%</span>
+                </div>
+                
+                <ul class="list-group list-group-flush mb-4">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Individual products total:</span>
+                        <span>${{ individual_total|default('225.00') }}/month</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Bundle discount:</span>
+                        <span class="text-success">-${{ discount_amount|default('36.00') }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center fw-bold">
+                        <span>Bundle price:</span>
+                        <span>${{ total_min_premium|default('189.00') }}/month</span>
+                    </li>
+                </ul>
+                
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('insurance.get_bundle_quote', bundle_code=bundle.bundle_code) }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-calculator me-1"></i> Get Personalized Quote
+                    </a>
+                    
+                    <button class="btn btn-outline-info" data-asl-video="{{ bundle.bundle_code|lower }}_pricing">
+                        <i class="fas fa-sign-language me-1"></i> Learn About Pricing in ASL
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Why Choose This Bundle -->
+        <div class="card mt-4">
+            <div class="card-header bg-info-subtle">
+                <h5 class="mb-0">Why Choose This Bundle?</h5>
+            </div>
+            <div class="card-body">
+                <ul class="insurance-feature-list">
+                    <li>Comprehensive coverage across multiple insurance types</li>
+                    <li>Save {{ bundle.discount_percentage }}% compared to individual product purchases</li>
+                    <li>Simplified claims process with coordinated handling</li>
+                    <li>Designed specifically for deaf and hard of hearing individuals</li>
+                    <li>No coverage gaps for communication access needs</li>
+                </ul>
+                
+                <button class="btn btn-outline-info w-100 mt-2" data-asl-video="{{ bundle.bundle_code|lower }}_benefits">
+                    <i class="fas fa-sign-language me-1"></i> Watch Benefits in ASL
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Testimonials -->
+<div class="row mt-5">
+    <div class="col-md-12">
+        <h3 class="mb-4">What Our Customers Say</h3>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="text-info me-3">
+                        <i class="fas fa-user-circle fa-3x"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0">Sarah K.</h5>
+                        <p class="text-muted mb-0">Deaf professional</p>
+                    </div>
+                </div>
+                <p class="card-text">
+                    "The {{ bundle.name }} has completely changed how I manage my insurance. The coordinated coverage means I never have to worry about interpreter services being covered, no matter what situation I'm in."
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="text-info me-3">
+                        <i class="fas fa-user-circle fa-3x"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0">Michael R.</h5>
+                        <p class="text-muted mb-0">Hard of hearing business owner</p>
+                    </div>
+                </div>
+                <p class="card-text">
+                    "Before this bundle, I had to fight with multiple insurance companies about coverage for my visual alert systems and communication technology. Now everything is covered seamlessly, and the savings are significant."
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="text-info me-3">
+                        <i class="fas fa-user-circle fa-3x"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0">Jessica T.</h5>
+                        <p class="text-muted mb-0">CODA with deaf parents</p>
+                    </div>
+                </div>
+                <p class="card-text">
+                    "I helped my parents sign up for this bundle, and it's been incredible. The coordinated claims process is easy to navigate, and the ASL videos explaining everything make it so accessible for them."
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="row mt-5">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info-subtle">
+                <h4 class="mb-0">Frequently Asked Questions</h4>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                How does the bundle discount work?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <div class="d-flex align-items-start">
+                                    <div class="flex-grow-1">
+                                        <p>When you purchase multiple insurance products as part of this bundle, you receive a {{ bundle.discount_percentage }}% discount off the total premium you would pay if you purchased each product individually. This discount is applied automatically when you get a quote for the bundle.</p>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-info ms-3 align-self-start" data-asl-video="bundle_discount_faq">
+                                        <i class="fas fa-sign-language"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                What happens if I need to file a claim that spans multiple insurance types?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <div class="d-flex align-items-start">
+                                    <div class="flex-grow-1">
+                                        <p>One of the key benefits of this bundle is coordinated claims handling. Instead of having to file separate claims with different insurance providers, you have a single point of contact for the entire bundle. Our claims specialists understand the bundle structure and will coordinate coverage across all applicable policies, ensuring you get the full benefit of your coverage without having to navigate multiple claims processes.</p>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-info ms-3 align-self-start" data-asl-video="bundle_claims_faq">
+                                        <i class="fas fa-sign-language"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                Can I customize which products are included in my bundle?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <div class="d-flex align-items-start">
+                                    <div class="flex-grow-1">
+                                        <p>Yes, we understand that everyone's needs are different. While the bundle is designed to work best with all components included, you can customize which products you want to include:</p>
+                                        <ul>
+                                            <li>Primary products must be included to maintain the integrity of the bundle</li>
+                                            <li>Supporting products are optional and can be added or removed</li>
+                                            <li>The bundle discount will be adjusted based on how many products you include</li>
+                                        </ul>
+                                        <p>During the quote process, you'll have the opportunity to customize your bundle while seeing exactly how it affects your coverage and premium.</p>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-info ms-3 align-self-start" data-asl-video="bundle_customization_faq">
+                                        <i class="fas fa-sign-language"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-play the bundle ASL video when page loads if enabled
+        const aslVideosEnabled = localStorage.getItem('asl_videos_enabled') !== 'false';
+        if (aslVideosEnabled) {
+            setTimeout(() => {
+                showASLVideo('{{ bundle.bundle_code|lower }}_details');
+            }, 1000);
+        }
+    });
+</script>
+{% endblock %}

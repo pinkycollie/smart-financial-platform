@@ -1,6 +1,14 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, jsonify
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, jsonify, session
 from flask_login import login_required, current_user
-from models import InsuranceProduct, InsurancePolicy, db
+from models import (
+    InsuranceProduct, 
+    InsurancePolicy, 
+    InsuranceBundle, 
+    InsuranceBundleProduct, 
+    UserInsuranceBundle, 
+    BundlePolicyLink,
+    db
+)
 import logging
 
 # Create a Blueprint for insurance routes
@@ -23,27 +31,30 @@ except Exception as e:
 @insurance_bp.route('/')
 def insurance_dashboard():
     """Main insurance dashboard page"""
-    # Placeholder for fetching real data
-    # In a real implementation, these would be fetched from the database
-    products = []
-    policies = []
+    try:
+        # Fetch products from the database
+        products = InsuranceProduct.query.filter_by(active=True).all()
+    except Exception as e:
+        logger.error(f"Error fetching insurance products: {e}")
+        products = []
+    
+    try:
+        # Fetch policies for current user (if authenticated)
+        if current_user.is_authenticated:
+            policies = InsurancePolicy.query.filter_by(user_id=current_user.id).all()
+        else:
+            policies = []
+    except Exception as e:
+        logger.error(f"Error fetching user policies: {e}")
+        policies = []
+    
+    # Get ASL videos for insurance
     asl_videos = []
-    
-    # For demo purposes, add placeholder insurance products if none exist
-    if not products:
-        try:
-            # Demo products can be populated here
-            pass
-        except Exception as e:
-            logger.error(f"Error loading demo insurance products: {e}")
-    
-    # If Mux client is available, get ASL videos for insurance
     if mux_client:
         try:
             asl_videos = mux_client.get_asl_videos_for_context('insurance')
         except Exception as e:
             logger.error(f"Error fetching ASL videos: {e}")
-            asl_videos = []
     
     return render_template(
         'fintech/insurance/dashboard.html',
@@ -177,6 +188,110 @@ def file_claim(policy_id):
     # Placeholder implementation
     return jsonify({
         'message': 'Claim filing feature coming soon',
+        'status': 'under development'
+    })
+
+@insurance_bp.route('/bundles')
+def bundles():
+    """List available insurance bundles"""
+    try:
+        bundles = InsuranceBundle.query.filter_by(active=True).all()
+    except Exception as e:
+        logger.error(f"Error fetching insurance bundles: {e}")
+        bundles = []
+        flash("Unable to load insurance bundles. Please try again later.", "error")
+    
+    return render_template('fintech/insurance/bundles.html', bundles=bundles)
+
+@insurance_bp.route('/bundles/<string:bundle_code>')
+def bundle_detail(bundle_code):
+    """Show details for a specific insurance bundle"""
+    try:
+        bundle = InsuranceBundle.query.filter_by(bundle_code=bundle_code).first_or_404()
+        
+        # Get the products in this bundle
+        bundle_products = InsuranceBundleProduct.query.filter_by(bundle_id=bundle.id).all()
+        
+        # Separate primary and supporting products
+        primary_products = []
+        supporting_products = []
+        total_min_premium = 0
+        
+        for bp in bundle_products:
+            product = InsuranceProduct.query.get(bp.product_id)
+            if product:
+                if bp.is_primary:
+                    primary_products.append(product)
+                else:
+                    supporting_products.append(product)
+                total_min_premium += product.minimum_premium
+        
+        # Calculate bundle price with discount
+        individual_total = total_min_premium
+        discount_amount = round(total_min_premium * (bundle.discount_percentage / 100), 2)
+        total_min_premium = round(total_min_premium - discount_amount, 2)
+        
+    except Exception as e:
+        logger.error(f"Error fetching bundle details: {e}")
+        flash("Unable to load bundle details. Please try again later.", "error")
+        return redirect(url_for('insurance.bundles'))
+    
+    return render_template(
+        'fintech/insurance/bundle_detail.html',
+        bundle=bundle,
+        primary_products=primary_products,
+        supporting_products=supporting_products,
+        total_min_premium=total_min_premium,
+        individual_total=individual_total,
+        discount_amount=discount_amount
+    )
+
+@insurance_bp.route('/bundles/<string:bundle_code>/quote', methods=['GET', 'POST'])
+@login_required
+def get_bundle_quote(bundle_code):
+    """Get a quote for an insurance bundle"""
+    try:
+        bundle = InsuranceBundle.query.filter_by(bundle_code=bundle_code).first_or_404()
+        
+        # Get the products in this bundle
+        bundle_products = InsuranceBundleProduct.query.filter_by(bundle_id=bundle.id).all()
+        
+        # Separate primary and supporting products
+        primary_products = []
+        supporting_products = []
+        
+        for bp in bundle_products:
+            product = InsuranceProduct.query.get(bp.product_id)
+            if product:
+                if bp.is_primary:
+                    primary_products.append(product)
+                else:
+                    supporting_products.append(product)
+        
+        if request.method == 'POST':
+            # Process bundle quote request
+            # Placeholder for now - would integrate with Boost API in a real implementation
+            return redirect(url_for('insurance.review_bundle_quote', bundle_code=bundle_code))
+        
+    except Exception as e:
+        logger.error(f"Error processing bundle quote request: {e}")
+        flash("An error occurred while processing your bundle quote. Please try again.", "error")
+        return redirect(url_for('insurance.bundles'))
+    
+    return render_template(
+        'fintech/insurance/get_bundle_quote.html',
+        bundle=bundle,
+        primary_products=primary_products,
+        supporting_products=supporting_products
+    )
+
+@insurance_bp.route('/bundles/<string:bundle_code>/quote/review', methods=['GET', 'POST'])
+@login_required
+def review_bundle_quote(bundle_code):
+    """Review and purchase a bundle quote"""
+    # Placeholder implementation
+    return jsonify({
+        'message': 'Bundle quote review feature coming soon',
         'status': 'under development'
     })
 

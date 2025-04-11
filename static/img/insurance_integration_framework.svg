@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+    <!-- Styles -->
+    <defs>
+        <style type="text/css">
+            .core-box { fill: #a8d5ba; stroke: #178a; stroke-width: 2; }
+            .integration-box { fill: #b8c5e2; stroke: #1155cc; stroke-width: 2; }
+            .market-box { fill: #f9cb9c; stroke: #b45f06; stroke-width: 2; }
+            .metrics-box { fill: #ead1dc; stroke: #741b47; stroke-width: 2; }
+            .component-title { font-family: Arial; font-size: 14px; font-weight: bold; fill: #333; text-anchor: middle; }
+            .section-title { font-family: Arial; font-size: 16px; font-weight: bold; fill: #333; text-anchor: middle; }
+            .connector { stroke: #666; stroke-width: 1.5; fill: none; }
+            .arrow { fill: #666; }
+        </style>
+    </defs>
+    
+    <!-- Background -->
+    <rect width="800" height="600" fill="#222233" />
+    
+    <!-- Title -->
+    <text x="400" y="30" font-family="Arial" font-size="20px" font-weight="bold" fill="#ffffff" text-anchor="middle">Deaf First Insurance Integration Framework</text>
+    
+    <!-- Core Components Section -->
+    <rect x="50" y="60" width="200" height="220" rx="5" ry="5" fill="#1e2934" stroke="#3b5a7a" stroke-width="2" />
+    <text x="150" y="80" class="section-title" fill="#ffffff">Core Components</text>
+    
+    <!-- Core Component Boxes -->
+    <rect x="70" y="90" width="160" height="30" rx="3" ry="3" class="core-box" />
+    <text x="150" y="110" class="component-title">Health Coverage</text>
+    
+    <rect x="70" y="125" width="160" height="30" rx="3" ry="3" class="core-box" />
+    <text x="150" y="145" class="component-title">Property Coverage</text>
+    
+    <rect x="70" y="160" width="160" height="30" rx="3" ry="3" class="core-box" />
+    <text x="150" y="180" class="component-title">Liability Coverage</text>
+    
+    <rect x="70" y="195" width="160" height="30" rx="3" ry="3" class="core-box" />
+    <text x="150" y="215" class="component-title">Business Coverage</text>
+    
+    <rect x="70" y="230" width="160" height="30" rx="3" ry="3" class="core-box" />
+    <text x="150" y="250" class="component-title">Service Animal/Device</text>
+    
+    <!-- Integration Framework Section -->
+    <rect x="300" y="60" width="200" height="220" rx="5" ry="5" fill="#1e2934" stroke="#3b5a7a" stroke-width="2" />
+    <text x="400" y="80" class="section-title" fill="#ffffff">Integration Framework</text>
+    
+    <!-- Integration Framework Boxes -->
+    <rect x="320" y="90" width="160" height="30" rx="3" ry="3" class="integration-box" />
+    <text x="400" y="110" class="component-title">Communication Access</text>
+    
+    <rect x="320" y="125" width="160" height="30" rx="3" ry="3" class="integration-box" />
+    <text x="400" y="145" class="component-title">Technology Ecosystem</text>
+    
+    <rect x="320" y="160" width="160" height="30" rx="3" ry="3" class="integration-box" />
+    <text x="400" y="180" class="component-title">Professional Development</text>
+    
+    <rect x="320" y="195" width="160" height="30" rx="3" ry="3" class="integration-box" />
+    <text x="400" y="215" class="component-title">Family Communication</text>
+    
+    <rect x="320" y="230" width="160" height="30" rx="3" ry="3" class="integration-box" />
+    <text x="400" y="250" class="component-title">Accessibility Modification</text>
+    
+    <!-- Market Partners Section -->
+    <rect x="550" y="60" width="200" height="180" rx="5" ry="5" fill="#1e2934" stroke="#3b5a7a" stroke-width="2" />
+    <text x="650" y="80" class="section-title" fill="#ffffff">Market Partners</text>
+    
+    <!-- Market Partners Boxes -->
+    <rect x="570" y="90" width="160" height="30" rx="3" ry="3" class="market-box" />
+    <text x="650" y="110" class="component-title">Insurance Carriers</text>
+    
+    <rect x="570" y="125" width="160" height="30" rx="3" ry="3" class="market-box" />
+    <text x="650" y="145" class="component-title">Technology Partners</text>
+    
+    <rect x="570" y="160" width="160" height="30" rx="3" ry="3" class="market-box" />
+    <text x="650" y="180" class="component-title">Deaf Organizations</text>
+    
+    <rect x="570" y="195" width="160" height="30" rx="3" ry="3" class="market-box" />
+    <text x="650" y="215" class="component-title">Regulatory Framework</text>
+    
+    <!-- Metrics System Section -->
+    <rect x="300" y="330" width="200" height="180" rx="5" ry="5" fill="#1e2934" stroke="#3b5a7a" stroke-width="2" />
+    <text x="400" y="350" class="section-title" fill="#ffffff">Metrics System</text>
+    
+    <!-- Metrics System Boxes -->
+    <rect x="320" y="360" width="160" height="30" rx="3" ry="3" class="metrics-box" />
+    <text x="400" y="380" class="component-title">Financial Metrics</text>
+    
+    <rect x="320" y="395" width="160" height="30" rx="3" ry="3" class="metrics-box" />
+    <text x="400" y="415" class="component-title">Impact Metrics</text>
+    
+    <rect x="320" y="430" width="160" height="30" rx="3" ry="3" class="metrics-box" />
+    <text x="400" y="450" class="component-title">Customer Satisfaction</text>
+    
+    <rect x="320" y="465" width="160" height="30" rx="3" ry="3" class="metrics-box" />
+    <text x="400" y="485" class="component-title">Growth Metrics</text>
+    
+    <!-- Connections from Core to Integration -->
+    <!-- Health Coverage connections -->
+    <path d="M230 105 C270 105, 270 105, 320 105" class="connector" />
+    <path d="M230 105 C270 105, 270 205, 320 205" class="connector" />
+    <path d="M230 105 C270 105, 270 245, 320 245" class="connector" />
+    <polygon points="315,105 320,105 315,110" class="arrow" />
+    <polygon points="315,205 320,205 315,210" class="arrow" />
+    <polygon points="315,245 320,245 315,250" class="arrow" />
+    
+    <!-- Property Coverage connections -->
+    <path d="M230 140 C270 140, 270 140, 320 140" class="connector" />
+    <path d="M230 140 C270 140, 270 245, 320 245" class="connector" />
+    <polygon points="315,140 320,140 315,145" class="arrow" />
+    <polygon points="315,245 320,245 315,250" class="arrow" />
+    
+    <!-- Liability Coverage connections -->
+    <path d="M230 175 C270 175, 270 105, 320 105" class="connector" />
+    <path d="M230 175 C270 175, 270 175, 320 175" class="connector" />
+    <polygon points="315,105 320,105 315,110" class="arrow" />
+    <polygon points="315,175 320,175 315,180" class="arrow" />
+    
+    <!-- Business Coverage connections -->
+    <path d="M230 210 C270 210, 270 140, 320 140" class="connector" />
+    <path d="M230 210 C270 210, 270 175, 320 175" class="connector" />
+    <path d="M230 210 C270 210, 270 245, 320 245" class="connector" />
+    <polygon points="315,140 320,140 315,145" class="arrow" />
+    <polygon points="315,175 320,175 315,180" class="arrow" />
+    <polygon points="315,245 320,245 315,250" class="arrow" />
+    
+    <!-- Service Animal connections -->
+    <path d="M230 245 C270 245, 270 140, 320 140" class="connector" />
+    <path d="M230 245 C270 245, 270 245, 320 245" class="connector" />
+    <polygon points="315,140 320,140 315,145" class="arrow" />
+    <polygon points="315,245 320,245 315,250" class="arrow" />
+    
+    <!-- Connections from Integration to Market -->
+    <!-- Communication Access connections -->
+    <path d="M480 105 C520 105, 520 105, 570 105" class="connector" />
+    <path d="M480 105 C520 105, 520 140, 570 140" class="connector" />
+    <path d="M480 105 C520 105, 520 175, 570 175" class="connector" />
+    <path d="M480 105 C520 105, 520 210, 570 210" class="connector" />
+    <polygon points="565,105 570,105 565,110" class="arrow" />
+    <polygon points="565,140 570,140 565,145" class="arrow" />
+    <polygon points="565,175 570,175 565,180" class="arrow" />
+    <polygon points="565,210 570,210 565,215" class="arrow" />
+    
+    <!-- Technology Ecosystem connections -->
+    <path d="M480 140 C520 140, 520 105, 570 105" class="connector" />
+    <path d="M480 140 C520 140, 520 140, 570 140" class="connector" />
+    <path d="M480 140 C520 140, 520 175, 570 175" class="connector" />
+    <path d="M480 140 C520 140, 520 210, 570 210" class="connector" />
+    <polygon points="565,105 570,105 565,110" class="arrow" />
+    <polygon points="565,140 570,140 565,145" class="arrow" />
+    <polygon points="565,175 570,175 565,180" class="arrow" />
+    <polygon points="565,210 570,210 565,215" class="arrow" />
+    
+    <!-- Connections from Market to Metrics -->
+    <path d="M650 230 C650 280, 400 280, 400 360" class="connector" />
+    <polygon points="395,355 400,360 405,355" class="arrow" />
+</svg>
