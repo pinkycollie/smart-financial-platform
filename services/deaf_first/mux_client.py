@@ -1,9 +1,16 @@
 import mux_python
 from mux_python.rest import ApiException
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Union
 import os
 import logging
 import json
+
+# Import SignASL integration for authentic ASL videos
+try:
+    from services.deaf_first.signasl_integration import SignASLIntegration
+    signasl_available = True
+except ImportError:
+    signasl_available = False
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +25,15 @@ class MuxClient:
         
         if not token_id or not token_secret:
             logger.warning("MUX credentials not configured. ASL video features will be limited.")
+        
+        # Initialize SignASL integration for authentic ASL content
+        self.signasl = None
+        if signasl_available:
+            try:
+                self.signasl = SignASLIntegration()
+                logger.info("SignASL integration initialized successfully")
+            except Exception as e:
+                logger.error(f"Failed to initialize SignASL integration: {e}")
         
         configuration = mux_python.Configuration()
         configuration.username = token_id
@@ -47,8 +63,26 @@ class MuxClient:
         Returns:
             Dictionary with video details or None if not found
         """
-        # For now, return a simple mock response since we don't have real videos yet
-        # In a real implementation, this would query the Mux API
+        # First, check if this is a term that SignASL has available
+        if self.signasl and video_key in ['insurance', 'finance', 'tax', 'loan', 'budget']:
+            try:
+                signasl_embed = self.signasl.get_embed_code(video_key)
+                if signasl_embed:
+                    logger.info(f"Found authentic SignASL video for term: {video_key}")
+                    return {
+                        "key": video_key,
+                        "title": f"ASL Sign: {video_key.replace('_', ' ').title()}",
+                        "description": f"Watch how to sign '{video_key}' in American Sign Language",
+                        "embed_html": signasl_embed["embed_html"],
+                        "source": "SignASL.org",
+                        "status": "ready",
+                        "context": "insurance",
+                        "is_embed": True
+                    }
+            except Exception as e:
+                logger.error(f"Error retrieving SignASL video for {video_key}: {e}")
+        
+        # If no SignASL video available, use Mux videos (or fallback to placeholders)
         try:
             # In a real implementation, we would query Mux API using the video_key
             # For development purposes, return a hardcoded video placeholder
@@ -60,7 +94,8 @@ class MuxClient:
                 "duration": 120,  # seconds
                 "thumbnail_url": "https://placeholder.com/thumbnail.jpg",
                 "status": "ready",
-                "context": "insurance"
+                "context": "insurance",
+                "is_embed": False
             }
         except ApiException as e:
             logger.error(f"Exception when calling Mux API: {e}")

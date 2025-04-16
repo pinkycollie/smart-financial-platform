@@ -50,9 +50,11 @@ def load_user(user_id):
 
 # Import routes modules
 from routes.fintech.insurance import insurance_bp
+from routes.fintech.business import business_bp
 
 # Register blueprints
 app.register_blueprint(insurance_bp)
+app.register_blueprint(business_bp)
 
 # Define routes
 @app.route('/')
