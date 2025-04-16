@@ -300,9 +300,14 @@ def impact_dashboard():
     """Show data about insurance and financial disparities for deaf community"""
     return render_template('fintech/insurance/impact_dashboard.html')
 
+@insurance_bp.route('/asl-test')
+def asl_test():
+    """Test page for ASL video integration with SignASL"""
+    return render_template('fintech/insurance/asl_test.html')
+
 @insurance_bp.route('/asl-videos/<string:video_key>')
 def get_asl_video(video_key):
-    """Get ASL video for insurance concept"""
+    """Get ASL video for insurance concept - supports both Mux videos and SignASL embeds"""
     if not mux_client:
         return jsonify({
             'error': 'ASL video service unavailable',
@@ -310,13 +315,36 @@ def get_asl_video(video_key):
         }), 503
     
     try:
+        # First try to get the video
         video = mux_client.get_asl_video(video_key)
+        
+        # If no video found, try to get an SignASL embed if it's a basic insurance term
+        if not video and hasattr(mux_client, 'signasl') and mux_client.signasl:
+            logger.info(f"Checking SignASL for term: {video_key}")
+            signasl_embed = mux_client.signasl.get_embed_code(video_key)
+            
+            if signasl_embed:
+                video = {
+                    "key": video_key,
+                    "title": f"ASL Sign: {video_key.replace('_', ' ').title()}",
+                    "description": f"Watch how to sign '{video_key}' in American Sign Language",
+                    "embed_html": signasl_embed["embed_html"],
+                    "source": "SignASL.org",
+                    "status": "ready",
+                    "context": "insurance",
+                    "is_embed": True,
+                    "url": signasl_embed["url"]
+                }
+                logger.info(f"Using SignASL embed for term: {video_key}")
+        
+        # If still no video, use fallback
         if not video:
             video = mux_client.get_fallback_video()
+            logger.warning(f"Using fallback video for term: {video_key}")
             
         return jsonify(video)
     except Exception as e:
-        logger.error(f"Error fetching ASL video: {e}")
+        logger.error(f"Error fetching ASL video: {e}", exc_info=True)
         return jsonify({
             'error': 'Failed to retrieve ASL video',
             'status': 'error'

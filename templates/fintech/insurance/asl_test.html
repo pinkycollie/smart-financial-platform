@@ -1,0 +1,156 @@
+{% extends "layout.html" %}
+
+{% block title %}ASL Videos Test - DEAF FIRST Insurance{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1>ASL Video Integration Test</h1>
+            <p class="lead">This page demonstrates the integrated ASL video functionality, using both Mux videos and SignASL.org authentic content.</p>
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                This page showcases our Deaf First design approach by providing authentic ASL videos directly from SignASL.org.
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h3 class="mb-0">Authentic SignASL Videos</h3>
+                </div>
+                <div class="card-body">
+                    <p>These buttons trigger ASL videos from SignASL.org for common insurance terms:</p>
+                    
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        <button class="btn btn-info" data-asl-video="insurance">
+                            <i class="fas fa-sign-language me-2"></i> Insurance
+                        </button>
+                        
+                        <button class="btn btn-info" data-asl-video="finance">
+                            <i class="fas fa-sign-language me-2"></i> Finance
+                        </button>
+                        
+                        <button class="btn btn-info" data-asl-video="tax">
+                            <i class="fas fa-sign-language me-2"></i> Tax
+                        </button>
+                        
+                        <button class="btn btn-info" data-asl-video="budget">
+                            <i class="fas fa-sign-language me-2"></i> Budget
+                        </button>
+                    </div>
+                    
+                    <div class="alert alert-secondary small">
+                        <p class="mb-1"><strong>How it works:</strong></p>
+                        <p class="mb-0">When a SignASL video is available for a term, the platform will use this authentic ASL content instead of generated videos. This ensures accurate and culturally appropriate sign language representation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h3 class="mb-0">Insurance Concept Videos</h3>
+                </div>
+                <div class="card-body">
+                    <p>These buttons trigger ASL videos explaining insurance concepts:</p>
+                    
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        <button class="btn btn-outline-info" data-asl-video="insurance_overview">
+                            <i class="fas fa-sign-language me-2"></i> Insurance Overview
+                        </button>
+                        
+                        <button class="btn btn-outline-info" data-asl-video="deaf_specialized_insurance">
+                            <i class="fas fa-sign-language me-2"></i> Deaf Specialized Insurance
+                        </button>
+                        
+                        <button class="btn btn-outline-info" data-asl-video="visual_alert_coverage">
+                            <i class="fas fa-sign-language me-2"></i> Visual Alert Coverage
+                        </button>
+                    </div>
+                    
+                    <div class="alert alert-secondary small">
+                        <p class="mb-1"><strong>How it works:</strong></p>
+                        <p class="mb-0">For complex insurance concepts, we use Mux videos with ASL interpreters explaining the topics in detail. These videos provide comprehensive information about specific insurance offerings and coverages.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info-subtle">
+                    <h3 class="mb-0">ASL Video Settings</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="aslVideoToggleSwitch" checked>
+                        <label class="form-check-label" for="aslVideoToggleSwitch">Enable ASL Videos</label>
+                    </div>
+                    
+                    <p class="small text-muted">Your ASL video preference will be remembered across sessions. When enabled, ASL videos will automatically be available throughout the platform.</p>
+                    
+                    <script>
+                        // Set up the toggle switch to reflect the current ASL video setting
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const toggleSwitch = document.getElementById('aslVideoToggleSwitch');
+                            if (toggleSwitch) {
+                                // Set initial state based on localStorage
+                                toggleSwitch.checked = localStorage.getItem('asl_videos_enabled') !== 'false';
+                                
+                                // Add event listener to update when changed
+                                toggleSwitch.addEventListener('change', function() {
+                                    toggleASLVideos(this.checked);
+                                });
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-dark">
+                <div class="card-body">
+                    <h4 class="text-info">DEAF FIRST Design Approach</h4>
+                    <p>Our platform embraces a DEAF FIRST design philosophy, where accessibility is built into the core experience rather than added as an afterthought. Some key features include:</p>
+                    
+                    <ul class="list-group list-group-flush bg-dark mb-3">
+                        <li class="list-group-item bg-dark text-light border-secondary">
+                            <i class="fas fa-check text-info me-2"></i> Authentic ASL videos from trusted sources
+                        </li>
+                        <li class="list-group-item bg-dark text-light border-secondary">
+                            <i class="fas fa-check text-info me-2"></i> Insurance products designed specifically for deaf and hard of hearing individuals
+                        </li>
+                        <li class="list-group-item bg-dark text-light border-secondary">
+                            <i class="fas fa-check text-info me-2"></i> Visual-first interface with clear iconography and minimal text dependency
+                        </li>
+                        <li class="list-group-item bg-dark text-light border-secondary">
+                            <i class="fas fa-check text-info me-2"></i> Integration with multiple ASL video sources to provide comprehensive coverage
+                        </li>
+                    </ul>
+                    
+                    <div class="text-center">
+                        <a href="{{ url_for('insurance.impact_dashboard') }}" class="btn btn-outline-info">
+                            <i class="fas fa-chart-bar me-2"></i> View Deaf Financial Impact Data
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Add custom scripts for this page here
+</script>
+{% endblock %}
