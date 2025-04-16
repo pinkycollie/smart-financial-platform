@@ -1,0 +1,385 @@
+{% extends "layout.html" %}
+
+{% block title %}Social Impact Data - MbTQ Insurance{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/insurance">Insurance</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Impact Data</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="fas fa-chart-line me-2"></i> Deaf First Impact Dashboard
+                <button class="btn btn-outline-info btn-sm ms-2" data-asl-video="impact_data">
+                    <i class="fas fa-sign-language"></i> Watch in ASL
+                </button>
+            </h1>
+        </div>
+        
+        <div class="alert alert-info">
+            <div class="d-flex">
+                <div class="me-3">
+                    <i class="fas fa-info-circle fa-2x"></i>
+                </div>
+                <div>
+                    <h5>Data-Driven Insurance Solutions</h5>
+                    <p>Our insurance products are designed based on real data about the unique challenges faced by deaf and hard of hearing individuals in the financial system.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Financial Disparities -->
+<div class="row mb-5">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Financial Disparities in the Deaf Community</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Financial Indicator</th>
+                                <th>Deaf Population</th>
+                                <th>General Population</th>
+                                <th>Gap</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Average Income</td>
+                                <td>$39,000</td>
+                                <td>$59,000</td>
+                                <td class="text-danger">-34%</td>
+                            </tr>
+                            <tr>
+                                <td>Unemployment Rate</td>
+                                <td>47%</td>
+                                <td>4.6%</td>
+                                <td class="text-danger">+42.4%</td>
+                            </tr>
+                            <tr>
+                                <td>Home Ownership</td>
+                                <td>39%</td>
+                                <td>65.3%</td>
+                                <td class="text-danger">-26.3%</td>
+                            </tr>
+                            <tr>
+                                <td>Retirement Savings</td>
+                                <td>$23,000</td>
+                                <td>$102,000</td>
+                                <td class="text-danger">-77%</td>
+                            </tr>
+                            <tr>
+                                <td>Financial Literacy Score</td>
+                                <td>42/100</td>
+                                <td>67/100</td>
+                                <td class="text-danger">-25 points</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-4">
+                    <h5>Root Causes:</h5>
+                    <ul class="insurance-feature-list">
+                        <li><strong>94%</strong> of deaf individuals report communication barriers with financial professionals</li>
+                        <li><strong>78%</strong> struggle with complex financial documentation designed for hearing people</li>
+                        <li><strong>63%</strong> have avoided applying for loans due to communication challenges</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Insurance Impact -->
+<div class="row mb-5">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Insurance Processing Inequities</h4>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Scenario</th>
+                                        <th>Hearing Person</th>
+                                        <th>Deaf Person</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Insurance Claim Processing</td>
+                                        <td>6 days average</td>
+                                        <td class="text-danger">21 days average</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Insurance Documentation Accessibility</td>
+                                        <td>Rating: 72/100</td>
+                                        <td class="text-danger">Rating: 18/100</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="alert alert-warning mt-3">
+                            <i class="fas fa-exclamation-triangle me-2"></i> Deaf and hard of hearing individuals face significant barriers in the traditional insurance system, resulting in delayed claims, inadequate coverage, and frustrating experiences.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title">How Our Platform Addresses These Challenges:</h5>
+                                <ul class="insurance-feature-list">
+                                    <li><strong>ASL Videos:</strong> All insurance concepts explained in ASL</li>
+                                    <li><strong>Visual Documentation:</strong> 85% visual elements vs. 25% in standard insurance</li>
+                                    <li><strong>Specialized Coverage:</strong> Products designed specifically for deaf community needs</li>
+                                    <li><strong>Bundled Solutions:</strong> Integrated coverage that spans traditional boundaries</li>
+                                    <li><strong>Expedited Claims:</strong> Specialized process with ASL-fluent representatives</li>
+                                </ul>
+                                <div class="text-center mt-3">
+                                    <a href="{{ url_for('insurance.bundles') }}" class="btn btn-info">
+                                        <i class="fas fa-cubes me-1"></i> Explore Insurance Bundles
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tool Accessibility Assessment -->
+<div class="row mb-5">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Financial Tool Accessibility Assessment</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Tool Type</th>
+                                <th>Visual Elements</th>
+                                <th>Text-Heavy Components</th>
+                                <th>ASL Integration</th>
+                                <th>Overall Accessibility Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Banking Apps</td>
+                                <td>65%</td>
+                                <td>35%</td>
+                                <td class="text-danger">&lt;2%</td>
+                                <td>32/100</td>
+                            </tr>
+                            <tr>
+                                <td>Tax Software</td>
+                                <td>40%</td>
+                                <td>60%</td>
+                                <td class="text-danger">0%</td>
+                                <td>28/100</td>
+                            </tr>
+                            <tr>
+                                <td>Investment Platforms</td>
+                                <td>55%</td>
+                                <td>45%</td>
+                                <td class="text-danger">0%</td>
+                                <td>30/100</td>
+                            </tr>
+                            <tr>
+                                <td>Insurance Documentation</td>
+                                <td>25%</td>
+                                <td>75%</td>
+                                <td class="text-danger">0%</td>
+                                <td>18/100</td>
+                            </tr>
+                            <tr class="table-success">
+                                <td><strong>DEAF FIRST Platform</strong></td>
+                                <td class="text-success">85%</td>
+                                <td>15%</td>
+                                <td class="text-success">100%</td>
+                                <td class="text-success"><strong>92/100</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Market Opportunity -->
+<div class="row mb-5">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">Insurance Market Opportunity</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h1 class="display-4 text-info">11.5M</h1>
+                                <p class="lead">Americans with hearing loss (3.6% of population)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h1 class="display-4 text-info">$490B</h1>
+                                <p class="lead">Combined spending power</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h1 class="display-4 text-info">1.2M</h1>
+                                <p class="lead">ASL as primary language</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <h5>Insurance Consulting Market Projections:</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Metric</th>
+                                        <th>Year 1</th>
+                                        <th>Year 3</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Target Users</td>
+                                        <td>5,000</td>
+                                        <td>30,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Revenue Potential</td>
+                                        <td>$500,000</td>
+                                        <td>$3,000,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Expected Adoption Rate</td>
+                                        <td>10% of target market</td>
+                                        <td>25% of target market</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Customer Acquisition Cost</td>
+                                        <td>$45</td>
+                                        <td>$38</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Metrics -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card bg-dark text-white">
+            <div class="card-header">
+                <h4 class="mb-0">Platform Success Metrics</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>User Testing Results:</h5>
+                        <ul class="list-group mb-4">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Task Completion Success Rate
+                                <span class="badge bg-success rounded-pill">92% vs. 41% traditional</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Time to Complete Tasks
+                                <span class="badge bg-success rounded-pill">-67%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Confidence in Financial Decisions
+                                <span class="badge bg-success rounded-pill">+84%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Customer Satisfaction
+                                <span class="badge bg-success rounded-pill">4.8/5 vs. 2.3/5</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Ongoing Metrics We Track:</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                User Growth Rate
+                                <span class="badge bg-info rounded-pill">Target: 15% monthly</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Feature Engagement
+                                <span class="badge bg-info rounded-pill">Target: 3 weekly sessions</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Net Promoter Score
+                                <span class="badge bg-info rounded-pill">Target: 70+</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Financial Literacy Improvement
+                                <span class="badge bg-info rounded-pill">Target: +30% increase</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('insurance.bundles') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-shield-alt me-2"></i> Explore Insurance Solutions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-play the impact data ASL video when page loads
+        // Only if the user has ASL videos enabled
+        const aslVideosEnabled = localStorage.getItem('asl_videos_enabled') !== 'false';
+        if (aslVideosEnabled) {
+            setTimeout(() => {
+                showASLVideo('impact_data');
+            }, 1000); // Small delay to ensure page is fully loaded
+        }
+    });
+</script>
+{% endblock %}

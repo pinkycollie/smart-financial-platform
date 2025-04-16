@@ -295,6 +295,11 @@ def review_bundle_quote(bundle_code):
         'status': 'under development'
     })
 
+@insurance_bp.route('/impact-data')
+def impact_dashboard():
+    """Show data about insurance and financial disparities for deaf community"""
+    return render_template('fintech/insurance/impact_dashboard.html')
+
 @insurance_bp.route('/asl-videos/<string:video_key>')
 def get_asl_video(video_key):
     """Get ASL video for insurance concept"""
