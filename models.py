@@ -13,13 +13,18 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(256))
     first_name = db.Column(db.String(64))
     last_name = db.Column(db.String(64))
+    
+    # DEAF FIRST specific fields
+    account_type = db.Column(db.String(20), default='deaf_user')  # investor, shareholder, beta_user, deaf_user
+    registration_date = db.Column(db.DateTime, default=datetime.utcnow)
+    last_login = db.Column(db.DateTime)
+    account_status = db.Column(db.String(20), default='active')  # active, inactive, suspended
+    preferred_communication_method = db.Column(db.String(20), default='text')  # ASL_video, text, captions
+    
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     accessibility_settings = db.Column(db.JSON, default={})
     eula_accepted = db.Column(db.Boolean, default=False)
-    
-    # Subscription status
-    account_type = db.Column(db.String(20), default='free')  # free, premium
     
     # Relationships
     financial_profiles = db.relationship('FinancialProfile', back_populates='user', cascade='all, delete-orphan')

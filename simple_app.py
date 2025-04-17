@@ -205,8 +205,45 @@ def accessibility_settings():
         'status': 'under development'
     })
 
+@app.route('/investor-portal')
+def investor_portal():
+    """Portal page for investors, shareholders, and beta testers"""
+    # Example data
+    investments = [
+        {'id': 1, 'amount': 150000, 'date': '2024-01-15', 'type': 'equity', 'roi': 12.5},
+        {'id': 2, 'amount': 75000, 'date': '2024-03-22', 'type': 'convertible', 'roi': 10.0}
+    ]
+    
+    platform_metrics = {
+        'active_users': 12450,
+        'retention_rate': 82.5,
+        'new_signups_monthly': 2300,
+        'avg_session_duration': 24.5
+    }
+    
+    shareholder_updates = [
+        {'id': 1, 'title': 'Q1 2025 Financial Results', 'date': '2025-04-10', 'confidentiality': 'shareholders'},
+        {'id': 2, 'title': 'New Deaf-First Features Launched', 'date': '2025-03-28', 'confidentiality': 'public'},
+        {'id': 3, 'title': 'Strategic Partnership with SignASL', 'date': '2025-03-15', 'confidentiality': 'investors'}
+    ]
+    
+    beta_features = [
+        {'id': 1, 'name': 'AI-Powered ASL Translation', 'status': 'active', 'release_date': '2025-05-15'},
+        {'id': 2, 'name': 'Real-time Financial Advice with ASL', 'status': 'in_testing', 'release_date': '2025-06-01'},
+        {'id': 3, 'name': 'Multi-modal Communication Hub', 'status': 'planned', 'release_date': '2025-07-01'}
+    ]
+    
+    return render_template('investor_portal.html',
+                          title='Investor Portal - DEAF FIRST',
+                          investments=investments,
+                          platform_metrics=platform_metrics,
+                          shareholder_updates=shareholder_updates,
+                          beta_features=beta_features)
+
 # Import models (needed for creating tables)
 import models
+import models_additions
+from models_import import *
 
 # Create tables
 with app.app_context():

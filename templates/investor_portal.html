@@ -1,0 +1,493 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block styles %}
+<style>
+    /* Investor Portal specific styles */
+    .card-dashboard {
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background-color: var(--bs-body-bg);
+    }
+    
+    .card-dashboard:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-dashboard .card-header {
+        background-color: transparent;
+        border-bottom: 1px solid var(--bs-border-color);
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .card-dashboard .card-header h5 {
+        margin: 0;
+        font-weight: 700;
+    }
+    
+    .card-dashboard .card-body {
+        padding: 1.5rem;
+    }
+    
+    /* Metric display */
+    .metric-card {
+        text-align: center;
+        padding: 1.5rem;
+        background-color: rgba(0, 102, 204, 0.05);
+        border-radius: 8px;
+        height: 100%;
+    }
+    
+    .metric-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #0066CC;
+        margin-bottom: 0.5rem;
+    }
+    
+    .metric-label {
+        font-weight: 600;
+        color: var(--bs-secondary-color);
+    }
+    
+    /* Status badges */
+    .badge-active {
+        background-color: rgba(0, 170, 85, 0.2);
+        color: #00AA55;
+    }
+    
+    .badge-in-testing {
+        background-color: rgba(0, 102, 204, 0.2);
+        color: #0066CC;
+    }
+    
+    .badge-planned {
+        background-color: rgba(153, 153, 153, 0.2);
+        color: #999999;
+    }
+    
+    /* Confidentiality indicators */
+    .confidentiality-investors {
+        border-left: 4px solid #0066CC;
+    }
+    
+    .confidentiality-shareholders {
+        border-left: 4px solid #00AA55;
+    }
+    
+    .confidentiality-public {
+        border-left: 4px solid #FFAA00;
+    }
+    
+    /* Portal navigation */
+    .portal-nav {
+        background-color: var(--bs-body-bg);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+    }
+    
+    .portal-nav .nav-link {
+        color: var(--bs-body-color);
+        padding: 1rem 1.25rem;
+        border-radius: 0;
+        border-bottom: 3px solid transparent;
+        font-weight: 500;
+    }
+    
+    .portal-nav .nav-link.active {
+        background-color: transparent;
+        border-bottom-color: #0066CC;
+        color: #0066CC;
+        font-weight: 700;
+    }
+    
+    .portal-nav .nav-link:hover:not(.active) {
+        border-bottom-color: rgba(0, 102, 204, 0.3);
+    }
+    
+    /* Investment type pills */
+    .pill-equity {
+        background-color: rgba(0, 170, 85, 0.1);
+        color: #00AA55;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .pill-convertible {
+        background-color: rgba(0, 102, 204, 0.1);
+        color: #0066CC;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .pill-debt {
+        background-color: rgba(255, 170, 0, 0.1);
+        color: #FFAA00;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="mb-0">Investor Portal</h1>
+            <p class="text-muted mb-0">Access financial data, metrics, and beta features</p>
+        </div>
+        <div class="col-auto">
+            <a href="/dashboard" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+    
+    <!-- Portal Navigation -->
+    <ul class="nav nav-pills portal-nav mb-4">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="pill" href="#overview">Overview</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="pill" href="#investments">Investments</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="pill" href="#updates">Updates</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="pill" href="#beta">Beta Features</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="pill" href="#metrics">Platform Metrics</a>
+        </li>
+    </ul>
+    
+    <!-- Portal Content -->
+    <div class="tab-content">
+        <!-- Overview Section -->
+        <div class="tab-pane fade show active" id="overview">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card card-dashboard mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Platform Summary</h5>
+                            <span class="badge bg-info">DEAF FIRST 2.0</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-primary">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Welcome to the DEAF FIRST Investor Portal!</strong> This secure area is designed for our investors, shareholders, and beta testers to access financial data, usage metrics, and test upcoming features.
+                            </div>
+                            
+                            <h6 class="mt-4 mb-3">Key Highlights</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <div class="d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: rgba(0, 102, 204, 0.1); border-radius: 8px;">
+                                            <i class="fas fa-users text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">12,450 Active Users</div>
+                                            <div class="text-muted small">82.5% Retention Rate</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <div class="d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: rgba(0, 170, 85, 0.1); border-radius: 8px;">
+                                            <i class="fas fa-chart-line text-success"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">$225K Total Investment</div>
+                                            <div class="text-muted small">11.7% Avg. Expected ROI</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <div class="d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: rgba(255, 170, 0, 0.1); border-radius: 8px;">
+                                            <i class="fas fa-hands text-warning"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">3 Beta Features</div>
+                                            <div class="text-muted small">ASL AI Technology Coming Soon</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <div class="d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: rgba(221, 0, 0, 0.1); border-radius: 8px;">
+                                            <i class="fas fa-bell text-danger"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">3 Recent Updates</div>
+                                            <div class="text-muted small">Latest: April 10, 2025</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="card card-dashboard h-100">
+                        <div class="card-header">
+                            <h5>Quick Access</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+                                <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-file-alt text-primary me-2"></i>
+                                        Q1 2025 Financial Report
+                                    </div>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-chart-pie text-success me-2"></i>
+                                        Investment Portfolio
+                                    </div>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-flask text-warning me-2"></i>
+                                        Beta Testing Dashboard
+                                    </div>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-handshake text-info me-2"></i>
+                                        Partnership Opportunities
+                                    </div>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-comment-alt text-danger me-2"></i>
+                                        Submit Feedback
+                                    </div>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Investments Section -->
+        <div class="tab-pane fade" id="investments">
+            <div class="card card-dashboard">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Your Investments</h5>
+                    <button class="btn btn-sm btn-primary">
+                        <i class="fas fa-download me-1"></i> Export Data
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Expected ROI</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for investment in investments %}
+                                <tr>
+                                    <td>#{{ investment.id }}</td>
+                                    <td>${{ "{:,.0f}".format(investment.amount) }}</td>
+                                    <td>{{ investment.date }}</td>
+                                    <td>
+                                        <span class="pill-{{ investment.type }}">{{ investment.type|title }}</span>
+                                    </td>
+                                    <td>{{ investment.roi }}%</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary me-1">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-file-pdf"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="alert alert-info mt-4 mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Investment Guidance:</strong> For questions about your investments or to discuss additional opportunities, please contact your DEAF FIRST investment advisor.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Updates Section -->
+        <div class="tab-pane fade" id="updates">
+            <div class="card card-dashboard">
+                <div class="card-header">
+                    <h5>Shareholder Updates</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for update in shareholder_updates %}
+                        <div class="list-group-item list-group-item-action confidentiality-{{ update.confidentiality }} ps-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-1">{{ update.title }}</h6>
+                                <span class="badge rounded-pill bg-light text-dark">{{ update.date }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="mb-1 text-muted small">
+                                    <i class="fas fa-lock me-1" title="Confidentiality Level"></i>
+                                    {{ update.confidentiality|title }} Only
+                                </p>
+                                <button class="btn btn-sm btn-outline-primary">Read More</button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Beta Features Section -->
+        <div class="tab-pane fade" id="beta">
+            <div class="card card-dashboard">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Beta Testing Program</h5>
+                    <a href="#" class="btn btn-sm btn-primary">Join Testing</a>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        {% for feature in beta_features %}
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <span class="badge badge-{{ feature.status }}">{{ feature.status|replace('_', ' ')|title }}</span>
+                                        <small class="text-muted">Release: {{ feature.release_date }}</small>
+                                    </div>
+                                    <h5 class="card-title">{{ feature.name }}</h5>
+                                    <p class="card-text text-muted">
+                                        Experience the next generation of DEAF FIRST technology before it's publicly available.
+                                    </p>
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <button class="btn btn-sm btn-outline-primary">Details</button>
+                                        <button class="btn btn-sm btn-success">Test Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="alert alert-warning mt-4 mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Beta Testing Disclaimer:</strong> Features in beta may contain bugs or incomplete functionality. Your feedback helps us improve!
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Metrics Section -->
+        <div class="tab-pane fade" id="metrics">
+            <div class="card card-dashboard">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Platform Performance Metrics</h5>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="fas fa-calendar-alt me-1"></i> Last 90 Days
+                        </button>
+                        <button class="btn btn-sm btn-primary">
+                            <i class="fas fa-chart-line me-1"></i> View Trends
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3 mb-md-0">
+                            <div class="metric-card">
+                                <div class="metric-value">{{ "{:,}".format(platform_metrics.active_users) }}</div>
+                                <div class="metric-label">Active Users</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3 mb-md-0">
+                            <div class="metric-card">
+                                <div class="metric-value">{{ platform_metrics.retention_rate }}%</div>
+                                <div class="metric-label">Retention Rate</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3 mb-md-0">
+                            <div class="metric-card">
+                                <div class="metric-value">{{ "{:,}".format(platform_metrics.new_signups_monthly) }}</div>
+                                <div class="metric-label">New Monthly Signups</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-value">{{ platform_metrics.avg_session_duration }}m</div>
+                                <div class="metric-label">Avg. Session Duration</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="height: 300px; border-radius: 8px; overflow: hidden; background-color: var(--bs-border-color); margin-bottom: 1.5rem;">
+                        <!-- Placeholder for metrics chart -->
+                        <div style="height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <div class="text-center">
+                                <i class="fas fa-chart-bar fa-3x mb-3 text-secondary"></i>
+                                <p class="mb-0">Interactive analytics dashboard<br>will appear here</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-success mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Growth Trajectory:</strong> We've seen consistent user growth of 18% month-over-month since our beta launch in January 2025.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize the tabs
+        var triggerTabList = [].slice.call(document.querySelectorAll('.portal-nav a'))
+        triggerTabList.forEach(function(triggerEl) {
+            var tabTrigger = new bootstrap.Tab(triggerEl)
+            
+            triggerEl.addEventListener('click', function(event) {
+                event.preventDefault()
+                tabTrigger.show()
+            })
+        })
+    })
+</script>
+{% endblock %}
