@@ -3,381 +3,529 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}MbTQ Financial Platform{% endblock %}</title>
-    <!-- Bootstrap CSS (Replit-themed dark) -->
+    <title>{% block title %}MBTQ GROUP Financial Platform{% endblock %}</title>
+    <!-- Bootstrap CSS (Replit-themed) -->
     <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
-    <!-- Font Awesome -->
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
+    <!-- Custom CSS for MBTQ theme -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    {% block head %}{% endblock %}
+    {% block styles %}{% endblock %}
     <style>
-        /* Custom styles to supplement Bootstrap */
-        .deaf-specialized-badge {
-            background-color: var(--bs-success);
-            color: white;
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-weight: bold;
-            text-transform: uppercase;
+        /* Base styles for MBTQ GROUP */
+        :root {
+            --mbtq-primary: #D4AF37;  /* Gold for primary branding */
+            --mbtq-secondary: #343434; /* Dark gray for secondary elements */
+            --mbtq-accent: #8A2BE2;   /* Purple for accents and CTAs */
+            --navbar-height: 60px;
+            --sidebar-width: 280px;
         }
         
-        .deaf-accessible {
-            position: relative;
+        /* ASL video button styles */
+        .asl-video-btn {
+            background-color: var(--deaf-first-primary);
+            border-color: var(--deaf-first-primary);
+            border-radius: 50px;
+            padding: 0.25rem 0.75rem;
         }
         
-        .deaf-accessible .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* Horizontal scrolling nav for desktop */
+        .scrolling-nav-container {
+            overflow-x: auto;
+            white-space: nowrap;
+            -ms-overflow-style: none;  /* Hide scrollbar IE and Edge */
+            scrollbar-width: none;     /* Hide scrollbar Firefox */
+        }
+        .scrolling-nav-container::-webkit-scrollbar {
+            display: none;  /* Hide scrollbar Chrome, Safari, Opera */
         }
         
-        .premium-display {
-            text-align: center;
-            margin-bottom: 2rem;
+        /* Mobile navigation */
+        .mobile-nav-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
         }
         
-        .premium-amount {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--bs-info);
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background-color: var(--bs-body-bg);
+            z-index: 1040;
+            transition: left 0.3s ease-in-out;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
         }
         
-        .insurance-feature-list li {
-            margin-bottom: 0.5rem;
-            position: relative;
-            padding-left: 1.5rem;
-        }
-        
-        .insurance-feature-list li:before {
-            content: "✓";
-            position: absolute;
+        .mobile-sidebar.active {
             left: 0;
-            color: var(--bs-info);
-            font-weight: bold;
         }
         
-        .required:after {
-            content: "*";
-            color: var(--bs-danger);
-            margin-left: 4px;
+        .sidebar-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1039;
+            display: none;
+        }
+        
+        .sidebar-backdrop.active {
+            display: block;
+        }
+        
+        /* Footer styles */
+        footer {
+            margin-top: 3rem;
+            padding: 2rem 0;
+            background-color: var(--bs-body-bg);
+            border-top: 1px solid var(--bs-border-color);
+        }
+        
+        /* Media queries for responsive design */
+        @media (max-width: 768px) {
+            .mobile-nav-toggle {
+                display: flex;
+            }
+            
+            .scrolling-nav-container {
+                display: none;
+            }
+            
+            body {
+                padding-bottom: 70px; /* Make room for floating button */
+            }
         }
     </style>
 </head>
 <body>
     <!-- Main Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark border-bottom mb-4">
         <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-chart-line me-2"></i>MbTQ
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="fas fa-hand-holding-usd text-info me-2"></i>
+                <span>DEAF FIRST</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <!-- Fintech Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            Financial Services
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/fintech/dashboard">Dashboard</a></li>
-                            <li><a class="dropdown-item" href="/fintech/tax-filing">Tax Filing</a></li>
-                            <li><a class="dropdown-item" href="/fintech/financial-profile">Financial Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/insurance">Insurance</a></li>
-                        </ul>
-                    </li>
-                    <!-- Accessibility Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            Deaf First
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/accessibility/asl-videos">ASL Videos</a></li>
-                            <li><a class="dropdown-item" href="/accessibility/deaf-support-bot">Support Bot</a></li>
-                            <li><a class="dropdown-item" href="/accessibility/settings">Accessibility Settings</a></li>
-                        </ul>
-                    </li>
-                    <!-- Business & Partnerships -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            Business
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/fintech/business">Dashboard</a></li>
-                            <li><a class="dropdown-item" href="/fintech/business/pitch-deck">Pitch Deck</a></li>
-                            <li><a class="dropdown-item" href="/fintech/business/impact-data">Impact Data</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/fintech/business/partnerships">Partnerships</a></li>
-                            <li><a class="dropdown-item" href="/fintech/business/partnerships/bloomberg">Bloomberg Integration</a></li>
-                            <li><a class="dropdown-item" href="/communication/partnership">
-                                <span class="position-relative">
-                                    VSL Labs Integration
-                                    <span class="badge bg-info position-absolute top-0 end-0 translate-middle">New</span>
-                                </span>
-                            </a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <!-- User Menu (right side) -->
+            
+            <!-- Desktop Navigation (Scrollable) -->
+            <div class="scrolling-nav-container ms-auto">
                 <ul class="navbar-nav">
-                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">
+                            <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    
+                    <!-- Tax & Insurance Planning -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user me-1"></i>{{ current_user.username }}
+                            <i class="fas fa-file-invoice-dollar me-1"></i> Tax & Insurance
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/profile">My Profile</a></li>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/tax-planning">Tax Planning</a></li>
+                            <li><a class="dropdown-item" href="/tax-filing">Tax Filing</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                            <li><a class="dropdown-item" href="/insurance/products">Insurance Products</a></li>
+                            <li><a class="dropdown-item" href="/insurance/bundles">Insurance Bundles</a></li>
+                            <li><a class="dropdown-item" href="/insurance/my-policies">My Policies</a></li>
                         </ul>
                     </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">
-                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                    
+                    <!-- Real Estate -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-home me-1"></i> Real Estate
                         </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/real-estate/properties">My Properties</a></li>
+                            <li><a class="dropdown-item" href="/real-estate/mortgage">Mortgage Calculator</a></li>
+                            <li><a class="dropdown-item" href="/real-estate/accessibility">Accessibility Guide</a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/register">
-                            <i class="fas fa-user-plus me-1"></i>Register
+                    
+                    <!-- Estate Planning -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-scroll me-1"></i> Estate Planning
                         </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/estate/will">Wills & Trusts</a></li>
+                            <li><a class="dropdown-item" href="/estate/poa">Power of Attorney</a></li>
+                            <li><a class="dropdown-item" href="/estate/healthcare">Healthcare Directives</a></li>
+                        </ul>
                     </li>
-                    {% endif %}
-                    <!-- ASL Video Toggle -->
-                    <li class="nav-item ms-2">
-                        <button class="btn btn-sm btn-outline-info" id="aslVideoToggle">
-                            <i class="fas fa-sign-language"></i>
-                            <span id="aslStatusText">ASL On</span>
-                        </button>
+                    
+                    <!-- Business Planning -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-briefcase me-1"></i> Business
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/business/my-businesses">My Businesses</a></li>
+                            <li><a class="dropdown-item" href="/business/taxes">Business Taxes</a></li>
+                            <li><a class="dropdown-item" href="/business/insurance">Business Insurance</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/business/partnerships">Partnerships</a></li>
+                            <li><a class="dropdown-item" href="/business/vsl-integration">VSL Labs Integration</a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Education Planning -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-graduation-cap me-1"></i> Education
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/education/my-plans">My Education Plans</a></li>
+                            <li><a class="dropdown-item" href="/education/529-plans">529 Plans</a></li>
+                            <li><a class="dropdown-item" href="/education/scholarships">Deaf Scholarships</a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Tools & Resources -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-tools me-1"></i> Tools
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/tools/financial-calculators">Financial Calculators</a></li>
+                            <li><a class="dropdown-item" href="/tools/budget-planner">Budget Planner</a></li>
+                            <li><a class="dropdown-item" href="/tools/retirement-simulator">Retirement Simulator</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/asl-resources">ASL Financial Resources</a></li>
+                            <li><a class="dropdown-item" href="/api/documentation">API Documentation</a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Help & Support -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/support">
+                            <i class="fas fa-question-circle me-1"></i> Support
+                        </a>
                     </li>
                 </ul>
+            </div>
+            
+            <!-- User Account -->
+            <div class="d-flex ms-3">
+                <div class="dropdown">
+                    <button class="btn btn-outline-info dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/profile"><i class="fas fa-id-card me-2"></i>My Profile</a></li>
+                        <li><a class="dropdown-item" href="/settings"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                        <li><a class="dropdown-item" href="/accessibility"><i class="fas fa-universal-access me-2"></i>Accessibility</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/subscription"><i class="fas fa-crown me-2"></i>Premium Features</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
-
-    <!-- Flash Messages -->
-    <div class="container mt-3">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    
+    <!-- Mobile Navigation Toggle Button (Fixed, Floating) -->
+    <button class="btn btn-primary mobile-nav-toggle" id="mobileNavToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- Mobile Sidebar Navigation -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="fas fa-hand-holding-usd text-info me-2"></i>
+                <span>DEAF FIRST</span>
+            </a>
+            <button class="btn btn-outline-secondary btn-sm" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
-    </div>
-
-    <!-- Main Content -->
-    <main class="container py-4">
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-light py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <h5><i class="fas fa-chart-line me-2"></i>MbTQ Financial</h5>
-                    <p class="small">A financial platform designed with Deaf First principles, making tax and financial services accessible to the deaf and hard of hearing community.</p>
+        
+        <div class="p-3">
+            <div class="list-group list-group-flush">
+                <a href="/dashboard" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                </a>
+                
+                <!-- Tax & Insurance Planning -->
+                <div class="accordion accordion-flush" id="taxInsuranceAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#taxInsuranceCollapse">
+                                <i class="fas fa-file-invoice-dollar me-2"></i> Tax & Insurance
+                            </button>
+                        </h2>
+                        <div id="taxInsuranceCollapse" class="accordion-collapse collapse" data-bs-parent="#taxInsuranceAccordion">
+                            <div class="accordion-body p-0">
+                                <div class="list-group list-group-flush">
+                                    <a href="/tax-planning" class="list-group-item list-group-item-action ps-4">Tax Planning</a>
+                                    <a href="/tax-filing" class="list-group-item list-group-item-action ps-4">Tax Filing</a>
+                                    <a href="/insurance/products" class="list-group-item list-group-item-action ps-4">Insurance Products</a>
+                                    <a href="/insurance/bundles" class="list-group-item list-group-item-action ps-4">Insurance Bundles</a>
+                                    <a href="/insurance/my-policies" class="list-group-item list-group-item-action ps-4">My Policies</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-2 mb-3">
-                    <h6>Services</h6>
-                    <ul class="list-unstyled small">
-                        <li><a href="/fintech/tax-filing" class="text-decoration-none text-secondary">Tax Filing</a></li>
-                        <li><a href="/fintech/financial-profile" class="text-decoration-none text-secondary">Financial Profiles</a></li>
-                        <li><a href="/insurance" class="text-decoration-none text-secondary">Insurance</a></li>
-                    </ul>
+                
+                <!-- Real Estate -->
+                <div class="accordion accordion-flush" id="realEstateAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#realEstateCollapse">
+                                <i class="fas fa-home me-2"></i> Real Estate
+                            </button>
+                        </h2>
+                        <div id="realEstateCollapse" class="accordion-collapse collapse" data-bs-parent="#realEstateAccordion">
+                            <div class="accordion-body p-0">
+                                <div class="list-group list-group-flush">
+                                    <a href="/real-estate/properties" class="list-group-item list-group-item-action ps-4">My Properties</a>
+                                    <a href="/real-estate/mortgage" class="list-group-item list-group-item-action ps-4">Mortgage Calculator</a>
+                                    <a href="/real-estate/accessibility" class="list-group-item list-group-item-action ps-4">Accessibility Guide</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-2 mb-3">
-                    <h6>Accessibility</h6>
-                    <ul class="list-unstyled small">
-                        <li><a href="/accessibility/asl-videos" class="text-decoration-none text-secondary">ASL Videos</a></li>
-                        <li><a href="/accessibility/deaf-support-bot" class="text-decoration-none text-secondary">Support Bot</a></li>
-                        <li><a href="/accessibility/settings" class="text-decoration-none text-secondary">Settings</a></li>
-                    </ul>
+                
+                <!-- Estate Planning -->
+                <div class="accordion accordion-flush" id="estateAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#estateCollapse">
+                                <i class="fas fa-scroll me-2"></i> Estate Planning
+                            </button>
+                        </h2>
+                        <div id="estateCollapse" class="accordion-collapse collapse" data-bs-parent="#estateAccordion">
+                            <div class="accordion-body p-0">
+                                <div class="list-group list-group-flush">
+                                    <a href="/estate/will" class="list-group-item list-group-item-action ps-4">Wills & Trusts</a>
+                                    <a href="/estate/poa" class="list-group-item list-group-item-action ps-4">Power of Attorney</a>
+                                    <a href="/estate/healthcare" class="list-group-item list-group-item-action ps-4">Healthcare Directives</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-2 mb-3">
-                    <h6>Company</h6>
-                    <ul class="list-unstyled small">
-                        <li><a href="/about" class="text-decoration-none text-secondary">About Us</a></li>
-                        <li><a href="/contact" class="text-decoration-none text-secondary">Contact</a></li>
-                        <li><a href="/privacy" class="text-decoration-none text-secondary">Privacy Policy</a></li>
-                    </ul>
+                
+                <!-- Business Planning -->
+                <div class="accordion accordion-flush" id="businessAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#businessCollapse">
+                                <i class="fas fa-briefcase me-2"></i> Business
+                            </button>
+                        </h2>
+                        <div id="businessCollapse" class="accordion-collapse collapse" data-bs-parent="#businessAccordion">
+                            <div class="accordion-body p-0">
+                                <div class="list-group list-group-flush">
+                                    <a href="/business/my-businesses" class="list-group-item list-group-item-action ps-4">My Businesses</a>
+                                    <a href="/business/taxes" class="list-group-item list-group-item-action ps-4">Business Taxes</a>
+                                    <a href="/business/insurance" class="list-group-item list-group-item-action ps-4">Business Insurance</a>
+                                    <a href="/business/partnerships" class="list-group-item list-group-item-action ps-4">Partnerships</a>
+                                    <a href="/business/vsl-integration" class="list-group-item list-group-item-action ps-4">VSL Labs Integration</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-2 mb-3">
-                    <h6>Legal</h6>
-                    <ul class="list-unstyled small">
-                        <li><a href="/terms" class="text-decoration-none text-secondary">Terms of Service</a></li>
-                        <li><a href="/eula" class="text-decoration-none text-secondary">EULA</a></li>
-                    </ul>
+                
+                <!-- Education Planning -->
+                <div class="accordion accordion-flush" id="educationAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#educationCollapse">
+                                <i class="fas fa-graduation-cap me-2"></i> Education
+                            </button>
+                        </h2>
+                        <div id="educationCollapse" class="accordion-collapse collapse" data-bs-parent="#educationAccordion">
+                            <div class="accordion-body p-0">
+                                <div class="list-group list-group-flush">
+                                    <a href="/education/my-plans" class="list-group-item list-group-item-action ps-4">My Education Plans</a>
+                                    <a href="/education/529-plans" class="list-group-item list-group-item-action ps-4">529 Plans</a>
+                                    <a href="/education/scholarships" class="list-group-item list-group-item-action ps-4">Deaf Scholarships</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tools & Resources -->
+                <div class="accordion accordion-flush" id="toolsAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#toolsCollapse">
+                                <i class="fas fa-tools me-2"></i> Tools
+                            </button>
+                        </h2>
+                        <div id="toolsCollapse" class="accordion-collapse collapse" data-bs-parent="#toolsAccordion">
+                            <div class="accordion-body p-0">
+                                <div class="list-group list-group-flush">
+                                    <a href="/tools/financial-calculators" class="list-group-item list-group-item-action ps-4">Financial Calculators</a>
+                                    <a href="/tools/budget-planner" class="list-group-item list-group-item-action ps-4">Budget Planner</a>
+                                    <a href="/tools/retirement-simulator" class="list-group-item list-group-item-action ps-4">Retirement Simulator</a>
+                                    <a href="/asl-resources" class="list-group-item list-group-item-action ps-4">ASL Financial Resources</a>
+                                    <a href="/api/documentation" class="list-group-item list-group-item-action ps-4">API Documentation</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Help & Support -->
+                <a href="/support" class="list-group-item list-group-item-action">
+                    <i class="fas fa-question-circle me-2"></i> Support
+                </a>
+                
+                <div class="mt-4 p-3 border-top">
+                    <div class="d-grid gap-2">
+                        <a href="/profile" class="btn btn-outline-info btn-sm">
+                            <i class="fas fa-user-circle me-1"></i> My Profile
+                        </a>
+                        <a href="/settings" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-cog me-1"></i> Settings
+                        </a>
+                        <a href="/accessibility" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-universal-access me-1"></i> Accessibility
+                        </a>
+                        <a href="/subscription" class="btn btn-warning btn-sm">
+                            <i class="fas fa-crown me-1"></i> Premium Features
+                        </a>
+                        <a href="/logout" class="btn btn-outline-danger btn-sm">
+                            <i class="fas fa-sign-out-alt me-1"></i> Logout
+                        </a>
+                    </div>
                 </div>
             </div>
-            <hr class="border-secondary">
+        </div>
+    </div>
+    
+    <!-- Main Content Area -->
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="mt-5">
+        <div class="container">
             <div class="row">
-                <div class="col-md-6 small text-secondary">
-                    &copy; 2025 MbTQ Financial Technologies. All rights reserved.
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-info mb-3">DEAF FIRST Financial</h5>
+                    <p>Empowering the deaf community with accessible financial tools and resources designed specifically for your needs.</p>
+                    <div class="d-flex mt-3">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-youtube"></i></a>
+                    </div>
                 </div>
-                <div class="col-md-6 text-md-end small">
-                    <a href="#" class="text-decoration-none text-secondary me-3">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" class="text-decoration-none text-secondary me-3">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" class="text-decoration-none text-secondary me-3">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" class="text-decoration-none text-secondary">
-                        <i class="fab fa-youtube"></i>
-                    </a>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-info mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/dashboard" class="text-light text-decoration-none"><i class="fas fa-angle-right me-2"></i>Dashboard</a></li>
+                        <li class="mb-2"><a href="/tax-filing" class="text-light text-decoration-none"><i class="fas fa-angle-right me-2"></i>Tax Filing</a></li>
+                        <li class="mb-2"><a href="/insurance/bundles" class="text-light text-decoration-none"><i class="fas fa-angle-right me-2"></i>Insurance Bundles</a></li>
+                        <li class="mb-2"><a href="/real-estate/properties" class="text-light text-decoration-none"><i class="fas fa-angle-right me-2"></i>Real Estate</a></li>
+                        <li class="mb-2"><a href="/business/my-businesses" class="text-light text-decoration-none"><i class="fas fa-angle-right me-2"></i>Business Planning</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-info mb-3">Tools & Resources</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/asl-resources" class="text-light text-decoration-none"><i class="fas fa-angle-right me-2"></i>ASL Financial Terms</a></li>
+                        <li class="mb-2"><a href="/tools/calculators" class="text-light text-decoration-none"><i class="fas fa-angle-right me-2"></i>Financial Calculators</a></li>
+                        <li class="mb-2"><a href="/tools/budget-planner" class="text-light text-decoration-none"><i class="fas fa-angle-right me-2"></i>Budget Planner</a></li>
+                        <li class="mb-2"><a href="/api/documentation" class="text-light text-decoration-none"><i class="fas fa-angle-right me-2"></i>API Documentation</a></li>
+                        <li class="mb-2"><a href="/tools/retirement-simulator" class="text-light text-decoration-none"><i class="fas fa-angle-right me-2"></i>Retirement Simulator</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-info mb-3">Contact & Support</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/support" class="text-light text-decoration-none"><i class="fas fa-question-circle me-2"></i>Help & Support</a></li>
+                        <li class="mb-2"><a href="/accessibility" class="text-light text-decoration-none"><i class="fas fa-universal-access me-2"></i>Accessibility Settings</a></li>
+                        <li class="mb-2"><a href="/contact" class="text-light text-decoration-none"><i class="fas fa-envelope me-2"></i>Contact Us</a></li>
+                        <li class="mb-2"><a href="/feedback" class="text-light text-decoration-none"><i class="fas fa-comment-alt me-2"></i>Provide Feedback</a></li>
+                    </ul>
+                    
+                    <div class="mt-3 p-3 border rounded">
+                        <p class="mb-2"><strong>Need ASL Support?</strong></p>
+                        <a href="/support/asl-video-chat" class="btn btn-outline-info btn-sm w-100">
+                            <i class="fas fa-sign-language me-1"></i> ASL Video Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <p class="mb-0 text-secondary">© 2025 DEAF FIRST Financial. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item"><a href="/terms" class="text-secondary">Terms of Service</a></li>
+                        <li class="list-inline-item"><span class="text-secondary">•</span></li>
+                        <li class="list-inline-item"><a href="/privacy" class="text-secondary">Privacy Policy</a></li>
+                        <li class="list-inline-item"><span class="text-secondary">•</span></li>
+                        <li class="list-inline-item"><a href="/accessibility-statement" class="text-secondary">Accessibility Statement</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
     </footer>
-
-    <!-- ASL Video Modal -->
-    <div class="modal fade" id="aslVideoModal" tabindex="-1" aria-labelledby="aslVideoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="aslVideoModalLabel">ASL Video</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="aslVideoContainer">
-                        <div class="placeholder-container text-center p-5">
-                            <i class="fas fa-sign-language fa-3x mb-3 text-info"></i>
-                            <h4>ASL Video</h4>
-                            <p class="text-muted">Loading ASL video content...</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <div>
-                        <button class="btn btn-sm btn-secondary me-2" id="aslSlower">
-                            <i class="fas fa-minus"></i> Slower
-                        </button>
-                        <button class="btn btn-sm btn-secondary" id="aslFaster">
-                            <i class="fas fa-plus"></i> Faster
-                        </button>
-                    </div>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bootstrap & jQuery Scripts -->
+    
+    <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- ASL Videos Script -->
-    <script src="{{ url_for('static', filename='js/asl-videos.js') }}"></script>
-    <!-- Custom Scripts -->
+    
+    <!-- ASL Video Player Scripts -->
+    <script src="{{ url_for('static', filename='js/asl-video-player.js') }}"></script>
+    
+    <!-- Mobile Navigation Script -->
     <script>
-        // ASL Video Toggle Functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize ASL video preference from localStorage or default to enabled
-            let aslVideosEnabled = localStorage.getItem('asl_videos_enabled');
-            if (aslVideosEnabled === null) {
-                localStorage.setItem('asl_videos_enabled', 'true');
-                aslVideosEnabled = 'true';
+            const mobileNavToggle = document.getElementById('mobileNavToggle');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+            
+            function openSidebar() {
+                mobileSidebar.classList.add('active');
+                sidebarBackdrop.classList.add('active');
+                document.body.style.overflow = 'hidden';
             }
             
-            // Update toggle button text
-            updateAslToggleButton(aslVideosEnabled === 'true');
-            
-            // ASL Toggle Button Click Handler
-            const aslToggleBtn = document.getElementById('aslVideoToggle');
-            if (aslToggleBtn) {
-                aslToggleBtn.addEventListener('click', function() {
-                    const currentStatus = localStorage.getItem('asl_videos_enabled') === 'true';
-                    const newStatus = !currentStatus;
-                    localStorage.setItem('asl_videos_enabled', newStatus ? 'true' : 'false');
-                    updateAslToggleButton(newStatus);
-                });
+            function closeSidebarFunc() {
+                mobileSidebar.classList.remove('active');
+                sidebarBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
             }
             
-            // Set up ASL video trigger buttons
-            setupAslVideoButtons();
+            mobileNavToggle.addEventListener('click', openSidebar);
+            closeSidebar.addEventListener('click', closeSidebarFunc);
+            sidebarBackdrop.addEventListener('click', closeSidebarFunc);
         });
-        
-        function updateAslToggleButton(enabled) {
-            const toggleBtn = document.getElementById('aslVideoToggle');
-            const statusText = document.getElementById('aslStatusText');
-            
-            if (toggleBtn && statusText) {
-                toggleBtn.classList.remove('btn-outline-info', 'btn-outline-secondary');
-                toggleBtn.classList.add(enabled ? 'btn-outline-info' : 'btn-outline-secondary');
-                statusText.innerText = enabled ? 'ASL On' : 'ASL Off';
-            }
-        }
-        
-        function setupAslVideoButtons() {
-            // Add click event for all buttons with data-asl-video attribute
-            document.querySelectorAll('[data-asl-video]').forEach(button => {
-                button.addEventListener('click', function() {
-                    const videoKey = this.getAttribute('data-asl-video');
-                    showASLVideo(videoKey);
-                });
-            });
-        }
-        
-        function showASLVideo(videoKey) {
-            // Check if ASL videos are enabled
-            if (localStorage.getItem('asl_videos_enabled') !== 'true') {
-                console.log('ASL videos are disabled');
-                return;
-            }
-            
-            // Show modal
-            const modal = new bootstrap.Modal(document.getElementById('aslVideoModal'));
-            modal.show();
-            
-            // Fetch video data
-            fetch(`/insurance/asl-videos/${videoKey}`)
-                .then(response => response.json())
-                .then(videoData => {
-                    console.log('Loaded ASL video data:', videoData);
-                    
-                    // Update modal title
-                    document.getElementById('aslVideoModalLabel').innerText = videoData.title;
-                    
-                    // In a real implementation, this would embed a Mux player or similar
-                    // For now, we just show placeholder content
-                    const videoContainer = document.getElementById('aslVideoContainer');
-                    videoContainer.innerHTML = `
-                        <div class="text-center">
-                            <div class="p-4 bg-dark rounded mb-3">
-                                <i class="fas fa-sign-language fa-4x text-info mb-3"></i>
-                                <h4>${videoData.title}</h4>
-                                <p>${videoData.description}</p>
-                                <div class="bg-info-subtle p-3 mt-4 rounded">
-                                    <p class="mb-0"><strong>Note:</strong> This is a placeholder for the actual ASL video that would be played here.</p>
-                                </div>
-                            </div>
-                            <p class="text-muted small">Video ID: ${videoData.key}</p>
-                        </div>
-                    `;
-                })
-                .catch(error => {
-                    console.error('Error fetching ASL video:', error);
-                    document.getElementById('aslVideoContainer').innerHTML = `
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Error loading ASL video. Please try again later.
-                        </div>
-                    `;
-                });
-        }
     </script>
+    
     {% block scripts %}{% endblock %}
 </body>
 </html>
