@@ -1,0 +1,219 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export interface Database {
+  public: {
+    Tables: {
+      users: {
+        Row: {
+          id: string
+          email: string
+          full_name: string
+          phone: string | null
+          user_type: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          full_name: string
+          phone?: string | null
+          user_type: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          full_name?: string
+          phone?: string | null
+          user_type?: string
+          updated_at?: string
+        }
+      }
+      organizations: {
+        Row: {
+          id: string
+          name: string
+          type: string
+          contact_info: string | null
+          website: string | null
+          description: string | null
+          logo_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          type: string
+          contact_info?: string | null
+          website?: string | null
+          description?: string | null
+          logo_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          type?: string
+          contact_info?: string | null
+          website?: string | null
+          description?: string | null
+          logo_url?: string | null
+          updated_at?: string
+        }
+      }
+      services: {
+        Row: {
+          id: string
+          title: string
+          description: string
+          price: string
+          period: string
+          category: string
+          features: string[]
+          is_partner_service: boolean
+          is_vr_funded: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          description: string
+          price: string
+          period: string
+          category: string
+          features: string[]
+          is_partner_service: boolean
+          is_vr_funded: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          description?: string
+          price?: string
+          period?: string
+          category?: string
+          features?: string[]
+          is_partner_service?: boolean
+          is_vr_funded?: boolean
+          updated_at?: string
+        }
+      }
+      orders: {
+        Row: {
+          id: string
+          user_id: string
+          service_id: string
+          status: string
+          amount: number
+          payment_status: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          service_id: string
+          status: string
+          amount: number
+          payment_status: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          service_id?: string
+          status?: string
+          amount?: number
+          payment_status?: string
+          updated_at?: string
+        }
+      }
+      assets: {
+        Row: {
+          id: string
+          name: string
+          file_url: string
+          file_type: string
+          size: number
+          uploaded_by: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          file_url: string
+          file_type: string
+          size: number
+          uploaded_by: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          file_url?: string
+          file_type?: string
+          size?: number
+          uploaded_by?: string
+        }
+      }
+      business_formations: {
+        Row: {
+          id: string
+          user_id: string
+          business_name: string
+          business_type: string
+          state: string
+          status: string
+          northwest_id: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          business_name: string
+          business_type: string
+          state: string
+          status: string
+          northwest_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          business_name?: string
+          business_type?: string
+          state?: string
+          status?: string
+          northwest_id?: string | null
+          updated_at?: string
+        }
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+  }
+}
+

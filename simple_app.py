@@ -64,12 +64,34 @@ def index():
     """Home page of the MbTQ Financial Platform"""
     return render_template('index.html', title='MbTQ Financial Platform')
 
-@app.route('/fintech/dashboard')
-def fintech_dashboard():
-    return jsonify({
-        'message': 'Financial Dashboard',
-        'status': 'under development'
-    })
+@app.route('/dashboard')
+def dashboard():
+    """Main dashboard with simple, accessible UI"""
+    # Example data for demonstration
+    financial_summary = {
+        'total_assets': 145000,
+        'total_liabilities': 85000,
+        'net_worth': 60000
+    }
+    
+    recent_transactions = [
+        {'date': '2025-04-15', 'description': 'Salary Deposit', 'amount': 3500, 'type': 'income'},
+        {'date': '2025-04-14', 'description': 'Grocery Shopping', 'amount': 120, 'type': 'expense'},
+        {'date': '2025-04-13', 'description': 'Electric Bill', 'amount': 85, 'type': 'expense'},
+        {'date': '2025-04-10', 'description': 'Freelance Payment', 'amount': 750, 'type': 'income'}
+    ]
+    
+    upcoming_tasks = [
+        {'due_date': '2025-04-25', 'description': 'Tax Filing Deadline', 'priority': 'high'},
+        {'due_date': '2025-05-01', 'description': 'Insurance Renewal', 'priority': 'medium'},
+        {'due_date': '2025-05-15', 'description': 'Retirement Fund Review', 'priority': 'low'}
+    ]
+    
+    return render_template('dashboard.html', 
+                          title='Financial Dashboard',
+                          financial_summary=financial_summary,
+                          recent_transactions=recent_transactions,
+                          upcoming_tasks=upcoming_tasks)
 
 @app.route('/fintech/tax-filing')
 def tax_filing():
