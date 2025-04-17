@@ -1,317 +1,473 @@
 {% extends "layout.html" %}
 
-{% block title %}MbTQ Financial Platform - Tax and Financial Services for Deaf Community{% endblock %}
+{% block title %}MBTQ GROUP | DEAF FIRST Financial Platform{% endblock %}
+
+{% block styles %}
+<style>
+    /* Hero section styling */
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{{ url_for('static', filename='img/hero-bg.jpg') }}');
+        background-size: cover;
+        background-position: center;
+        padding: 6rem 0;
+        margin-top: -1.5rem;
+        color: white;
+        position: relative;
+    }
+    
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--deaf-first-blue);
+    }
+    
+    /* Framework principles section */
+    .principle-card {
+        background-color: var(--bs-dark);
+        border-left: 4px solid var(--deaf-first-blue);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+    }
+    
+    .principle-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--deaf-first-shadow-medium);
+    }
+    
+    .principle-card .principle-icon {
+        font-size: 2.5rem;
+        color: var(--deaf-first-yellow);
+        margin-bottom: 1rem;
+    }
+    
+    /* Life aspects section */
+    .life-aspect {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        transition: transform 0.3s;
+    }
+    
+    .life-aspect:hover {
+        transform: scale(1.03);
+    }
+    
+    .life-aspect-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1.5rem;
+        background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.8));
+        color: white;
+    }
+    
+    .life-aspect-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: var(--deaf-first-yellow);
+    }
+    
+    /* Visual cues for deaf accessibility */
+    .visual-cue {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+        background-color: var(--deaf-first-blue);
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 0.5; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.2); }
+        100% { opacity: 0.5; transform: scale(1); }
+    }
+    
+    /* ASL video section */
+    .asl-video-tile {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--deaf-first-shadow-sm);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .asl-video-tile:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--deaf-first-shadow-md);
+    }
+    
+    .asl-video-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1rem;
+        background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        color: white;
+    }
+    
+    .asl-play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 64px;
+        height: 64px;
+        background-color: rgba(0, 85, 170, 0.8);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+    
+    .asl-video-tile:hover .asl-play-button {
+        background-color: var(--deaf-first-blue);
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+    
+    /* Call to action section */
+    .cta-section {
+        position: relative;
+        background-color: var(--deaf-first-blue);
+        color: white;
+        overflow: hidden;
+    }
+    
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%);
+        z-index: 1;
+    }
+    
+    .cta-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .logo-container {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 2rem;
+        position: relative;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<div class="position-relative mb-5">
-    <div class="p-5 text-center bg-image rounded-3" style="
-        background-image: url('https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-        height: 350px;
-        background-position: center;
-        background-size: cover;
-        position: relative;
-    ">
-        <div style="background-color: rgba(0, 0, 0, 0.6); position: absolute; top: 0; right: 0; bottom: 0; left: 0;"></div>
-        <div class="d-flex justify-content-center align-items-center h-100 position-relative">
-            <div class="text-white">
-                <h1 class="mb-3">MbTQ Financial</h1>
-                <h4 class="mb-4">Financial Services Designed for the Deaf Community</h4>
-                <button class="btn btn-primary btn-lg me-2" data-asl-video="welcome">
-                    <i class="fas fa-sign-language me-2"></i> Watch Welcome in ASL
-                </button>
-                <a class="btn btn-outline-light btn-lg" href="/insurance">
-                    <i class="fas fa-shield-alt me-2"></i> Explore Insurance
-                </a>
+<section class="hero-section text-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <h1 class="display-4 fw-bold mb-4">MBTQ GROUP <span class="text-info">×</span> DEAF FIRST</h1>
+                <p class="lead mb-5">Reimagining financial services with a comprehensive "Deaf First" digital framework—prioritizing visual clarity, accessibility, and ASL integration across all aspects of financial life.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="/dashboard" class="btn btn-lg deaf-first-button">
+                        <i class="fas fa-chart-line me-2"></i> Financial Dashboard
+                    </a>
+                    <a href="/accessibility" class="btn btn-lg btn-outline-light">
+                        <i class="fas fa-universal-access me-2"></i> Accessibility Features
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Features Section -->
-<div class="container mb-5">
-    <div class="row">
-        <div class="col-md-12 text-center mb-4">
-            <h2>Deaf First, Not Deaf Friendly</h2>
-            <p class="lead">
-                Our platform is built from the ground up with Deaf culture and communication preferences at its center.
-            </p>
-        </div>
-    </div>
-    
-    <div class="row g-4">
-        <!-- ASL Videos -->
-        <div class="col-md-4">
-            <div class="card h-100 deaf-accessible">
-                <div class="card-body text-center">
-                    <i class="fas fa-sign-language fa-3x text-info mb-3"></i>
-                    <h4 class="card-title">ASL Videos</h4>
-                    <p class="card-text">All features include ASL video explanations to ensure complete accessibility.</p>
-                    <button class="btn btn-outline-info mt-2" data-asl-video="asl_videos_feature">
-                        <i class="fas fa-sign-language"></i> Watch in ASL
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Deaf-Specialized Insurance -->
-        <div class="col-md-4">
-            <div class="card h-100 deaf-accessible">
-                <div class="card-body text-center">
-                    <i class="fas fa-shield-alt fa-3x text-info mb-3"></i>
-                    <h4 class="card-title">Specialized Insurance</h4>
-                    <p class="card-text">Insurance products specifically designed with coverage for visual alerting devices and interpreter services.</p>
-                    <button class="btn btn-outline-info mt-2" data-asl-video="deaf_insurance_feature">
-                        <i class="fas fa-sign-language"></i> Watch in ASL
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Support Bot -->
-        <div class="col-md-4">
-            <div class="card h-100 deaf-accessible">
-                <div class="card-body text-center">
-                    <i class="fas fa-robot fa-3x text-info mb-3"></i>
-                    <h4 class="card-title">Deaf Support Bot</h4>
-                    <p class="card-text">Our support bot understands Deaf culture and can assist with financial questions through chat or ASL videos.</p>
-                    <button class="btn btn-outline-info mt-2" data-asl-video="support_bot_feature">
-                        <i class="fas fa-sign-language"></i> Watch in ASL
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Service Categories -->
-<div class="container mb-5">
-    <div class="row mb-4">
-        <div class="col-md-12 text-center">
-            <h2>Our Financial Services</h2>
-            <p>Comprehensive financial tools designed with accessibility in mind</p>
-        </div>
-    </div>
-    
-    <div class="row g-4">
-        <!-- Tax Filing -->
-        <div class="col-lg-6 col-md-12">
-            <div class="card deaf-accessible">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Tax Filing</h4>
-                    <button class="btn btn-sm btn-outline-info" data-asl-video="tax_filing_overview">
-                        <i class="fas fa-sign-language"></i>
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <i class="fas fa-file-invoice-dollar fa-5x text-info"></i>
-                        </div>
-                        <div class="col-md-8">
-                            <p>Our tax filing service integrates with April's API to provide a seamless experience with ASL support at every step.</p>
-                            <ul class="insurance-feature-list">
-                                <li>ASL video explanations for complex tax concepts</li>
-                                <li>Visual guidance throughout the filing process</li>
-                                <li>Specialized deductions for accessibility equipment</li>
-                            </ul>
-                            <a href="/fintech/tax-filing" class="btn btn-primary mt-3">
-                                <i class="fas fa-arrow-right me-1"></i> Explore Tax Filing
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Insurance -->
-        <div class="col-lg-6 col-md-12">
-            <div class="card deaf-accessible">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Insurance</h4>
-                    <button class="btn btn-sm btn-outline-info" data-asl-video="insurance_overview">
-                        <i class="fas fa-sign-language"></i>
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <i class="fas fa-shield-alt fa-5x text-info"></i>
-                        </div>
-                        <div class="col-md-8">
-                            <p>Our specialized insurance products provide coverage tailored to the unique needs of the deaf community.</p>
-                            <ul class="insurance-feature-list">
-                                <li>Coverage for visual alerting devices</li>
-                                <li>Sign language interpreter services</li>
-                                <li>Communication device protection</li>
-                            </ul>
-                            <a href="/insurance" class="btn btn-primary mt-3">
-                                <i class="fas fa-arrow-right me-1"></i> Explore Insurance
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ASL Video Library Preview -->
-<div class="bg-dark py-5 my-5">
+<!-- DEAF FIRST Framework Principles -->
+<section class="py-5">
     <div class="container">
         <div class="row mb-4">
-            <div class="col-md-12 text-center">
-                <h2 class="text-light">ASL Video Library</h2>
-                <p class="text-light">Learn about financial concepts through our comprehensive ASL video library</p>
+            <div class="col-12 text-center">
+                <h2 class="mb-4 deaf-first-heading">Digital Framework Principles</h2>
+                <p class="lead">Our platform is built with five core principles that prioritize deaf accessibility from concept to implementation.</p>
             </div>
         </div>
         
         <div class="row g-4">
-            <!-- Sample ASL Videos -->
             <div class="col-md-4">
-                <div class="card h-100">
+                <div class="principle-card p-4 h-100">
+                    <div class="principle-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3 class="h4">Visual Clarity</h3>
+                    <p>High contrast visuals with clear, distinct elements optimized for visual processing—the primary information channel for deaf users.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="principle-card p-4 h-100">
+                    <div class="principle-icon">
+                        <i class="fas fa-hands"></i>
+                    </div>
+                    <h3 class="h4">ASL Integration</h3>
+                    <p>Native American Sign Language videos for all important content, not as an afterthought but as a primary communication method.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="principle-card p-4 h-100">
+                    <div class="principle-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="h4">Visual Feedback</h3>
+                    <p>Clear visual cues and feedback for all interactions, eliminating dependency on audio feedback systems.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="principle-card p-4 h-100">
+                    <div class="principle-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <h3 class="h4">Spatial Relationships</h3>
+                    <p>Information organized with clear visual hierarchy and logical spatial relationships that mirror the grammatical structure of ASL.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="principle-card p-4 h-100">
+                    <div class="principle-icon">
+                        <i class="fas fa-community"></i>
+                    </div>
+                    <h3 class="h4">Community Input</h3>
+                    <p>Continuous feedback from the deaf community at every stage of development, ensuring authentic representation of needs.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Life Aspects Section -->
+<section class="py-5 bg-dark">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2 class="mb-4 text-white">Comprehensive Life Planning</h2>
+                <p class="lead text-light">Financial tools designed for every aspect of life, all with deaf-first principles at their core.</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card bg-dark h-100 border-0">
                     <div class="card-body text-center">
-                        <h5 class="card-title">Tax Deductions Explained</h5>
-                        <p class="card-text">Learn about available tax deductions and how they can reduce your taxable income.</p>
-                        <button class="btn btn-info w-100" data-asl-video="tax_deductions">
-                            <i class="fas fa-play-circle me-1"></i> Watch Video
-                        </button>
+                        <div class="life-aspect-icon">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <h3 class="text-white">Tax & Insurance</h3>
+                        <p class="text-light">Comprehensive tax planning and filing with deaf-specialized insurance bundles tailored to your unique needs.</p>
+                        <a href="/tax-planning" class="btn btn-outline-info mt-3">Explore <i class="fas fa-arrow-right ms-2"></i></a>
                     </div>
                 </div>
             </div>
             
             <div class="col-md-4">
-                <div class="card h-100">
-                    <div class="card-title">
-                        <h5 class="card-title">Insurance Coverage Types</h5>
-                        <p class="card-text">Understand different types of insurance coverage and which ones are best for your situation.</p>
-                        <button class="btn btn-info w-100" data-asl-video="insurance_coverage_types">
-                            <i class="fas fa-play-circle me-1"></i> Watch Video
-                        </button>
+                <div class="card bg-dark h-100 border-0">
+                    <div class="card-body text-center">
+                        <div class="life-aspect-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <h3 class="text-white">Real Estate</h3>
+                        <p class="text-light">Property management, mortgage calculators, and accessibility guides for deaf homeowners and investors.</p>
+                        <a href="/real-estate/properties" class="btn btn-outline-info mt-3">Explore <i class="fas fa-arrow-right ms-2"></i></a>
                     </div>
                 </div>
             </div>
             
             <div class="col-md-4">
-                <div class="card h-100">
+                <div class="card bg-dark h-100 border-0">
                     <div class="card-body text-center">
-                        <h5 class="card-title">Retirement Planning Basics</h5>
-                        <p class="card-text">Get started with retirement planning and understand how to prepare for your future.</p>
-                        <button class="btn btn-info w-100" data-asl-video="retirement_planning">
-                            <i class="fas fa-play-circle me-1"></i> Watch Video
-                        </button>
+                        <div class="life-aspect-icon">
+                            <i class="fas fa-scroll"></i>
+                        </div>
+                        <h3 class="text-white">Estate Planning</h3>
+                        <p class="text-light">Secure your legacy with wills, trusts, and healthcare directives designed with deaf accessibility in mind.</p>
+                        <a href="/estate/will" class="btn btn-outline-info mt-3">Explore <i class="fas fa-arrow-right ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card bg-dark h-100 border-0">
+                    <div class="card-body text-center">
+                        <div class="life-aspect-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h3 class="text-white">Business Planning</h3>
+                        <p class="text-light">Specialized tools for deaf entrepreneurs, from business formation to tax strategies and insurance coverage.</p>
+                        <a href="/business/my-businesses" class="btn btn-outline-info mt-3">Explore <i class="fas fa-arrow-right ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card bg-dark h-100 border-0">
+                    <div class="card-body text-center">
+                        <div class="life-aspect-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3 class="text-white">Education Planning</h3>
+                        <p class="text-light">Education financing strategies and scholarship resources specifically curated for the deaf community.</p>
+                        <a href="/education/my-plans" class="btn btn-outline-info mt-3">Explore <i class="fas fa-arrow-right ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ASL Video Integration Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2 class="mb-4 deaf-first-heading">ASL Video Integration</h2>
+                <p class="lead">Financial concepts explained in American Sign Language by certified interpreters.</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="asl-video-tile">
+                    <img src="{{ url_for('static', filename='img/tax-planning-thumbnail.jpg') }}" alt="Tax Planning ASL Video" class="img-fluid w-100">
+                    <div class="asl-play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="asl-video-overlay">
+                        <h4 class="mb-1">Tax Planning Basics</h4>
+                        <p class="mb-0 small">4:25 · ASL with captions</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="asl-video-tile">
+                    <img src="{{ url_for('static', filename='img/investment-thumbnail.jpg') }}" alt="Investment Strategies ASL Video" class="img-fluid w-100">
+                    <div class="asl-play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="asl-video-overlay">
+                        <h4 class="mb-1">Investment Strategies</h4>
+                        <p class="mb-0 small">5:46 · ASL with captions</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="asl-video-tile">
+                    <img src="{{ url_for('static', filename='img/insurance-thumbnail.jpg') }}" alt="Insurance Coverage ASL Video" class="img-fluid w-100">
+                    <div class="asl-play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="asl-video-overlay">
+                        <h4 class="mb-1">Insurance Coverage</h4>
+                        <p class="mb-0 small">3:12 · ASL with captions</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="asl-video-tile">
+                    <img src="{{ url_for('static', filename='img/retirement-thumbnail.jpg') }}" alt="Retirement Planning ASL Video" class="img-fluid w-100">
+                    <div class="asl-play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="asl-video-overlay">
+                        <h4 class="mb-1">Retirement Planning</h4>
+                        <p class="mb-0 small">6:33 · ASL with captions</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="asl-video-tile">
+                    <img src="{{ url_for('static', filename='img/mortgage-thumbnail.jpg') }}" alt="Mortgage Basics ASL Video" class="img-fluid w-100">
+                    <div class="asl-play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="asl-video-overlay">
+                        <h4 class="mb-1">Mortgage Basics</h4>
+                        <p class="mb-0 small">5:08 · ASL with captions</p>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="row mt-4">
-            <div class="col-md-12 text-center">
-                <a href="/accessibility/asl-videos" class="btn btn-outline-light btn-lg">
-                    <i class="fas fa-film me-1"></i> Browse All ASL Videos
+            <div class="col-12 text-center">
+                <a href="/asl-resources" class="btn btn-outline-dark">
+                    <i class="fas fa-film me-2"></i> View All ASL Videos
                 </a>
             </div>
         </div>
     </div>
-</div>
-
-<!-- Testimonials -->
-<div class="container mb-5">
-    <div class="row mb-4">
-        <div class="col-md-12 text-center">
-            <h2>What Our Users Say</h2>
-            <p>Hear from deaf and hard of hearing individuals who use our platform</p>
-        </div>
-    </div>
-    
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="text-info me-3">
-                            <i class="fas fa-user-circle fa-3x"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-0">James R.</h5>
-                            <p class="text-muted mb-0">Deaf, ASL user</p>
-                        </div>
-                    </div>
-                    <p class="card-text">
-                        "Finally, a financial platform that doesn't treat ASL as an afterthought. The insurance coverage for my visual alerting devices was exactly what I needed."
-                    </p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="text-info me-3">
-                            <i class="fas fa-user-circle fa-3x"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-0">Sophia T.</h5>
-                            <p class="text-muted mb-0">Hard of hearing, CODA</p>
-                        </div>
-                    </div>
-                    <p class="card-text">
-                        "I've struggled for years to understand tax regulations. The ASL videos explain everything clearly. This platform truly understands Deaf culture."
-                    </p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="text-info me-3">
-                            <i class="fas fa-user-circle fa-3x"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-0">Marcus L.</h5>
-                            <p class="text-muted mb-0">Deaf, insurance agent</p>
-                        </div>
-                    </div>
-                    <p class="card-text">
-                        "As someone who works in insurance, I'm impressed by the specialized coverage options. The interpreter service coverage has saved me thousands of dollars."
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+</section>
 
 <!-- Call to Action -->
-<div class="container mb-5">
-    <div class="card">
-        <div class="card-body p-5 text-center">
-            <h2 class="mb-3">Ready to Get Started?</h2>
-            <p class="lead mb-4">Join MbTQ Financial today and experience financial services designed specifically for the deaf and hard of hearing community.</p>
-            <a href="/register" class="btn btn-primary btn-lg me-2">
-                <i class="fas fa-user-plus me-1"></i> Sign Up Now
-            </a>
-            <button class="btn btn-outline-info btn-lg" data-asl-video="cta_get_started">
-                <i class="fas fa-sign-language me-1"></i> Watch in ASL
-            </button>
+<section class="py-5 cta-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center cta-content">
+                <div class="logo-container">
+                    <div id="home-logo"></div>
+                </div>
+                <h2 class="mb-4">Join The DEAF FIRST Movement</h2>
+                <p class="lead mb-4">Experience financial services reimagined from the ground up for the deaf community—not as an afterthought, but as the primary focus.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="/register" class="btn btn-light btn-lg">
+                        <i class="fas fa-user-plus me-2"></i> Create Account
+                    </a>
+                    <a href="/about" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-info-circle me-2"></i> Learn More
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}
 
 {% block scripts %}
+<!-- Logo Generator Script -->
+<script src="{{ url_for('static', filename='js/logo-generator.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Auto-play the welcome ASL video when page loads
-        // Only if the user has ASL videos enabled
-        const aslVideosEnabled = localStorage.getItem('asl_videos_enabled') !== 'false';
-        if (aslVideosEnabled) {
-            setTimeout(() => {
-                showASLVideo('welcome');
-            }, 1500); // Small delay to ensure page is fully loaded
+        // Create the large animated home logo
+        const homeLogo = document.getElementById('home-logo');
+        if (homeLogo) {
+            const largeLogoGen = new LogoGenerator({
+                size: 150,
+                text: 'MBTQ × DEAF FIRST',
+                animated: true,
+                container: 'home-logo'
+            });
+            largeLogoGen.render();
         }
+        
+        // Simulate ASL video placeholders until real content is available
+        const videoTiles = document.querySelectorAll('.asl-video-tile');
+        videoTiles.forEach(tile => {
+            tile.addEventListener('click', function() {
+                alert('ASL video content will be available soon. This is a placeholder for demonstration purposes.');
+            });
+        });
     });
 </script>
 {% endblock %}

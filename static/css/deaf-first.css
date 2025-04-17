@@ -1,305 +1,577 @@
-/* 
- * DEAF FIRST Movement - Digital Framework CSS
- * A system designed with deaf users as the priority from concept to implementation
- */
-
-/* Movement Principles 
- * 1. Visual Clarity - High contrast, distinct colors, clean typography
- * 2. Spatial Awareness - Clear visual hierarchy and spatial relationships
- * 3. Motion Sensitivity - Careful animation and transition design 
- * 4. Information Density - Balanced visual information without overwhelming
- * 5. Feedback Mechanisms - Visual cues and feedback for all interactions
+/**
+ * DEAF FIRST Digital Framework CSS
+ * -----------------------------------
+ * A design framework that prioritizes deaf accessibility from the beginning,
+ * not as an afterthought. These styles implement the DEAF FIRST movement's 
+ * principles for digital experiences.
  */
 
 :root {
-    /* Primary Colors - Bold, Clear, Distinguishable */
-    --deaf-first-blue: #0055AA;      /* Deep blue - primary movement color */
-    --deaf-first-yellow: #FFD700;    /* Bright gold - for emphasis */
-    --deaf-first-purple: #6A0DAD;    /* Royal purple - for premium/special elements */
+    /* Core DEAF FIRST color palette - high contrast for visual accessibility */
+    --deaf-first-blue: #0055AA;        /* Primary blue - strong, vivid blue for main elements */
+    --deaf-first-yellow: #FFD700;      /* Gold/yellow - high contrast accent to blue */
+    --deaf-first-orange: #FF6600;      /* Attention orange - for calls to action */
+    --deaf-first-red: #DD0000;         /* Alert red - for important notices */
+    --deaf-first-green: #00AA55;       /* Success green - for positive feedback */
     
-    /* Supporting Colors - High contrast for accessibility */
-    --deaf-first-green: #00AA55;     /* Clear green - success messages */
-    --deaf-first-red: #DD0000;       /* Vibrant red - warnings/errors */
-    --deaf-first-orange: #FF7700;    /* Bright orange - notifications */
+    /* Neutral palette - carefully balanced for text contrast */
+    --deaf-first-black: #000000;       /* Pure black - maximum contrast for critical text */
+    --deaf-first-dark: #222222;        /* Near black - for primary text */
+    --deaf-first-medium: #777777;      /* Mid gray - for secondary text */
+    --deaf-first-light: #EEEEEE;       /* Light gray - for backgrounds */
+    --deaf-first-white: #FFFFFF;       /* Pure white - for maximum contrast backgrounds */
     
-    /* Neutrals - Clean, Clear Foundation */
-    --deaf-first-white: #FFFFFF;     /* Pure white - maximum contrast */
-    --deaf-first-light: #F5F5F5;     /* Very light gray - backgrounds */
-    --deaf-first-medium: #AAAAAA;    /* Medium gray - subtle elements */
-    --deaf-first-dark: #212121;      /* Very dark - text */
-    --deaf-first-black: #000000;     /* True black - maximum contrast */
+    /* Shadow variables for depth perception */
+    --deaf-first-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+    --deaf-first-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.2);
+    --deaf-first-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+    --deaf-first-shadow-medium: 0 6px 10px rgba(0, 0, 0, 0.3);
     
-    /* Typography */
-    --deaf-first-font-family: 'Open Sans', 'Noto Sans', sans-serif;
-    --deaf-first-heading-weight: 700;
-    --deaf-first-text-weight: 400;
-    --deaf-first-line-height: 1.5;
+    /* Focus outline variables */
+    --deaf-first-focus-width: 3px;
+    --deaf-first-focus-color: var(--deaf-first-yellow);
     
-    /* Spacing System - Consistent, Predictable */
-    --deaf-first-space-xs: 0.25rem;
-    --deaf-first-space-sm: 0.5rem;
-    --deaf-first-space-md: 1rem;
-    --deaf-first-space-lg: 1.5rem;
-    --deaf-first-space-xl: 2rem;
-    --deaf-first-space-xxl: 3rem;
+    /* Animation timing */
+    --deaf-first-transition-fast: 0.2s;
+    --deaf-first-transition-medium: 0.3s;
+    --deaf-first-transition-slow: 0.5s;
     
-    /* Animation - Calm, Clear Purpose */
-    --deaf-first-transition-slow: 400ms ease-in-out;
-    --deaf-first-transition-medium: 250ms ease-in-out;
-    --deaf-first-transition-fast: 150ms ease-in-out;
+    /* Spacing variables */
+    --deaf-first-spacing-xs: 0.25rem;
+    --deaf-first-spacing-sm: 0.5rem;
+    --deaf-first-spacing-md: 1rem;
+    --deaf-first-spacing-lg: 1.5rem;
+    --deaf-first-spacing-xl: 2rem;
     
-    /* Borders & Shadows - Visual Definition */
-    --deaf-first-border-radius-sm: 4px;
-    --deaf-first-border-radius-md: 8px;
-    --deaf-first-border-radius-lg: 12px;
-    --deaf-first-border-radius-xl: 16px;
-    
-    --deaf-first-shadow-subtle: 0 2px 4px rgba(0, 0, 0, 0.1);
-    --deaf-first-shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --deaf-first-shadow-strong: 0 8px 16px rgba(0, 0, 0, 0.1);
+    /* Border radius */
+    --deaf-first-radius-sm: 4px;
+    --deaf-first-radius-md: 8px;
+    --deaf-first-radius-lg: 12px;
+    --deaf-first-radius-pill: 50px;
 }
 
-/* Movement Typography - Clear, Readable */
+/* Enhanced focus styles for keyboard navigation */
+*:focus {
+    outline: var(--deaf-first-focus-width) solid var(--deaf-first-focus-color);
+    outline-offset: 2px;
+}
+
+/* Enhanced typography for readability */
+body {
+    font-family: 'Noto Sans', 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--bs-body-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+/* Special headings for DEAF FIRST branding */
 .deaf-first-heading {
-    font-family: var(--deaf-first-font-family);
-    font-weight: var(--deaf-first-heading-weight);
-    color: var(--deaf-first-dark);
-    margin-bottom: var(--deaf-first-space-md);
-    line-height: 1.2;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    color: var(--bs-body-color);
 }
 
-.deaf-first-text {
-    font-family: var(--deaf-first-font-family);
-    font-weight: var(--deaf-first-text-weight);
-    color: var(--deaf-first-dark);
-    line-height: var(--deaf-first-line-height);
+.deaf-first-heading::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--deaf-first-blue);
 }
 
-/* ASL Video Component - Critical Movement Element */
-.deaf-first-asl-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--deaf-first-blue);
-    color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 0.5rem 1rem;
-    font-weight: 600;
-    box-shadow: var(--deaf-first-shadow-subtle);
-    transition: transform var(--deaf-first-transition-fast), 
-                box-shadow var(--deaf-first-transition-fast);
-}
-
-.deaf-first-asl-button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--deaf-first-shadow-medium);
-}
-
-.deaf-first-asl-button i {
-    margin-right: 0.5rem;
-}
-
-/* Visual Alert System - No Sound Dependency */
-.deaf-first-alert {
-    border-left: 4px solid var(--deaf-first-blue);
-    background-color: var(--deaf-first-light);
-    padding: var(--deaf-first-space-md);
-    margin-bottom: var(--deaf-first-space-md);
-    border-radius: var(--deaf-first-border-radius-sm);
-    box-shadow: var(--deaf-first-shadow-subtle);
-    display: flex;
-    align-items: flex-start;
-}
-
-.deaf-first-alert.success {
-    border-left-color: var(--deaf-first-green);
-}
-
-.deaf-first-alert.warning {
-    border-left-color: var(--deaf-first-orange);
-}
-
-.deaf-first-alert.danger {
-    border-left-color: var(--deaf-first-red);
-}
-
-.deaf-first-alert-icon {
-    font-size: 1.25rem;
-    margin-right: var(--deaf-first-space-md);
-    flex-shrink: 0;
-}
-
-/* Visual Feedback - Clear Interaction States */
-.deaf-first-button {
+/* Buttons with DEAF FIRST styling */
+.deaf-first-button, 
+.btn-deaf-first {
     background-color: var(--deaf-first-blue);
     color: white;
     border: none;
-    border-radius: var(--deaf-first-border-radius-md);
-    padding: 0.75rem 1.5rem;
     font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--deaf-first-radius-md);
     transition: transform var(--deaf-first-transition-medium), 
+                box-shadow var(--deaf-first-transition-medium),
                 background-color var(--deaf-first-transition-medium);
     position: relative;
     overflow: hidden;
 }
 
-.deaf-first-button:hover {
-    background-color: #004488;
+.deaf-first-button:hover, 
+.btn-deaf-first:hover {
+    background-color: #0044AA;
+    transform: translateY(-2px);
+    color: white;
+    box-shadow: var(--deaf-first-shadow-md);
 }
 
-.deaf-first-button:active {
-    transform: scale(0.98);
+.deaf-first-button:active, 
+.btn-deaf-first:active {
+    transform: translateY(0);
+    box-shadow: var(--deaf-first-shadow-sm);
 }
 
-.deaf-first-button::after {
+/* Button with visual ripple effect for clear feedback */
+.deaf-first-button::after,
+.btn-deaf-first::after {
     content: '';
     position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
-    background-repeat: no-repeat;
-    background-position: 50%;
-    transform: scale(10, 10);
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
     opacity: 0;
-    transition: transform 0.5s, opacity 0.5s;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%, -50%);
+    transform-origin: 50% 50%;
 }
 
-.deaf-first-button:active::after {
-    transform: scale(0, 0);
-    opacity: 0.3;
-    transition: 0s;
+.deaf-first-button:focus::after,
+.btn-deaf-first:focus::after {
+    animation: deaf-first-ripple 1s ease-out;
 }
 
-/* Card Framework - Visual Grouping */
+@keyframes deaf-first-ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(20, 20);
+        opacity: 0;
+    }
+}
+
+/* ASL video button styles */
+.asl-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--deaf-first-blue);
+    color: white;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all var(--deaf-first-transition-medium);
+}
+
+.asl-button:hover {
+    background-color: #004499;
+    transform: translateY(-2px);
+    box-shadow: var(--deaf-first-shadow-sm);
+}
+
+.asl-button .asl-icon {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+}
+
+/* Card styling with clear visual hierarchy */
 .deaf-first-card {
-    background-color: white;
-    border-radius: var(--deaf-first-border-radius-lg);
-    box-shadow: var(--deaf-first-shadow-medium);
-    overflow: hidden;
-    transition: transform var(--deaf-first-transition-medium),
+    background-color: var(--bs-body-bg);
+    border-radius: var(--deaf-first-radius-md);
+    box-shadow: var(--deaf-first-shadow-sm);
+    transition: transform var(--deaf-first-transition-medium), 
                 box-shadow var(--deaf-first-transition-medium);
+    overflow: hidden;
+    position: relative;
 }
 
 .deaf-first-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--deaf-first-shadow-strong);
+    transform: translateY(-5px);
+    box-shadow: var(--deaf-first-shadow-md);
 }
 
-.deaf-first-card-header {
-    padding: var(--deaf-first-space-md);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    background-color: var(--deaf-first-light);
-}
-
-.deaf-first-card-body {
-    padding: var(--deaf-first-space-md);
-}
-
-.deaf-first-card-footer {
-    padding: var(--deaf-first-space-md);
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    background-color: var(--deaf-first-light);
-}
-
-/* Interactive Controls - Visual Feedback Focus */
-.deaf-first-input {
+.deaf-first-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid var(--deaf-first-medium);
-    border-radius: var(--deaf-first-border-radius-md);
-    font-family: var(--deaf-first-font-family);
-    transition: border-color var(--deaf-first-transition-fast);
-}
-
-.deaf-first-input:focus {
-    border-color: var(--deaf-first-blue);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 85, 170, 0.25);
-}
-
-.deaf-first-input-label {
-    display: block;
-    margin-bottom: var(--deaf-first-space-sm);
-    font-weight: 600;
-    color: var(--deaf-first-dark);
-}
-
-/* Integration with Bootstrap */
-.btn-deaf-first {
+    height: 4px;
     background-color: var(--deaf-first-blue);
-    border-color: var(--deaf-first-blue);
-    color: white;
 }
 
-.btn-deaf-first:hover, 
-.btn-deaf-first:focus {
-    background-color: #004488;
-    border-color: #004488;
-    color: white;
+.deaf-first-card-title {
+    font-weight: 700;
+    margin-bottom: 1rem;
 }
 
-.text-deaf-first {
-    color: var(--deaf-first-blue) !important;
+/* Visual alert system for notifications */
+.deaf-first-alert {
+    position: relative;
+    padding: 1rem;
+    border-radius: var(--deaf-first-radius-md);
+    border-left: 4px solid var(--deaf-first-blue);
+    background-color: rgba(0, 85, 170, 0.1);
+    margin-bottom: 1rem;
 }
 
-.bg-deaf-first {
-    background-color: var(--deaf-first-blue) !important;
+.deaf-first-alert.alert-success {
+    border-left-color: var(--deaf-first-green);
+    background-color: rgba(0, 170, 85, 0.1);
 }
 
-/* MBTQ GROUP Integration */
-.mbtq-deaf-first-container {
-    border: 2px solid var(--deaf-first-blue);
-    border-radius: var(--deaf-first-border-radius-lg);
-    padding: var(--deaf-first-space-lg);
-    background-color: rgba(0, 85, 170, 0.05);
+.deaf-first-alert.alert-warning {
+    border-left-color: var(--deaf-first-yellow);
+    background-color: rgba(255, 215, 0, 0.1);
 }
 
-.mbtq-deaf-first-heading {
-    color: var(--deaf-first-blue);
-    border-bottom: 2px solid var(--deaf-first-yellow);
-    padding-bottom: var(--deaf-first-space-sm);
-    margin-bottom: var(--deaf-first-space-md);
+.deaf-first-alert.alert-danger {
+    border-left-color: var(--deaf-first-red);
+    background-color: rgba(221, 0, 0, 0.1);
 }
 
-/* Logo Component - Brand Identity */
-.deaf-first-logo {
+/* Animation for visual feedback */
+.deaf-first-pulse {
+    animation: deaf-first-pulse-animation 2s infinite;
+}
+
+@keyframes deaf-first-pulse-animation {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Visual progress indicators */
+.deaf-first-progress {
+    height: 8px;
+    background-color: var(--bs-body-bg);
+    border-radius: var(--deaf-first-radius-pill);
+    overflow: hidden;
+    margin: 1rem 0;
+}
+
+.deaf-first-progress-bar {
+    height: 100%;
+    background-color: var(--deaf-first-blue);
+    border-radius: var(--deaf-first-radius-pill);
+    transition: width var(--deaf-first-transition-slow) ease;
+}
+
+/* Visual status indicators */
+.deaf-first-status {
     display: inline-flex;
     align-items: center;
-    font-weight: bold;
-    color: var(--deaf-first-dark);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--deaf-first-radius-pill);
+    font-weight: 600;
+    font-size: 0.85rem;
 }
 
-.deaf-first-logo-symbol {
+.deaf-first-status.status-active {
+    background-color: rgba(0, 170, 85, 0.15);
+    color: var(--deaf-first-green);
+}
+
+.deaf-first-status.status-pending {
+    background-color: rgba(255, 215, 0, 0.15);
+    color: #BB9900;
+}
+
+.deaf-first-status.status-inactive {
+    background-color: rgba(119, 119, 119, 0.15);
+    color: var(--deaf-first-medium);
+}
+
+/* Brand text styles */
+.brand-name {
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    font-size: 1.2rem;
+    margin-bottom: -0.25rem;
+}
+
+.brand-tagline {
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+}
+
+/* Footer styling */
+.deaf-first-footer {
+    background-color: var(--bs-body-bg);
+    border-top: 1px solid var(--bs-border-color);
+    padding: 3rem 0 1.5rem;
+}
+
+.footer-heading {
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    position: relative;
+    display: inline-block;
+}
+
+.footer-heading::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background-color: var(--deaf-first-blue);
+}
+
+.footer-link {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: var(--bs-body-color);
+    text-decoration: none;
+    transition: color var(--deaf-first-transition-fast);
+}
+
+.footer-link:hover {
+    color: var(--deaf-first-blue);
+    transform: translateX(3px);
+}
+
+.footer-social-link {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 38px;
+    height: 38px;
+    background-color: rgba(0, 85, 170, 0.1);
+    border-radius: 50%;
+    color: var(--deaf-first-blue);
+    margin-right: 0.5rem;
+    transition: all var(--deaf-first-transition-medium);
+}
+
+.footer-social-link:hover {
+    background-color: var(--deaf-first-blue);
+    color: white;
+    transform: translateY(-3px);
+}
+
+/* Utility classes for creating visually accessible layouts */
+.deaf-first-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.deaf-first-spacer-sm {
+    height: 1rem;
+}
+
+.deaf-first-spacer-md {
+    height: 2rem;
+}
+
+.deaf-first-spacer-lg {
+    height: 3rem;
+}
+
+/* Accessibility widget styles */
+.accessibility-widget {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+}
+
+.accessibility-toggle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--deaf-first-blue);
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    background-color: var(--deaf-first-blue);
-    border-radius: 50%;
-    margin-right: 0.5rem;
-    color: white;
+    cursor: pointer;
+    box-shadow: var(--deaf-first-shadow-md);
+    transition: all var(--deaf-first-transition-medium);
 }
 
-.deaf-first-logo-text {
-    letter-spacing: 0.5px;
-    font-size: 1.25rem;
+.accessibility-toggle:hover {
+    transform: scale(1.1);
 }
 
-/* Movement Badges - Pride in Participation */
-.deaf-first-badge {
-    display: inline-flex;
+.accessibility-panel {
+    position: absolute;
+    bottom: 60px;
+    left: 0;
+    width: 280px;
+    background-color: var(--bs-body-bg);
+    border-radius: var(--deaf-first-radius-md);
+    box-shadow: var(--deaf-first-shadow-lg);
+    padding: 1.25rem;
+    transform: scale(0.95);
+    transform-origin: bottom left;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--deaf-first-transition-medium);
+}
+
+.accessibility-panel.active {
+    transform: scale(1);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Video Player Customizations */
+.deaf-first-video-player {
+    position: relative;
+    border-radius: var(--deaf-first-radius-md);
+    overflow: hidden;
+    box-shadow: var(--deaf-first-shadow-md);
+}
+
+.deaf-first-video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    padding: 1rem;
+    display: flex;
     align-items: center;
-    background-color: var(--deaf-first-blue);
+}
+
+.deaf-first-video-progress {
+    flex-grow: 1;
+    height: 6px;
+    background-color: rgba(255,255,255,0.3);
+    border-radius: var(--deaf-first-radius-pill);
+    margin: 0 1rem;
+    position: relative;
+    cursor: pointer;
+}
+
+.deaf-first-video-progress-bar {
+    height: 100%;
+    background-color: var(--deaf-first-yellow);
+    border-radius: var(--deaf-first-radius-pill);
+    width: 0%;
+}
+
+.deaf-first-video-control-btn {
+    background: none;
+    border: none;
     color: white;
-    font-weight: 600;
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-    box-shadow: var(--deaf-first-shadow-subtle);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all var(--deaf-first-transition-fast);
+}
+
+.deaf-first-video-control-btn:hover {
+    color: var(--deaf-first-yellow);
+    transform: scale(1.1);
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    .deaf-first-card-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .deaf-first-heading {
+        font-size: 1.75rem;
+    }
+}
+
+/* High Contrast Mode */
+.high-contrast-mode {
+    --deaf-first-blue: #0066FF;
+    --deaf-first-yellow: #FFFF00;
+    --deaf-first-orange: #FF7700;
+    --deaf-first-red: #FF0000;
+    --deaf-first-green: #00FF66;
+    
+    --bs-body-bg: #000000;
+    --bs-body-color: #FFFFFF;
+    --bs-border-color: #444444;
+}
+
+/* Large Text Mode */
+.large-text-mode {
+    font-size: 1.2rem;
+}
+
+.large-text-mode h1 {
+    font-size: 2.8rem;
+}
+
+.large-text-mode h2 {
+    font-size: 2.3rem;
+}
+
+.large-text-mode h3 {
+    font-size: 1.9rem;
+}
+
+.large-text-mode .lead {
+    font-size: 1.4rem;
+}
+
+/* Simple animations for visual feedback */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+    from { 
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.deaf-first-fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.deaf-first-slide-up {
+    animation: slideInUp 0.5s ease-out;
+}
+
+/* Logo styles */
+#brand-logo {
+    width: 48px;
+    height: 48px;
+}
+
+/* Custom scrollbar for visual clarity */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--deaf-first-blue);
+    border-radius: 20px;
+    border: 3px solid var(--bs-body-bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #0044AA;
 }
