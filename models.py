@@ -18,10 +18,14 @@ class User(UserMixin, db.Model):
     accessibility_settings = db.Column(db.JSON, default={})
     eula_accepted = db.Column(db.Boolean, default=False)
     
+    # Subscription status
+    account_type = db.Column(db.String(20), default='free')  # free, premium
+    
     # Relationships
     financial_profiles = db.relationship('FinancialProfile', back_populates='user', cascade='all, delete-orphan')
     tax_documents = db.relationship('TaxDocument', back_populates='user', cascade='all, delete-orphan')
     eula_acceptances = db.relationship('EULAAcceptance', back_populates='user', cascade='all, delete-orphan')
+    subscriptions = db.relationship('Subscription', back_populates='user', cascade='all, delete-orphan')
     
     def set_password(self, password):
         """Set user password"""
@@ -31,8 +35,54 @@ class User(UserMixin, db.Model):
         """Check user password"""
         return check_password_hash(self.password_hash, password)
     
+    def is_premium(self):
+        """Check if user has an active premium subscription"""
+        if self.account_type == 'premium':
+            return True
+        
+        # Check for active subscriptions
+        active_sub = Subscription.query.filter_by(
+            user_id=self.id, 
+            status='active'
+        ).first()
+        
+        return active_sub is not None
+    
     def __repr__(self):
         return f"<User {self.username}>"
+
+
+class Subscription(db.Model):
+    """User subscription information"""
+    __tablename__ = 'subscriptions'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    
+    plan_name = db.Column(db.String(50), nullable=False)  # e.g., "DEAF FIRST Premium"
+    price = db.Column(db.Float, nullable=False)
+    billing_interval = db.Column(db.String(20), nullable=False)  # monthly, yearly
+    status = db.Column(db.String(20), default='pending')  # pending, active, cancelled, expired
+    
+    # Payment tracking
+    stripe_customer_id = db.Column(db.String(100))
+    stripe_subscription_id = db.Column(db.String(100))
+    payment_method = db.Column(db.String(50))
+    
+    # Dates
+    start_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    end_date = db.Column(db.DateTime)
+    next_billing_date = db.Column(db.DateTime)
+    cancelled_at = db.Column(db.DateTime)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    
+    # Relationships
+    user = db.relationship('User', back_populates='subscriptions')
+    
+    def __repr__(self):
+        return f"<Subscription {self.id} - {self.plan_name} ({self.status})>"
 
 
 class AccessibilityPreference(db.Model):
