@@ -263,12 +263,14 @@ def investor_portal():
 import models
 import models_additions
 import models_education
+import models_licensing
+import models_reseller
 from models_import import *
 
 # Create tables and seed data
 with app.app_context():
-    # Drop all tables if they exist and recreate
-    db.drop_all()
+    # Create tables if they don't exist
+    # db.drop_all()  # Disabled to preserve existing data
     db.create_all()
     
     # Add seed data for education categories
@@ -364,6 +366,16 @@ try:
     app.logger.info("Education blueprint registered")
 except Exception as e:
     app.logger.error(f"Failed to register education blueprint: {e}")
+
+# Register reseller blueprints
+try:
+    from routes.reseller.portal import reseller_portal_bp
+    from routes.reseller.management import reseller_management_bp
+    app.register_blueprint(reseller_portal_bp)
+    app.register_blueprint(reseller_management_bp)
+    app.logger.info("Reseller blueprints registered")
+except Exception as e:
+    app.logger.error(f"Failed to register reseller blueprints: {e}")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

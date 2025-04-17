@@ -305,5 +305,6 @@ class ResellerTheme(db.Model):
 
 
 # Add relationships to existing models
-Licensee.reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id'))
-Licensee.sub_reseller_id = db.Column(db.Integer, db.ForeignKey('sub_resellers.id'))
+# These foreign keys are already defined in models_licensing.py with deferred references
+# Licensee.reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id'))
+# Licensee.sub_reseller_id = db.Column(db.Integer, db.ForeignKey('sub_resellers.id'))

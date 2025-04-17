@@ -1,0 +1,241 @@
+{% extends "layout.html" %}
+
+{% block title %}Reseller Dashboard - DEAF FIRST{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Reseller Dashboard</h1>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Reseller Summary</h5>
+                </div>
+                <div class="card-body">
+                    <h6>{{ reseller.company_name }}</h6>
+                    <p class="text-muted">{{ reseller.reseller_tier|title }} Tier</p>
+                    
+                    <div class="mt-3">
+                        <p><strong>Status:</strong> <span class="badge bg-success">{{ reseller.status|title }}</span></p>
+                        <p><strong>License Key:</strong> {{ reseller.license_key }}</p>
+                        <p><strong>License Expires:</strong> {{ reseller.license_end_date }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Reseller Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-3">
+                            <h3>{{ stats.counts.direct_licensees }}</h3>
+                            <p class="text-muted">Direct Licensees</p>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <h3>{{ stats.counts.sub_resellers }}</h3>
+                            <p class="text-muted">Sub-Resellers</p>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <h3>{{ stats.counts.total_licensees }}</h3>
+                            <p class="text-muted">Total Licensees</p>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <h3>{{ stats.counts.total_clients }}</h3>
+                            <p class="text-muted">End Clients</p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Capacity</h5>
+                            <div class="progress mb-2" style="height: 20px;">
+                                <div class="progress-bar" role="progressbar" 
+                                    style="width: {{ (stats.counts.sub_resellers / stats.limits.max_sub_resellers) * 100 if stats.limits.max_sub_resellers > 0 else 0 }}%;" 
+                                    aria-valuenow="{{ stats.counts.sub_resellers }}" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="{{ stats.limits.max_sub_resellers }}">
+                                    Sub-Resellers: {{ stats.counts.sub_resellers }}/{{ stats.limits.max_sub_resellers }}
+                                </div>
+                            </div>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                    style="width: {{ (stats.counts.direct_licensees / stats.limits.max_licensees) * 100 if stats.limits.max_licensees > 0 else 0 }}%;" 
+                                    aria-valuenow="{{ stats.counts.direct_licensees }}" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="{{ stats.limits.max_licensees }}">
+                                    Licensees: {{ stats.counts.direct_licensees }}/{{ stats.limits.max_licensees }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Revenue</h5>
+                            <p><strong>Monthly Revenue:</strong> ${{ "%.2f"|format(stats.revenue.monthly) }}</p>
+                            <p><strong>Commission ({{ reseller.commission_rate }}%):</strong> ${{ "%.2f"|format(stats.revenue.commission) }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Recent Transactions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in recent_transactions %}
+                                <tr>
+                                    <td>{{ transaction.transaction_date }}</td>
+                                    <td>{{ transaction.transaction_type|replace('_', ' ')|title }}</td>
+                                    <td>${{ "%.2f"|format(transaction.amount) }}</td>
+                                    <td>
+                                        {% if transaction.payment_status == 'paid' %}
+                                        <span class="badge bg-success">Paid</span>
+                                        {% elif transaction.payment_status == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">{{ transaction.payment_status|title }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No recent transactions</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('reseller_portal.revenue') }}" class="btn btn-primary btn-sm">View All</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Direct Licensees</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Tier</th>
+                                    <th>Clients</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for licensee in direct_licensees %}
+                                <tr>
+                                    <td>{{ licensee.company_name }}</td>
+                                    <td>{{ licensee.license_tier|title }}</td>
+                                    <td>{{ licensee.current_clients }}/{{ licensee.max_clients }}</td>
+                                    <td>
+                                        {% if licensee.status == 'active' %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% elif licensee.status == 'suspended' %}
+                                        <span class="badge bg-warning">Suspended</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">{{ licensee.status|title }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No licensees yet</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('reseller_portal.licensees') }}" class="btn btn-primary btn-sm">View All</a>
+                    <a href="{{ url_for('reseller_portal.create_licensee') }}" class="btn btn-success btn-sm">Add New</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if sub_resellers %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Sub-Resellers</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Contact</th>
+                                    <th>Licensees</th>
+                                    <th>Commission Rate</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sub_reseller in sub_resellers %}
+                                <tr>
+                                    <td>{{ sub_reseller.company_name }}</td>
+                                    <td>{{ sub_reseller.contact_email }}</td>
+                                    <td>{{ sub_reseller.current_licensees }}/{{ sub_reseller.max_licensees }}</td>
+                                    <td>{{ sub_reseller.commission_rate }}%</td>
+                                    <td>
+                                        {% if sub_reseller.status == 'active' %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% elif sub_reseller.status == 'suspended' %}
+                                        <span class="badge bg-warning">Suspended</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">{{ sub_reseller.status|title }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-primary">View</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('reseller_portal.sub_resellers') }}" class="btn btn-primary btn-sm">View All</a>
+                    {% if reseller.can_create_sub_resellers and reseller.can_add_sub_reseller() %}
+                    <a href="{{ url_for('reseller_portal.create_sub_reseller') }}" class="btn btn-success btn-sm">Add New</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
