@@ -1,1 +1,1 @@
-# Deaf First Services Package
+# Initialize the deaf_first services package

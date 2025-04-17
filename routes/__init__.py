@@ -1,1 +1,1 @@
-# Routes package
+# Initialize routes package

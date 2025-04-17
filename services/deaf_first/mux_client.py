@@ -1,218 +1,183 @@
-import mux_python
-from mux_python.rest import ApiException
-from typing import Dict, List, Any, Optional, Union
 import os
 import logging
-import json
+import mux_python
+from mux_python.exceptions import NotFoundException, ApiException
 
-# Import SignASL integration for authentic ASL videos
-try:
-    from services.deaf_first.signasl_integration import SignASLIntegration
-    signasl_available = True
-except ImportError:
-    signasl_available = False
-
+# Set up logging
 logger = logging.getLogger(__name__)
 
 class MuxClient:
-    """Client for interacting with the Mux Video API for ASL content"""
+    """Client for interacting with Mux Video API for ASL content"""
     
     def __init__(self):
-        """Initialize Mux client with authentication"""
-        # Configure HTTP basic authorization: accessToken
-        token_id = os.environ.get('MUX_TOKEN_ID', '')
-        token_secret = os.environ.get('MUX_TOKEN_SECRET', '')
+        """Initialize the Mux client with API credentials"""
+        self.token_id = os.environ.get('MUX_TOKEN_ID')
+        self.token_secret = os.environ.get('MUX_TOKEN_SECRET')
         
-        if not token_id or not token_secret:
+        if not self.token_id or not self.token_secret:
             logger.warning("MUX credentials not configured. ASL video features will be limited.")
-        
-        # Initialize SignASL integration for authentic ASL content
-        self.signasl = None
-        if signasl_available:
-            try:
-                self.signasl = SignASLIntegration()
-                logger.info("SignASL integration initialized successfully")
-            except Exception as e:
-                logger.error(f"Failed to initialize SignASL integration: {e}")
-        
+            self.client_configured = False
+            return
+            
+        # Configure the Mux client
         configuration = mux_python.Configuration()
-        configuration.username = token_id
-        configuration.password = token_secret
+        configuration.username = self.token_id
+        configuration.password = self.token_secret
         
-        # Create API instances
+        # Initialize the API clients
+        self.assets_api = mux_python.AssetsApi(mux_python.ApiClient(configuration))
+        self.playback_ids_api = mux_python.PlaybackIDApi(mux_python.ApiClient(configuration))
+        
+        # Check if Mux Spaces API is available
         try:
-            self.assets_api = mux_python.AssetsApi(mux_python.ApiClient(configuration))
-            # Note: SpacesApi may not be available in all versions of the mux_python client
-            # If it's not available, we'll catch the error and handle it gracefully
-            try:
-                self.spaces_api = mux_python.SpacesApi(mux_python.ApiClient(configuration))
-            except AttributeError:
-                logger.warning("Mux Spaces API not available in this version of mux_python")
-                self.spaces_api = None
-        except Exception as e:
-            logger.error(f"Failed to initialize Mux client: {e}")
-            raise
+            self.spaces_api = mux_python.SpacesApi(mux_python.ApiClient(configuration))
+            self.client_configured = True
+        except AttributeError:
+            logger.warning("Mux Spaces API not available in this version of mux_python")
+            self.spaces_api = None
+            self.client_configured = True
     
-    def get_asl_video(self, video_key: str) -> Optional[Dict[str, Any]]:
+    def create_asset(self, video_url, title=None):
         """
-        Get an ASL video by its key identifier
+        Create a new Mux asset from a video URL
         
         Args:
-            video_key: Key identifier for the ASL video
-        
+            video_url (str): URL of the video file
+            title (str, optional): Title for the asset
+            
         Returns:
-            Dictionary with video details or None if not found
+            str: Asset ID if successful, None otherwise
         """
-        # First, check if this is a term that SignASL has available
-        if self.signasl and video_key in ['insurance', 'finance', 'tax', 'loan', 'budget']:
-            try:
-                signasl_embed = self.signasl.get_embed_code(video_key)
-                if signasl_embed:
-                    logger.info(f"Found authentic SignASL video for term: {video_key}")
-                    return {
-                        "key": video_key,
-                        "title": f"ASL Sign: {video_key.replace('_', ' ').title()}",
-                        "description": f"Watch how to sign '{video_key}' in American Sign Language",
-                        "embed_html": signasl_embed["embed_html"],
-                        "source": "SignASL.org",
-                        "status": "ready",
-                        "context": "insurance",
-                        "is_embed": True
-                    }
-            except Exception as e:
-                logger.error(f"Error retrieving SignASL video for {video_key}: {e}")
-        
-        # If no SignASL video available, use Mux videos (or fallback to placeholders)
-        try:
-            # In a real implementation, we would query Mux API using the video_key
-            # For development purposes, return a hardcoded video placeholder
-            return {
-                "key": video_key,
-                "title": f"ASL Video: {video_key.replace('_', ' ').title()}",
-                "description": "This is a placeholder for an ASL video that would explain insurance concepts.",
-                "playback_id": "placeholder_id",
-                "duration": 120,  # seconds
-                "thumbnail_url": "https://placeholder.com/thumbnail.jpg",
-                "status": "ready",
-                "context": "insurance",
-                "is_embed": False
-            }
-        except ApiException as e:
-            logger.error(f"Exception when calling Mux API: {e}")
-            return None
-        except Exception as e:
-            logger.error(f"Error retrieving ASL video: {e}")
-            return None
-    
-    def get_asl_videos_for_context(self, context: str) -> List[Dict[str, Any]]:
-        """
-        Get all ASL videos for a specific context
-        
-        Args:
-            context: The context for which to retrieve videos (e.g., 'tax_filing', 'financial_concepts')
-        
-        Returns:
-            List of dictionaries with video details
-        """
-        try:
-            # In a real implementation, this would query the Mux API for videos tagged with the context
-            # For development purposes, return hardcoded videos
-            if context == 'insurance':
-                return [
-                    {
-                        "key": "insurance_overview",
-                        "title": "Insurance Overview in ASL",
-                        "description": "A general overview of how insurance works and why it's important.",
-                        "playback_id": "placeholder_id_1",
-                        "duration": 180,
-                        "thumbnail_url": "https://placeholder.com/insurance_overview.jpg",
-                        "status": "ready",
-                        "context": "insurance"
-                    },
-                    {
-                        "key": "deaf_specialized_insurance",
-                        "title": "Specialized Insurance for Deaf Community",
-                        "description": "Learn about insurance coverage specifically designed for deaf and hard of hearing individuals.",
-                        "playback_id": "placeholder_id_2",
-                        "duration": 240,
-                        "thumbnail_url": "https://placeholder.com/deaf_insurance.jpg",
-                        "status": "ready",
-                        "context": "insurance"
-                    },
-                    {
-                        "key": "visual_alert_coverage",
-                        "title": "Visual Alert Systems Coverage",
-                        "description": "Information about insurance coverage for visual alerting devices in your home.",
-                        "playback_id": "placeholder_id_3",
-                        "duration": 150,
-                        "thumbnail_url": "https://placeholder.com/visual_alerts.jpg",
-                        "status": "ready",
-                        "context": "insurance"
-                    }
-                ]
-            return []
-        except ApiException as e:
-            logger.error(f"Exception when calling Mux API: {e}")
-            return []
-        except Exception as e:
-            logger.error(f"Error retrieving ASL videos for context: {e}")
-            return []
-    
-    def get_fallback_video(self) -> Dict[str, Any]:
-        """
-        Get a fallback ASL video when the requested one is not available
-        
-        Returns:
-            Dictionary with fallback video details
-        """
-        return {
-            "key": "fallback",
-            "title": "We're Working on This ASL Video",
-            "description": "This ASL video is not available yet. We're working on creating it. Please check back later.",
-            "playback_id": "fallback_id",
-            "duration": 60,
-            "thumbnail_url": "https://placeholder.com/fallback.jpg",
-            "status": "ready",
-            "context": "fallback"
-        }
-    
-    def create_video_space(self, title: str) -> Optional[Dict[str, Any]]:
-        """
-        Create a new Mux Space for live ASL interpretation
-        
-        Args:
-            title: Title for the space
-        
-        Returns:
-            Dictionary with space details or None if creation failed
-        """
-        if not self.spaces_api:
-            logger.warning("Mux Spaces API not available - can't create video space")
+        if not self.client_configured:
+            logger.error("Mux client not configured. Cannot create asset.")
             return None
             
         try:
-            # This is a placeholder for real implementation
-            return {
-                "id": "space_placeholder_id",
-                "title": title,
-                "status": "active",
-                "join_url": "https://placeholder.com/space",
-                "created_at": "2025-04-11T12:00:00Z"
-            }
-        except Exception as e:
-            logger.error(f"Error creating Mux Space: {e}")
+            create_asset_request = mux_python.CreateAssetRequest(
+                input=video_url,
+                playback_policy=[mux_python.PlaybackPolicy.PUBLIC],
+                mp4_support="standard"
+            )
+            
+            if title:
+                create_asset_request.passthrough = {"title": title}
+                
+            result = self.assets_api.create_asset(create_asset_request)
+            return result.data.id
+            
+        except ApiException as e:
+            logger.error(f"Error creating Mux asset: {e}")
             return None
     
-    def get_available_asl_categories(self) -> List[str]:
+    def get_playback_url(self, asset_id):
         """
-        Get a list of available ASL video categories
+        Get the playback URL for a Mux asset
         
+        Args:
+            asset_id (str): The Mux asset ID
+            
         Returns:
-            List of category names
+            str: Playback URL if successful, None otherwise
         """
-        return [
-            "insurance",
-            "tax_filing",
-            "financial_planning",
-            "accessibility"
-        ]
+        if not self.client_configured:
+            logger.error("Mux client not configured. Cannot get playback URL.")
+            return None
+            
+        try:
+            asset = self.assets_api.get_asset(asset_id)
+            
+            if not asset.data.playback_ids:
+                # Create a playback ID if none exists
+                playback_id_request = mux_python.CreatePlaybackIDRequest(
+                    policy=mux_python.PlaybackPolicy.PUBLIC
+                )
+                playback_id = self.assets_api.create_asset_playback_id(asset_id, playback_id_request)
+                playback_id_value = playback_id.data.id
+            else:
+                playback_id_value = asset.data.playback_ids[0].id
+                
+            return f"https://stream.mux.com/{playback_id_value}.m3u8"
+            
+        except (ApiException, NotFoundException) as e:
+            logger.error(f"Error getting Mux playback URL: {e}")
+            return None
+    
+    def delete_asset(self, asset_id):
+        """
+        Delete a Mux asset
+        
+        Args:
+            asset_id (str): The Mux asset ID to delete
+            
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        if not self.client_configured:
+            logger.error("Mux client not configured. Cannot delete asset.")
+            return False
+            
+        try:
+            self.assets_api.delete_asset(asset_id)
+            return True
+        except (ApiException, NotFoundException) as e:
+            logger.error(f"Error deleting Mux asset: {e}")
+            return False
+            
+    def get_asset_info(self, asset_id):
+        """
+        Get information about a Mux asset
+        
+        Args:
+            asset_id (str): The Mux asset ID
+            
+        Returns:
+            dict: Asset information if successful, None otherwise
+        """
+        if not self.client_configured:
+            logger.error("Mux client not configured. Cannot get asset info.")
+            return None
+            
+        try:
+            asset = self.assets_api.get_asset(asset_id)
+            return {
+                'id': asset.data.id,
+                'status': asset.data.status,
+                'duration': asset.data.duration,
+                'created_at': asset.data.created_at
+            }
+        except (ApiException, NotFoundException) as e:
+            logger.error(f"Error getting Mux asset info: {e}")
+            return None
+        
+    def create_signed_url(self, asset_id, expiration_seconds=3600):
+        """
+        Create a signed URL for secure playback
+        
+        Args:
+            asset_id (str): The Mux asset ID
+            expiration_seconds (int): Seconds until URL expires
+            
+        Returns:
+            str: Signed URL if successful, None otherwise
+        """
+        # Note: Implementation would require JWT library
+        logger.info("Signed URL functionality requires additional implementation")
+        return None
+
+# Initialize an instance of the client
+mux_client = MuxClient()
+
+# SignASL Integration
+def initialize_signasl():
+    """Initialize connection to SignASL service"""
+    from .signasl_integration import SignASLClient
+    
+    try:
+        signasl_client = SignASLClient()
+        logger.info("SignASL integration initialized successfully")
+        return signasl_client
+    except Exception as e:
+        logger.error(f"Error initializing SignASL integration: {e}")
+        return None
+
+signasl_client = initialize_signasl()

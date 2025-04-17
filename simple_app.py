@@ -251,5 +251,13 @@ with app.app_context():
     db.drop_all()
     db.create_all()
 
+# Register blueprints
+try:
+    from routes.education import education_bp
+    app.register_blueprint(education_bp)
+    app.logger.info("Education blueprint registered")
+except Exception as e:
+    app.logger.error(f"Failed to register education blueprint: {e}")
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
