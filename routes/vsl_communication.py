@@ -25,6 +25,11 @@ def communication_dashboard():
     """Main communication dashboard"""
     return render_template('communication/dashboard.html')
 
+@vsl_bp.route('/partnership')
+def vsl_partnership():
+    """VSL Labs partnership page"""
+    return render_template('communication/vsl_partnership.html')
+
 @vsl_bp.route('/video-messages')
 @login_required
 def video_messages():

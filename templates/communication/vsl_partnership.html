@@ -1,0 +1,660 @@
+{% extends "layout.html" %}
+
+{% block title %}VSL Labs Partnership - DEAF FIRST Financial Platform{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/fintech/business">Business</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">VSL Labs Partnership</li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <span class="position-relative me-3">
+                        <img src="https://www.vsllabs.com/favicon.ico" alt="VSL Labs Logo" class="me-2" style="height: 40px; width: 40px;">
+                        <span class="badge bg-info position-absolute top-0 start-100 translate-middle">BETA</span>
+                    </span>
+                    VSL Labs & DEAF FIRST
+                </h1>
+                <div class="text-end">
+                    <span class="badge bg-warning text-dark">May 1, 2025 Meeting</span>
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <div class="d-flex">
+                    <div class="me-3">
+                        <i class="fas fa-calendar-check fa-2x"></i>
+                    </div>
+                    <div>
+                        <h4>Upcoming Meeting: May 1, 2025 at 11:00 AM</h4>
+                        <p class="mb-0">This partnership page outlines how VSL Labs' visual sign language technology can transform the DEAF FIRST platform and provides interactive demos of key integration points.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- VSL Labs Overview -->
+    <div class="row mb-5">
+        <div class="col-lg-8">
+            <div class="card h-100">
+                <div class="card-header bg-dark">
+                    <h2 class="h4 mb-0 text-info">Revolutionary ASL Technology</h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead">VSL Labs is pioneering advanced visual sign language technologies that are transforming how deaf individuals access digital content.</p>
+                    
+                    <p>Their beta API provides groundbreaking capabilities:</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100 bg-dark text-light">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-language text-info me-2"></i> ASL Interpretation</h5>
+                                    <p class="mb-0">Convert text to ASL with proper grammar and visual representation, not just fingerspelling.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100 bg-dark text-light">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-video text-info me-2"></i> Video Translation</h5>
+                                    <p class="mb-0">Translate ASL videos to English text with advanced AI that understands signing nuances.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100 bg-dark text-light">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-comment-dots text-info me-2"></i> ASL Chat Interface</h5>
+                                    <p class="mb-0">Create video chat environments that support natural ASL communication with real-time features.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100 bg-dark text-light">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-book text-info me-2"></i> Domain Terminology</h5>
+                                    <p class="mb-0">Specialized financial terminology delivered in proper ASL, not just literal translations.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <div class="card h-100 bg-info-subtle">
+                <div class="card-header bg-info text-white">
+                    <h3 class="h4 mb-0">Why VSL Labs?</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-hands fa-5x text-info"></i>
+                    </div>
+                    
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item bg-transparent border-info">
+                            <i class="fas fa-check-circle text-info me-2"></i> <strong>Deaf-Developed:</strong> Created by deaf technologists who understand the nuances of ASL
+                        </li>
+                        <li class="list-group-item bg-transparent border-info">
+                            <i class="fas fa-check-circle text-info me-2"></i> <strong>Grammar Focus:</strong> Preserves ASL grammar rather than English word order
+                        </li>
+                        <li class="list-group-item bg-transparent border-info">
+                            <i class="fas fa-check-circle text-info me-2"></i> <strong>Financial Domain:</strong> Specialized knowledge of financial terminology in ASL
+                        </li>
+                        <li class="list-group-item bg-transparent border-info">
+                            <i class="fas fa-check-circle text-info me-2"></i> <strong>AI-Powered:</strong> Uses advanced ML models trained on native signers
+                        </li>
+                        <li class="list-group-item bg-transparent border-info">
+                            <i class="fas fa-check-circle text-info me-2"></i> <strong>Beta Technology:</strong> Early access to cutting-edge ASL technology
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Integration Demos -->
+    <div class="row mb-5">
+        <div class="col-12 mb-4">
+            <h2>Interactive Demo Prototypes</h2>
+            <p class="lead">See how VSL Labs technology would transform the DEAF FIRST platform with these interactive demos.</p>
+        </div>
+        
+        <!-- Demo 1: Financial Term Interpretation -->
+        <div class="col-12 mb-5">
+            <div class="card">
+                <div class="card-header bg-dark d-flex justify-content-between align-items-center">
+                    <h3 class="h4 mb-0 text-white">Demo 1: Financial Term Interpretation</h3>
+                    <span class="badge bg-success">Ready for Integration</span>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h4 class="mb-4">Enter a Financial Term:</h4>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="financialTerm" placeholder="e.g., Compound Interest" value="Compound Interest">
+                                <button class="btn btn-info" type="button" id="getASLBtn">Get ASL</button>
+                            </div>
+                            
+                            <div class="form-text mb-3">Try terms like: Compound Interest, Tax Deduction, Premium Bundle, Liability Insurance</div>
+                            
+                            <div class="card bg-light p-3 mb-3">
+                                <h5>How VSL Labs Technology Transforms This:</h5>
+                                <ul class="mb-0">
+                                    <li>Proper ASL grammar instead of fingerspelling</li>
+                                    <li>Financial concepts expressed naturally in ASL</li>
+                                    <li>Context-aware translations for financial terms</li>
+                                    <li>Domain-specific sign variations recognized</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card bg-dark text-white">
+                                <div class="card-header bg-info">
+                                    <h5 class="mb-0">ASL Video Result</h5>
+                                </div>
+                                <div class="card-body text-center p-5" id="aslVideoResult">
+                                    <!-- Placeholder for ASL video content -->
+                                    <div class="mb-4">
+                                        <i class="fas fa-sign-language fa-5x text-info"></i>
+                                    </div>
+                                    <h5 class="mt-3">ASL for "Compound Interest"</h5>
+                                    <p>This area would display the VSL Labs-generated ASL video explaining compound interest using proper ASL grammar and financial context.</p>
+                                    <div class="mt-4">
+                                        <span class="badge bg-warning text-dark">Demo Mode: API Connection Pending</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Demo 2: Video Messages -->
+        <div class="col-12 mb-5">
+            <div class="card">
+                <div class="card-header bg-dark d-flex justify-content-between align-items-center">
+                    <h3 class="h4 mb-0 text-white">Demo 2: ASL Video Messaging Platform</h3>
+                    <span class="badge bg-info">Integration Ready</span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card bg-light">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Marco Polo-Style ASL Messages</h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="list-group list-group-flush">
+                                        <div class="list-group-item">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">Financial Advisor</h6>
+                                                <small>3 hours ago</small>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="position-relative">
+                                                        <img src="https://via.placeholder.com/60" alt="Video thumbnail" class="rounded">
+                                                        <span class="position-absolute top-50 start-50 translate-middle text-white">
+                                                            <i class="fas fa-play-circle fa-lg"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <p class="mb-1 small">ASL message about your retirement options</p>
+                                                    <div class="text-muted small"><i class="fas fa-clock me-1"></i> 1:24</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="list-group-item bg-info-subtle">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">You</h6>
+                                                <small>2 hours ago</small>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="position-relative">
+                                                        <img src="https://via.placeholder.com/60" alt="Video thumbnail" class="rounded">
+                                                        <span class="position-absolute top-50 start-50 translate-middle text-white">
+                                                            <i class="fas fa-play-circle fa-lg"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <p class="mb-1 small">Your ASL question about 401k contribution limits</p>
+                                                    <div class="text-muted small"><i class="fas fa-clock me-1"></i> 0:48</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="list-group-item">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">Financial Advisor</h6>
+                                                <small>1 hour ago</small>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="position-relative">
+                                                        <img src="https://via.placeholder.com/60" alt="Video thumbnail" class="rounded">
+                                                        <span class="position-absolute top-50 start-50 translate-middle text-white">
+                                                            <i class="fas fa-play-circle fa-lg"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <p class="mb-1 small">ASL response explaining contribution limits and catch-up provisions</p>
+                                                    <div class="text-muted small"><i class="fas fa-clock me-1"></i> 2:15</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="d-grid">
+                                        <button class="btn btn-info">
+                                            <i class="fas fa-video me-2"></i> Record New ASL Message
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card bg-dark text-light h-100">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0">How VSL Labs Enhances This</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <h6><i class="fas fa-exchange-alt text-info me-2"></i> Bi-directional Translation</h6>
+                                        <p>Videos can be automatically translated to text for hearing staff while ensuring ASL responses for deaf clients.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6><i class="fas fa-book text-info me-2"></i> Financial Term Recognition</h6>
+                                        <p>The system recognizes specialized financial signs and terminology in user videos.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6><i class="fas fa-chart-line text-info me-2"></i> Data Insights</h6>
+                                        <p>Analysis of common financial questions helps improve our product offerings.</p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <h6><i class="fas fa-user-shield text-info me-2"></i> Privacy Protection</h6>
+                                        <p>On-device processing options help maintain client financial privacy.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Demo 3: Live Meetings -->
+        <div class="col-12 mb-5">
+            <div class="card">
+                <div class="card-header bg-dark d-flex justify-content-between align-items-center">
+                    <h3 class="h4 mb-0 text-white">Demo 3: Enhanced CPA Video Consultations</h3>
+                    <span class="badge bg-primary">Premium Feature</span>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-5">
+                            <div class="card bg-dark text-light mb-4">
+                                <div class="card-body text-center py-5">
+                                    <i class="fas fa-video fa-4x text-info mb-4"></i>
+                                    <h4>Live CPA Consultation</h4>
+                                    <p>Enhanced with VSL Labs real-time ASL translation</p>
+                                    <div class="mt-4">
+                                        <button class="btn btn-info">
+                                            <i class="fas fa-play-circle me-2"></i> Join Demo Meeting
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0">Meeting Details</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Topic:</span>
+                                            <span class="text-end">Tax Strategy Consultation</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>CPA:</span>
+                                            <span class="text-end">Sarah Johnson, CPA</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Duration:</span>
+                                            <span class="text-end">45 minutes</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Features:</span>
+                                            <span class="text-end">ASL Translation, Screen Sharing</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-7">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">VSL Labs Video Meeting Enhancement</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="ratio ratio-16x9 mb-4 border">
+                                        <div class="bg-dark d-flex align-items-center justify-content-center">
+                                            <div class="text-center">
+                                                <i class="fas fa-video-slash fa-3x text-info mb-3"></i>
+                                                <h5 class="text-white">Video Meeting Simulation</h5>
+                                                <p class="text-light mb-0">VSL Labs-enhanced CPA consultation with real-time ASL</p>
+                                                <div class="mt-3">
+                                                    <span class="badge bg-warning text-dark">Demo Mode: API Connection Pending</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <h5 class="mb-3">VSL Labs Advantages:</h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="card bg-info-subtle h-100">
+                                                <div class="card-body">
+                                                    <h6><i class="fas fa-comment-alt text-info me-2"></i> Live Captions</h6>
+                                                    <p class="mb-0 small">ASL is translated to text for hearing CPAs in real-time</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="card bg-info-subtle h-100">
+                                                <div class="card-body">
+                                                    <h6><i class="fas fa-sign-language text-info me-2"></i> Tax ASL Glossary</h6>
+                                                    <p class="mb-0 small">Specialized tax terminology properly signed</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="card bg-info-subtle h-100">
+                                                <div class="card-body">
+                                                    <h6><i class="fas fa-file-alt text-info me-2"></i> Document Translation</h6>
+                                                    <p class="mb-0 small">Tax forms explained in ASL when shared</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="card bg-info-subtle h-100">
+                                                <div class="card-body">
+                                                    <h6><i class="fas fa-save text-info me-2"></i> Meeting Recording</h6>
+                                                    <p class="mb-0 small">Record consultations for later reference</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Integration Roadmap -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h2 class="h4 mb-0">Integration Roadmap</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Phase</th>
+                                    <th>Integration Points</th>
+                                    <th>Timeline</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Phase 1: API Connection</strong></td>
+                                    <td>
+                                        <ul>
+                                            <li>Initial VSL Labs API integration</li>
+                                            <li>Financial term lookup with ASL</li>
+                                            <li>Basic video message translation</li>
+                                        </ul>
+                                    </td>
+                                    <td>Q2 2025</td>
+                                    <td>
+                                        <span class="badge bg-warning text-dark">Pending API Access</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Phase 2: Core Features</strong></td>
+                                    <td>
+                                        <ul>
+                                            <li>Enhanced video messaging platform</li>
+                                            <li>ASL explanations for insurance products</li>
+                                            <li>Basic live video meeting support</li>
+                                        </ul>
+                                    </td>
+                                    <td>Q3 2025</td>
+                                    <td>
+                                        <span class="badge bg-secondary">Planning</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Phase 3: Advanced Integration</strong></td>
+                                    <td>
+                                        <ul>
+                                            <li>CPA video meetings with ASL translation</li>
+                                            <li>Financial dashboard with ASL explanations</li>
+                                            <li>Live agent support with ASL</li>
+                                        </ul>
+                                    </td>
+                                    <td>Q4 2025</td>
+                                    <td>
+                                        <span class="badge bg-secondary">Planning</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Phase 4: Full Platform Integration</strong></td>
+                                    <td>
+                                        <ul>
+                                            <li>Complete ASL access across all platform features</li>
+                                            <li>Premium-tier advanced ASL support</li>
+                                            <li>Custom financial ASL corpus development</li>
+                                        </ul>
+                                    </td>
+                                    <td>Q1-Q2 2026</td>
+                                    <td>
+                                        <span class="badge bg-secondary">Future</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="alert alert-info mt-4">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-lightbulb fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5>Technical Integration</h5>
+                                <p class="mb-0">Our platform is already architected to integrate with the VSL Labs API. The service layer has been implemented and is ready to connect as soon as API access is granted.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Value Proposition -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="h4 mb-0">Partnership Value Proposition</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card h-100 bg-dark text-light">
+                                <div class="card-header text-center bg-info-subtle text-dark">
+                                    <h4>Value to VSL Labs</h4>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item bg-dark text-light border-secondary">
+                                            <i class="fas fa-chart-line me-2 text-info"></i>
+                                            <strong>Real-World Application:</strong> Financial sector showcase for VSL technology
+                                        </li>
+                                        <li class="list-group-item bg-dark text-light border-secondary">
+                                            <i class="fas fa-database me-2 text-info"></i>
+                                            <strong>Financial ASL Corpus:</strong> Build specialized financial ASL datasets
+                                        </li>
+                                        <li class="list-group-item bg-dark text-light border-secondary">
+                                            <i class="fas fa-users me-2 text-info"></i>
+                                            <strong>User Testing:</strong> Real deaf users providing feedback on beta tech
+                                        </li>
+                                        <li class="list-group-item bg-dark text-light border-secondary">
+                                            <i class="fas fa-globe me-2 text-info"></i>
+                                            <strong>Market Expansion:</strong> Demonstration of fintech applications
+                                        </li>
+                                        <li class="list-group-item bg-dark text-light border-secondary">
+                                            <i class="fas fa-hand-holding-usd me-2 text-info"></i>
+                                            <strong>Revenue Model:</strong> Premium tier integration opportunities
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card h-100 bg-dark text-light">
+                                <div class="card-header text-center bg-info-subtle text-dark">
+                                    <h4>Value to DEAF FIRST</h4>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item bg-dark text-light border-secondary">
+                                            <i class="fas fa-medal me-2 text-info"></i>
+                                            <strong>True Deaf-First Design:</strong> Authentic ASL communication, not just captions
+                                        </li>
+                                        <li class="list-group-item bg-dark text-light border-secondary">
+                                            <i class="fas fa-comments me-2 text-info"></i>
+                                            <strong>Enhanced Communication:</strong> Natural ASL expression for complex concepts
+                                        </li>
+                                        <li class="list-group-item bg-dark text-light border-secondary">
+                                            <i class="fas fa-user-tie me-2 text-info"></i>
+                                            <strong>Professional Network:</strong> Connect deaf clients with financial pros
+                                        </li>
+                                        <li class="list-group-item bg-dark text-light border-secondary">
+                                            <i class="fas fa-graduation-cap me-2 text-info"></i>
+                                            <strong>Financial Literacy:</strong> Proper ASL explanations of complex topics
+                                        </li>
+                                        <li class="list-group-item bg-dark text-light border-secondary">
+                                            <i class="fas fa-rocket me-2 text-info"></i>
+                                            <strong>Competitive Edge:</strong> Cutting-edge technology no other platform offers
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Next Steps -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-info-subtle text-dark">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h3>Meeting Agenda: May 1, 2025</h3>
+                            <ol>
+                                <li>Introduction and platform overview (10 min)</li>
+                                <li>Demo presentation of integration points (15 min)</li>
+                                <li>Discussion of VSL Labs API technical specifications (10 min)</li>
+                                <li>Partnership structure and integration timeline (10 min)</li>
+                                <li>Q&A and next steps (15 min)</li>
+                            </ol>
+                            <p>We're excited to demonstrate how DEAF FIRST and VSL Labs can transform financial accessibility for the deaf community through this groundbreaking partnership.</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <button class="btn btn-info btn-lg mt-3 mb-3">
+                                <i class="fas fa-handshake me-2"></i> Request Early API Access
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Demo functionality for financial term ASL lookup
+    document.addEventListener('DOMContentLoaded', function() {
+        const getASLBtn = document.getElementById('getASLBtn');
+        const financialTerm = document.getElementById('financialTerm');
+        const aslVideoResult = document.getElementById('aslVideoResult');
+        
+        if (getASLBtn) {
+            getASLBtn.addEventListener('click', function() {
+                const term = financialTerm.value.trim();
+                if (!term) return;
+                
+                // In a real implementation, this would call the VSL Labs API
+                // For now, we just update the UI to simulate the response
+                
+                aslVideoResult.innerHTML = `
+                    <div class="mb-4">
+                        <i class="fas fa-sign-language fa-5x text-info"></i>
+                    </div>
+                    <h5 class="mt-3">ASL for "${term}"</h5>
+                    <p>This area would display the VSL Labs-generated ASL video explaining ${term} using proper ASL grammar and financial context.</p>
+                    <div class="mt-4">
+                        <span class="badge bg-warning text-dark">Demo Mode: API Connection Pending</span>
+                    </div>
+                `;
+            });
+        }
+    });
+</script>
+{% endblock %}
