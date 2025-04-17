@@ -1,0 +1,266 @@
+{% extends "layout.html" %}
+
+{% block title %}Schedule ASL Support - DEAF FIRST{% endblock %}
+
+{% block head %}
+<style>
+    .category-card {
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .category-card:hover {
+        transform: translateY(-5px);
+    }
+    .category-card.selected {
+        border-color: var(--bs-primary) !important;
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+    .provider-card {
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .provider-card:hover {
+        transform: translateY(-5px);
+    }
+    .provider-card.selected {
+        border-color: var(--bs-primary) !important;
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5">Schedule ASL Support</h1>
+        <a href="{{ url_for('asl_support.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i> Back to Support
+        </a>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <form action="{{ url_for('asl_support.schedule') }}" method="post" class="needs-validation" novalidate>
+                        <div class="step-container" id="step1">
+                            <h2 class="h4 mb-4">Step 1: Select Support Category</h2>
+                            
+                            <div class="row g-3 mb-4">
+                                {% for category_id, category in categories.items() %}
+                                <div class="col-md-6">
+                                    <div class="card category-card h-100 shadow-sm" data-category="{{ category_id }}">
+                                        <div class="card-body">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0 text-primary me-3">
+                                                    <i class="bi bi-{{ category.icon }} fs-3"></i>
+                                                </div>
+                                                <div>
+                                                    <h3 class="h5">{{ category.name }}</h3>
+                                                    <p class="mb-0 text-muted small">{{ category.description }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <input type="hidden" name="category" id="category-input" required>
+                            <div class="invalid-feedback mb-3" id="category-feedback" style="display: none;">
+                                Please select a support category.
+                            </div>
+                            
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-primary" id="step1-next">
+                                    Next <i class="bi bi-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="step-container" id="step2" style="display: none;">
+                            <h2 class="h4 mb-4">Step 2: Schedule Your Session</h2>
+                            
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="scheduled_date" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="scheduled_date" name="scheduled_date" value="{{ default_date }}" min="{{ default_date }}" required>
+                                    <div class="invalid-feedback">
+                                        Please select a valid date.
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="scheduled_time" class="form-label">Time</label>
+                                    <input type="time" class="form-control" id="scheduled_time" name="scheduled_time" value="{{ default_time }}" required>
+                                    <div class="invalid-feedback">
+                                        Please select a valid time.
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="notes" class="form-label">Additional Notes</label>
+                                    <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Describe your issue or question..."></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary" id="step2-prev">
+                                    <i class="bi bi-arrow-left me-2"></i> Previous
+                                </button>
+                                <button type="button" class="btn btn-primary" id="step2-next">
+                                    Next <i class="bi bi-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="step-container" id="step3" style="display: none;">
+                            <h2 class="h4 mb-4">Step 3: Select Video Provider</h2>
+                            
+                            <div class="row g-3 mb-4">
+                                {% if providers %}
+                                    {% for provider_id, provider in providers.items() %}
+                                    <div class="col-md-6">
+                                        <div class="card provider-card h-100 shadow-sm" data-provider="{{ provider_id }}">
+                                            <div class="card-body">
+                                                <h3 class="h5">{{ provider.name }}</h3>
+                                                <p class="mb-0 text-muted small">Video call provider for ASL support</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="col-12">
+                                        <div class="card provider-card h-100 shadow-sm selected" data-provider="demo">
+                                            <div class="card-body">
+                                                <h3 class="h5">Demo Provider</h3>
+                                                <p class="mb-0 text-muted small">This is a demo video provider for testing purposes.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <input type="hidden" name="provider" id="provider-input" value="demo">
+                            
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary" id="step3-prev">
+                                    <i class="bi bi-arrow-left me-2"></i> Previous
+                                </button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-calendar-check me-2"></i> Schedule Session
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Multi-step form functionality
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        
+        const step1Next = document.getElementById('step1-next');
+        const step2Prev = document.getElementById('step2-prev');
+        const step2Next = document.getElementById('step2-next');
+        const step3Prev = document.getElementById('step3-prev');
+        
+        const categoryInput = document.getElementById('category-input');
+        const categoryFeedback = document.getElementById('category-feedback');
+        const providerInput = document.getElementById('provider-input');
+        
+        // Category selection
+        const categoryCards = document.querySelectorAll('.category-card');
+        categoryCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove selected class from all cards
+                categoryCards.forEach(c => c.classList.remove('selected'));
+                
+                // Add selected class to clicked card
+                this.classList.add('selected');
+                
+                // Set input value
+                categoryInput.value = this.dataset.category;
+                
+                // Hide feedback message
+                categoryFeedback.style.display = 'none';
+            });
+        });
+        
+        // Provider selection
+        const providerCards = document.querySelectorAll('.provider-card');
+        providerCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove selected class from all cards
+                providerCards.forEach(c => c.classList.remove('selected'));
+                
+                // Add selected class to clicked card
+                this.classList.add('selected');
+                
+                // Set input value
+                providerInput.value = this.dataset.provider;
+            });
+        });
+        
+        // Navigation between steps
+        step1Next.addEventListener('click', function() {
+            if (!categoryInput.value) {
+                categoryFeedback.style.display = 'block';
+                return;
+            }
+            
+            step1.style.display = 'none';
+            step2.style.display = 'block';
+        });
+        
+        step2Prev.addEventListener('click', function() {
+            step2.style.display = 'none';
+            step1.style.display = 'block';
+        });
+        
+        step2Next.addEventListener('click', function() {
+            const dateInput = document.getElementById('scheduled_date');
+            const timeInput = document.getElementById('scheduled_time');
+            
+            if (!dateInput.value || !timeInput.value) {
+                if (!dateInput.value) dateInput.classList.add('is-invalid');
+                if (!timeInput.value) timeInput.classList.add('is-invalid');
+                return;
+            }
+            
+            step2.style.display = 'none';
+            step3.style.display = 'block';
+        });
+        
+        step3Prev.addEventListener('click', function() {
+            step3.style.display = 'none';
+            step2.style.display = 'block';
+        });
+        
+        // Form validation
+        const form = document.querySelector('form.needs-validation');
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            form.classList.add('was-validated');
+        });
+        
+        // Reset validation when editing fields
+        const inputs = document.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('is-invalid');
+            });
+        });
+    });
+</script>
+{% endblock %}
