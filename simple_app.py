@@ -377,5 +377,13 @@ try:
 except Exception as e:
     app.logger.error(f"Failed to register reseller blueprints: {e}")
 
+# Register demo blueprint
+try:
+    from routes.demo import demo_bp
+    app.register_blueprint(demo_bp)
+    app.logger.info("Demo blueprint registered")
+except Exception as e:
+    app.logger.error(f"Failed to register demo blueprint: {e}")
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

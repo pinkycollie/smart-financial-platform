@@ -1,0 +1,134 @@
+{% extends "layout.html" %}
+
+{% block title %}DEAF FIRST White-Label Demo{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 mb-4">DEAF FIRST Platform</h1>
+            <h2 class="mb-4">Multi-Tier White-Label Reseller System</h2>
+            <p class="lead">
+                This demo showcases the white-label reseller capabilities of the DEAF FIRST platform, allowing financial professionals to license, 
+                customize, and distribute the platform through a multi-tier architecture.
+            </p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+                <a href="{{ url_for('demo.reseller_system') }}" class="btn btn-primary btn-lg px-4 gap-3">
+                    Explore the System
+                </a>
+                <a href="#features" class="btn btn-outline-secondary btn-lg px-4">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="card border-0 shadow">
+                <div class="card-body p-4">
+                    <h3 class="card-title mb-4">White-Label System Architecture</h3>
+                    <div class="text-center mb-4">
+                        <img src="https://via.placeholder.com/800x400?text=Multi-Tier+Reseller+Architecture" alt="Multi-Tier Reseller Architecture" class="img-fluid rounded">
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 bg-primary rounded p-3 me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <i class="bi bi-diagram-3-fill fs-2 text-white"></i>
+                                </div>
+                                <div>
+                                    <h4>Multi-Tier Distribution</h4>
+                                    <p>Primary resellers can create sub-resellers in a multi-level distribution structure</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 bg-primary rounded p-3 me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <i class="bi bi-palette-fill fs-2 text-white"></i>
+                                </div>
+                                <div>
+                                    <h4>White-Label Branding</h4>
+                                    <p>Complete customization of branding, look and feel for each reseller and licensee</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 bg-primary rounded p-3 me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <i class="bi bi-cash-coin fs-2 text-white"></i>
+                                </div>
+                                <div>
+                                    <h4>Commission Management</h4>
+                                    <p>Automated tracking of revenue and commission splits across the distribution tiers</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row" id="features">
+        <div class="col-lg-10 mx-auto">
+            <h3 class="mb-4 text-center">Key Features</h3>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="bi bi-building text-primary me-2"></i>Reseller Management</h4>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Multiple reseller tiers with differentiated features</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Sub-reseller capabilities for multi-tier distribution</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Comprehensive reseller administration portal</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Detailed performance analytics and reporting</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="bi bi-palette text-primary me-2"></i>White-Label Customization</h4>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Custom branding with logos, colors, and fonts</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Predefined themes with preview capabilities</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Custom domain and email settings</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Custom CSS and JavaScript for advanced customization</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="bi bi-cash-stack text-primary me-2"></i>Revenue Management</h4>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Automated billing and invoicing system</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Commission calculation and distribution</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Revenue reporting and forecasting</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Multi-level commission structures</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="bi bi-grid-3x3-gap text-primary me-2"></i>Module Management</h4>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Customizable module selection by tier</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Granular feature enablement</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>ASL video support across all modules</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Deaf-first design principles throughout</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

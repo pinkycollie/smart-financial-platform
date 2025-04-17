@@ -1,0 +1,358 @@
+{% extends "layout.html" %}
+
+{% block title %}Multi-Tier Reseller System - DEAF FIRST{% endblock %}
+
+{% block head %}
+<style>
+    .hierarchy-card {
+        transition: transform 0.3s;
+    }
+    .hierarchy-card:hover {
+        transform: translateY(-5px);
+    }
+    .tier-badge {
+        text-transform: capitalize;
+    }
+    .connection-line {
+        border-left: 2px dashed var(--bs-border-color);
+        height: 20px;
+        margin-left: 20px;
+        margin-bottom: -5px;
+    }
+    .connection-branch {
+        border-bottom: 2px dashed var(--bs-border-color);
+        width: 20px;
+        height: 20px;
+        margin-left: 20px;
+        margin-bottom: 10px;
+        border-left: 2px dashed var(--bs-border-color);
+        border-bottom-left-radius: 10px;
+    }
+    .revenue-value {
+        font-size: 2rem;
+        font-weight: 500;
+    }
+    .revenue-label {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        color: var(--bs-secondary);
+    }
+    .theme-preview {
+        cursor: pointer;
+        border-radius: 8px;
+        overflow: hidden;
+        height: 100px;
+        transition: all 0.3s;
+    }
+    .theme-preview:hover {
+        transform: scale(1.05);
+    }
+    .module-stat {
+        height: 100px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Multi-Tier Reseller System</h1>
+        <a href="{{ url_for('demo.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i> Back to Demo Home
+        </a>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="card-title h5 mb-0">Reseller Hierarchy</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Main Reseller -->
+                    <div class="hierarchy-card card mb-4 border-primary">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="h5 mb-0">{{ reseller_hierarchy.main_reseller.company_name }}</h3>
+                                <span class="badge bg-primary tier-badge">{{ reseller_hierarchy.main_reseller.tier }}</span>
+                            </div>
+                            <p class="text-muted small mb-0">Primary Reseller</p>
+                            <div class="d-flex mt-2">
+                                <div class="me-3">
+                                    <span class="badge bg-light text-dark">{{ reseller_hierarchy.main_reseller.licensee_count }} Direct Licensees</span>
+                                </div>
+                                <div>
+                                    <span class="badge bg-light text-dark">{{ reseller_hierarchy.main_reseller.sub_reseller_count }} Sub-Resellers</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sub-Resellers -->
+                    {% if reseller_hierarchy.sub_resellers %}
+                    <div class="connection-line"></div>
+                    <h4 class="h6 mb-3">Sub-Resellers</h4>
+                    <div class="row g-3 mb-4">
+                        {% for sub_reseller in reseller_hierarchy.sub_resellers %}
+                        <div class="col-md-6">
+                            <div class="hierarchy-card card h-100 border-success">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="h6 mb-0">{{ sub_reseller.company_name }}</h5>
+                                        <span class="badge bg-success">{{ sub_reseller.commission_rate }}% Commission</span>
+                                    </div>
+                                    <p class="text-muted small mb-0">Sub-Reseller</p>
+                                    <div class="mt-2">
+                                        <span class="badge bg-light text-dark">{{ sub_reseller.licensee_count }} Licensees</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Direct Licensees -->
+                    <div class="connection-line"></div>
+                    <h4 class="h6 mb-3">Direct Licensees</h4>
+                    <div class="row g-3 mb-4">
+                        {% for licensee in reseller_hierarchy.direct_licensees %}
+                        <div class="col-md-6">
+                            <div class="hierarchy-card card h-100 {% if licensee.white_label %}border-info{% else %}border-secondary{% endif %}">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="h6 mb-0">{{ licensee.company_name }}</h5>
+                                        <span class="badge {% if licensee.tier == 'professional' %}bg-info{% elif licensee.tier == 'enterprise' %}bg-warning{% else %}bg-secondary{% endif %} tier-badge">
+                                            {{ licensee.tier }}
+                                        </span>
+                                    </div>
+                                    <p class="text-muted small mb-0">Direct Licensee</p>
+                                    <div class="d-flex mt-2 justify-content-between">
+                                        <span class="badge bg-light text-dark">{{ licensee.client_count }} Clients</span>
+                                        {% if licensee.white_label %}
+                                        <a href="{{ url_for('demo.white_label_preview', licensee_id=licensee.id) }}" class="badge bg-info text-decoration-none">
+                                            <i class="bi bi-eye-fill me-1"></i> White-Label Preview
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Sub-Reseller Licensees -->
+                    {% if reseller_hierarchy.sub_licensees %}
+                    <div class="connection-line"></div>
+                    <h4 class="h6 mb-3">Sub-Reseller Licensees</h4>
+                    <div class="row g-3">
+                        {% for licensee in reseller_hierarchy.sub_licensees %}
+                        <div class="col-md-6">
+                            <div class="hierarchy-card card h-100 {% if licensee.white_label %}border-info{% else %}border-secondary{% endif %}">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="h6 mb-0">{{ licensee.company_name }}</h5>
+                                        <span class="badge {% if licensee.tier == 'professional' %}bg-info{% elif licensee.tier == 'enterprise' %}bg-warning{% else %}bg-secondary{% endif %} tier-badge">
+                                            {{ licensee.tier }}
+                                        </span>
+                                    </div>
+                                    <p class="text-muted small mb-0">Via {{ licensee.sub_reseller_name }}</p>
+                                    <div class="d-flex mt-2 justify-content-between">
+                                        <span class="badge bg-light text-dark">{{ licensee.client_count }} Clients</span>
+                                        {% if licensee.white_label %}
+                                        <a href="{{ url_for('demo.white_label_preview', licensee_id=licensee.id) }}" class="badge bg-info text-decoration-none">
+                                            <i class="bi bi-eye-fill me-1"></i> White-Label Preview
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <!-- Revenue Stats -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h3 class="card-title h5 mb-0">Revenue Statistics</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="revenue-value">${{ "%.2f"|format(revenue_stats.total_monthly_revenue) }}</div>
+                        <div class="revenue-label">Monthly Revenue</div>
+                    </div>
+                    
+                    <div class="progress mb-3" style="height: 25px;">
+                        <div class="progress-bar bg-primary" role="progressbar" 
+                            style="width: {{ (revenue_stats.direct_revenue / revenue_stats.total_monthly_revenue) * 100 if revenue_stats.total_monthly_revenue > 0 else 0 }}%" 
+                            aria-valuenow="{{ revenue_stats.direct_revenue }}" 
+                            aria-valuemin="0" 
+                            aria-valuemax="{{ revenue_stats.total_monthly_revenue }}">
+                            Direct
+                        </div>
+                        <div class="progress-bar bg-success" role="progressbar" 
+                            style="width: {{ (revenue_stats.sub_reseller_revenue / revenue_stats.total_monthly_revenue) * 100 if revenue_stats.total_monthly_revenue > 0 else 0 }}%" 
+                            aria-valuenow="{{ revenue_stats.sub_reseller_revenue }}" 
+                            aria-valuemin="0" 
+                            aria-valuemax="{{ revenue_stats.total_monthly_revenue }}">
+                            Sub-Reseller
+                        </div>
+                    </div>
+                    
+                    <div class="row g-2 text-center">
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <div class="h5 mb-0">${{ "%.2f"|format(revenue_stats.direct_revenue) }}</div>
+                                <div class="small text-muted">Direct Revenue</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <div class="h5 mb-0">${{ "%.2f"|format(revenue_stats.sub_reseller_revenue) }}</div>
+                                <div class="small text-muted">Sub-Reseller Revenue</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <div class="h5 mb-0">{{ revenue_stats.total_transactions }}</div>
+                                <div class="small text-muted">Total Transactions</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <div class="h5 mb-0">${{ "%.2f"|format(revenue_stats.commission_earned) }}</div>
+                                <div class="small text-muted">Commission Earned</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Theme Options -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h3 class="card-title h5 mb-0">White-Label Themes</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        {% for theme in themes %}
+                        <div class="col-6">
+                            <div class="theme-preview p-2 border" 
+                                 data-theme-id="{{ theme.id }}"
+                                 style="background: linear-gradient(135deg, {{ theme.primary_color }} 0%, {{ theme.secondary_color }} 100%);">
+                                <h6 class="text-white mb-0">{{ theme.name }}</h6>
+                                <div class="text-white-50 small">Click to preview</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Module Usage -->
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="card-title h5 mb-0">Module Adoption</h3>
+                </div>
+                <div class="card-body">
+                    {% for module, percentage in module_stats.items() %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>{{ module|replace('_', ' ')|title }}</span>
+                            <span>{{ percentage }}%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ percentage }}%" 
+                                aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Theme Preview Modal -->
+<div class="modal fade" id="themePreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="themePreviewTitle">Theme Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="themePreviewContent">
+                    <div class="text-center py-5">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Theme preview click handlers
+        const themePreviewModal = new bootstrap.Modal(document.getElementById('themePreviewModal'));
+        const previewContainers = document.querySelectorAll('.theme-preview');
+        
+        previewContainers.forEach(container => {
+            container.addEventListener('click', function() {
+                const themeId = this.dataset.themeId;
+                const themeTitle = this.querySelector('h6').textContent;
+                
+                document.getElementById('themePreviewTitle').textContent = `Theme Preview: ${themeTitle}`;
+                document.getElementById('themePreviewContent').innerHTML = `
+                    <div class="text-center py-5">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                `;
+                
+                themePreviewModal.show();
+                
+                // Fetch theme preview
+                fetch(`/demo/api/theme/${themeId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Create style element for the theme CSS
+                        const styleEl = document.createElement('style');
+                        styleEl.textContent = data.css;
+                        
+                        // Create div for the preview HTML
+                        const previewEl = document.createElement('div');
+                        previewEl.innerHTML = data.html;
+                        
+                        // Clear loading indicator and append preview
+                        const previewContent = document.getElementById('themePreviewContent');
+                        previewContent.innerHTML = '';
+                        previewContent.appendChild(styleEl);
+                        previewContent.appendChild(previewEl);
+                    })
+                    .catch(error => {
+                        document.getElementById('themePreviewContent').innerHTML = `
+                            <div class="alert alert-danger">
+                                Error loading theme preview: ${error.message}
+                            </div>
+                        `;
+                    });
+            });
+        });
+    });
+</script>
+{% endblock %}
