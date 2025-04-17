@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    {% for key, value in meta_tags.items() %}
+        {% if key == 'title' %}
+            <meta name="title" content="{{ value }}">
+        {% elif key == 'description' %}
+            <meta name="description" content="{{ value }}">
+        {% elif key == 'keywords' %}
+            <meta name="keywords" content="{{ value }}">
+        {% elif key == 'canonical' %}
+            <link rel="canonical" href="{{ value }}">
+        {% elif key.startswith('og:') %}
+            <meta property="{{ key }}" content="{{ value }}">
+        {% elif key.startswith('twitter:') %}
+            <meta name="{{ key }}" content="{{ value }}">
+        {% else %}
+            <meta name="{{ key }}" content="{{ value }}">
+        {% endif %}
+    {% endfor %}
+    
+    <script type="application/ld+json">
+        {{ breadcrumb_ld|safe }}
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Sitemap</li>
+                </ol>
+            </nav>
+            
+            <h1 class="display-4 mb-4">Sitemap</h1>
+            <p class="lead">
+                This sitemap provides a complete overview of the DEAF FIRST financial platform.
+                Our platform is designed with a Deaf First approach, making financial services
+                accessible with ASL support for deaf users.
+            </p>
+            
+            <!-- ASL Video Support Notice -->
+            <div class="alert alert-info d-flex align-items-center" role="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                </svg>
+                <div>
+                    Most pages on our platform include ASL video support. Look for the <span class="badge bg-success">ASL</span> badge.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group mb-4" id="sitemap-nav">
+                {% for section, items in sitemap_sections.items() %}
+                    <a class="list-group-item list-group-item-action" href="#section-{{ section|lower }}">{{ section }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            {% for section, items in sitemap_sections.items() %}
+                <div class="card mb-4" id="section-{{ section|lower }}">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="h4 mb-0">{{ section }}</h2>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            {% for item in items %}
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <a href="{{ item.loc }}" class="fw-bold">{{ item.title }}</a>
+                                            {% if "ASL" in item.description %}
+                                                <span class="badge bg-success ms-2">ASL</span>
+                                            {% endif %}
+                                            <div class="small text-muted">{{ item.description }}</div>
+                                        </div>
+                                        <span class="badge bg-secondary">{{ item.priority }}</span>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Special Deaf First Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h2 class="h3 mb-4">About Our DEAF FIRST Approach</h2>
+                    <p>
+                        The DEAF FIRST platform was created by MBTQ GROUP (founded April 26, 2022) to bring accessible 
+                        financial services to the deaf community. Our platform is used by financial educators, advisors, 
+                        and agents who serve deaf clients. Every aspect of our platform is designed with deaf accessibility 
+                        as the primary consideration, not as an afterthought.
+                    </p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h3 class="h5">For Deaf Clients</h3>
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> ASL video support</li>
+                                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> Visual financial learning</li>
+                                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> Deaf-friendly interfaces</li>
+                                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> ASL financial glossary</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h3 class="h5">For Financial Professionals</h3>
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> White-label platform</li>
+                                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> Deaf client management</li>
+                                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> ASL financial education</li>
+                                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> Custom branding options</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h3 class="h5">DEAF FIRST Benefits</h3>
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> Increased client trust</li>
+                                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> Better financial outcomes</li>
+                                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> Expanded deaf client base</li>
+                                        <li><i class="bi bi-check-circle-fill text-success me-2"></i> Competitive advantage</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

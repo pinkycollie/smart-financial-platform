@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}DEAF FIRST Financial Platform{% endblock %}</title>
+    
+    <!-- Bootstrap CSS from Replit CDN -->
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <span class="fw-bold">MBTQ</span> DEAF FIRST
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/platform">Platform</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/education">Education</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/advisors">For Advisors</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/resources">Resources</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pricing">Pricing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/blog">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a href="/client-portal/login" class="btn btn-outline-light me-2">Client Login</a>
+                    <a href="/advisor-portal/login" class="btn btn-light">Advisor Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h3 class="h5 mb-3">DEAF FIRST Financial Platform</h3>
+                    <p class="small mb-3">
+                        Founded April 26, 2022<br>
+                        Making financial services accessible to the deaf community through ASL support and deaf-first design.
+                    </p>
+                    <div class="d-flex">
+                        <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-md-2 mb-4">
+                    <h4 class="h6 mb-3">Platform</h4>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="/platform" class="text-white-50">Overview</a></li>
+                        <li class="mb-2"><a href="/platform/features" class="text-white-50">Features</a></li>
+                        <li class="mb-2"><a href="/platform/whitelabel" class="text-white-50">White Label</a></li>
+                        <li class="mb-2"><a href="/platform/security" class="text-white-50">Security</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-2 mb-4">
+                    <h4 class="h6 mb-3">Resources</h4>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="/resources" class="text-white-50">Overview</a></li>
+                        <li class="mb-2"><a href="/resources/videos" class="text-white-50">ASL Videos</a></li>
+                        <li class="mb-2"><a href="/resources/glossary" class="text-white-50">ASL Glossary</a></li>
+                        <li class="mb-2"><a href="/resources/tools" class="text-white-50">Financial Tools</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-2 mb-4">
+                    <h4 class="h6 mb-3">Company</h4>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="/about" class="text-white-50">About</a></li>
+                        <li class="mb-2"><a href="/about/mission" class="text-white-50">Mission</a></li>
+                        <li class="mb-2"><a href="/about/team" class="text-white-50">Team</a></li>
+                        <li class="mb-2"><a href="/contact" class="text-white-50">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-2 mb-4">
+                    <h4 class="h6 mb-3">Legal</h4>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="/legal/privacy" class="text-white-50">Privacy</a></li>
+                        <li class="mb-2"><a href="/legal/terms" class="text-white-50">Terms</a></li>
+                        <li class="mb-2"><a href="/legal/licensing" class="text-white-50">Licensing</a></li>
+                        <li class="mb-2"><a href="/legal/accessibility" class="text-white-50">Accessibility</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6 small">
+                    <p class="mb-0">&copy; 2022-2025 MBTQ GROUP. All rights reserved.</p>
+                    <p class="mb-0">
+                        <a href="/sitemap" class="text-white-50">Sitemap</a> |
+                        <a href="/support" class="text-white-50">Support</a>
+                    </p>
+                </div>
+                
+                <div class="col-md-6 text-md-end">
+                    <span class="badge bg-light text-dark">DEAF FIRST</span>
+                    <span class="small text-white-50 ms-2">A digital framework movement</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    {% for key, value in meta_tags.items() %}
+        {% if key == 'title' %}
+            <meta name="title" content="{{ value }}">
+        {% elif key == 'description' %}
+            <meta name="description" content="{{ value }}">
+        {% elif key == 'keywords' %}
+            <meta name="keywords" content="{{ value }}">
+        {% elif key == 'canonical' %}
+            <link rel="canonical" href="{{ value }}">
+        {% elif key.startswith('og:') %}
+            <meta property="{{ key }}" content="{{ value }}">
+        {% elif key.startswith('twitter:') %}
+            <meta name="{{ key }}" content="{{ value }}">
+        {% else %}
+            <meta name="{{ key }}" content="{{ value }}">
+        {% endif %}
+    {% endfor %}
+    
+    <script type="application/ld+json">
+        {{ breadcrumb_ld|safe }}
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid bg-dark py-5 mb-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/" class="text-white-50">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/platform" class="text-white-50">Platform</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">White Label</li>
+                    </ol>
+                </nav>
+                <h1 class="display-4 mb-4">White-Label DEAF FIRST Platform</h1>
+                <p class="lead mb-4">
+                    Customize the DEAF FIRST platform with your branding and colors to provide 
+                    a seamless experience for your deaf clients while maintaining your brand identity.
+                </p>
+                <div class="d-flex">
+                    <a href="/demo" class="btn btn-primary me-3">Request Demo</a>
+                    <a href="/pricing" class="btn btn-outline-light">View Pricing</a>
+                </div>
+            </div>
+            <div class="col-lg-6 mt-5 mt-lg-0">
+                <div class="card bg-dark">
+                    <div class="card-body p-4">
+                        <div class="row g-4">
+                            <div class="col-6">
+                                <div class="card bg-secondary">
+                                    <div class="card-body p-3 text-center">
+                                        <div style="height: 120px;" class="d-flex align-items-center justify-content-center">
+                                            <small class="text-white">Your Logo Here</small>
+                                        </div>
+                                        <div class="mt-3">
+                                            <div class="bg-dark rounded px-3 py-2 mb-2 text-center">
+                                                <small>Your Brand Colors</small>
+                                            </div>
+                                            <div class="bg-primary rounded px-3 py-2 text-center">
+                                                <small>Customizable UI</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="card h-100">
+                                    <div class="card-body p-3">
+                                        <h5 class="card-title h6">White-Label Preview</h5>
+                                        <p class="card-text small">Your branding applied to the DEAF FIRST platform</p>
+                                        <div class="mt-4">
+                                            <div class="rounded bg-secondary mb-2" style="height: 10px;"></div>
+                                            <div class="rounded bg-secondary mb-2" style="height: 10px;"></div>
+                                            <div class="rounded bg-secondary mb-2" style="height: 10px;"></div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <div class="rounded-pill bg-primary px-3 py-1 d-inline-block">
+                                                <small>Custom Button</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h2 class="mb-4">Make DEAF FIRST Your Own</h2>
+            <p class="lead">
+                Our white-label solution lets financial professionals customize the platform while maintaining 
+                the robust ASL support that makes financial services accessible to deaf clients.
+            </p>
+        </div>
+    </div>
+    
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <img src="https://placehold.co/600x400/212529/e9ecef?text=Customization+Preview" alt="White-Label Customization Preview" class="img-fluid rounded">
+        </div>
+        <div class="col-lg-6">
+            <h3 class="mb-4">Comprehensive Customization Options</h3>
+            <div class="accordion" id="customizationAccordion">
+                <div class="accordion-item">
+                    <h4 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Visual Branding
+                        </button>
+                    </h4>
+                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#customizationAccordion">
+                        <div class="accordion-body">
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Upload your company logo</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Customize primary and secondary colors</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Choose accent colors for buttons and UI elements</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Select custom font families</li>
+                                <li><i class="bi bi-check-circle-fill text-success me-2"></i> Add custom favicon and browser icons</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h4 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Content Customization
+                        </button>
+                    </h4>
+                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#customizationAccordion">
+                        <div class="accordion-body">
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Customize welcome messages</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Add company tagline and mission statement</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Personalize email templates</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Customize footer information</li>
+                                <li><i class="bi bi-check-circle-fill text-success me-2"></i> Enterprise: Create custom education modules</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h4 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Domain & Access
+                        </button>
+                    </h4>
+                    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#customizationAccordion">
+                        <div class="accordion-body">
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Custom subdomain (yourcompany.deaffirst.com)</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Enterprise: Custom domain support</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Single sign-on integration options</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Custom login page</li>
+                                <li><i class="bi bi-check-circle-fill text-success me-2"></i> Enterprise: API access for deeper integration</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <h3 class="mb-3">The Power of White-Labeling for Your Practice</h3>
+                            <p class="mb-lg-0">
+                                White-labeling the DEAF FIRST platform allows you to extend your brand while providing 
+                                accessible financial services to deaf clients. It's the best of both worlds: your brand 
+                                identity with our deaf-optimized technology.
+                            </p>
+                        </div>
+                        <div class="col-lg-4 text-lg-end">
+                            <a href="/advisors/case-studies" class="btn btn-primary">View Success Stories</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h2 class="mb-4">White-Label Features By License Tier</h2>
+            <p class="lead mb-5">
+                Compare the white-label features available in each license tier.
+            </p>
+        </div>
+        
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Feature</th>
+                            <th class="text-center">Basic<br><small class="text-muted">$199/month</small></th>
+                            <th class="text-center">Professional<br><small class="text-muted">$499/month</small></th>
+                            <th class="text-center">Enterprise<br><small class="text-muted">$999/month</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Logo Customization</td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Color Customization</td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Custom Welcome Message</td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Custom Subdomain</td>
+                            <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Email Template Customization</td>
+                            <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Font Customization</td>
+                            <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Custom Domain Support</td>
+                            <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Custom Education Modules</td>
+                            <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>API Access</td>
+                            <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Custom CSS</td>
+                            <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-check-circle-fill text-success"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6 order-lg-2 mb-4 mb-lg-0">
+            <img src="https://placehold.co/600x400/212529/e9ecef?text=White-Label+Dashboard" alt="White-Label Dashboard Example" class="img-fluid rounded">
+        </div>
+        <div class="col-lg-6 order-lg-1">
+            <h3 class="mb-4">Simple Setup Process</h3>
+            <p class="mb-4">
+                Getting your white-labeled platform up and running is quick and straightforward. Our team will 
+                guide you through each step of the process.
+            </p>
+            <ol class="list-group list-group-numbered mb-4">
+                <li class="list-group-item bg-transparent">
+                    <div class="ms-2">
+                        <div class="fw-bold">Choose your license tier</div>
+                        Select the plan that best fits your practice size and needs
+                    </div>
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <div class="ms-2">
+                        <div class="fw-bold">Access the branding portal</div>
+                        Use our simple interface to upload assets and select customization options
+                    </div>
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <div class="ms-2">
+                        <div class="fw-bold">Preview and approve</div>
+                        See how your branded platform will look before it goes live
+                    </div>
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <div class="ms-2">
+                        <div class="fw-bold">Launch and invite clients</div>
+                        Start inviting your deaf clients to your customized platform
+                    </div>
+                </li>
+            </ol>
+            <a href="/demo" class="btn btn-primary">See the Platform in Action</a>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body p-5 text-center">
+                    <h2 class="mb-4">Ready to create your white-labeled platform?</h2>
+                    <p class="lead mb-4">
+                        Start providing accessible financial services to your deaf clients under your own brand.
+                    </p>
+                    <div class="d-flex justify-content-center">
+                        <a href="/pricing" class="btn btn-light me-3">View Pricing</a>
+                        <a href="/demo" class="btn btn-outline-light">Request Demo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,453 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    {% for key, value in meta_tags.items() %}
+        {% if key == 'title' %}
+            <meta name="title" content="{{ value }}">
+        {% elif key == 'description' %}
+            <meta name="description" content="{{ value }}">
+        {% elif key == 'keywords' %}
+            <meta name="keywords" content="{{ value }}">
+        {% elif key == 'canonical' %}
+            <link rel="canonical" href="{{ value }}">
+        {% elif key.startswith('og:') %}
+            <meta property="{{ key }}" content="{{ value }}">
+        {% elif key.startswith('twitter:') %}
+            <meta name="{{ key }}" content="{{ value }}">
+        {% else %}
+            <meta name="{{ key }}" content="{{ value }}">
+        {% endif %}
+    {% endfor %}
+    
+    <script type="application/ld+json">
+        {{ breadcrumb_ld|safe }}
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid bg-dark py-5 mb-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 mb-4">DEAF FIRST Financial Platform</h1>
+                <p class="lead mb-4">
+                    The only financial platform designed specifically for advisors, agents, and educators 
+                    serving deaf clients. Built with a DEAF FIRST approach, making financial services 
+                    truly accessible through ASL support.
+                </p>
+                <div class="d-flex">
+                    <a href="/demo" class="btn btn-primary me-3">Request Demo</a>
+                    <a href="/platform/whitelabel" class="btn btn-outline-light">White Label Options</a>
+                </div>
+            </div>
+            <div class="col-lg-6 mt-5 mt-lg-0 text-center">
+                <div class="ratio ratio-16x9">
+                    <div class="bg-secondary rounded d-flex align-items-center justify-content-center">
+                        <div class="text-center">
+                            <i class="bi bi-play-circle" style="font-size: 3rem;"></i>
+                            <p class="mt-2">ASL Platform Overview</p>
+                        </div>
+                    </div>
+                </div>
+                <p class="small text-light mt-2">
+                    <i class="bi bi-info-circle"></i> 
+                    Video with ASL interpretation and captions
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h2 class="mb-4">Empower Your Deaf Clients With Financial Knowledge</h2>
+            <p class="lead">
+                White-label our platform to provide accessible financial education, planning, and 
+                service to your deaf clients. Similar to <strong>Holistiplan</strong> but specifically 
+                designed for deaf accessibility.
+            </p>
+        </div>
+    </div>
+    
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-hand-index-thumb" style="font-size: 2.5rem;"></i>
+                    <h3 class="h4 my-3">ASL-Supported Education</h3>
+                    <p>
+                        Comprehensive financial education modules with ASL video support, making complex 
+                        financial concepts accessible to deaf clients.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-building" style="font-size: 2.5rem;"></i>
+                    <h3 class="h4 my-3">White-Label Platform</h3>
+                    <p>
+                        Customize the platform with your branding, colors, and logo. Offer a 
+                        seamless experience to your deaf clients under your brand.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-graph-up-arrow" style="font-size: 2.5rem;"></i>
+                    <h3 class="h4 my-3">Client Management</h3>
+                    <p>
+                        Track client progress, manage communication preferences, and 
+                        provide personalized financial guidance to your deaf clients.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h3>Ready to serve your deaf clients better?</h3>
+                            <p class="mb-md-0">
+                                Join the growing network of financial professionals using DEAF FIRST to 
+                                provide accessible financial services.
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <a href="/pricing" class="btn btn-light">View Pricing</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <h2 class="mb-4">Why Financial Professionals Choose Us</h2>
+            <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item bg-transparent">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <strong>Increase client base</strong> - Tap into the underserved deaf community
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <strong>Improve client outcomes</strong> - Better understanding leads to better decisions
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <strong>Differentiate your practice</strong> - Stand out with deaf-friendly services
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <strong>Compliance friendly</strong> - Meet accessibility requirements
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <strong>Turnkey solution</strong> - No need to develop your own deaf resources
+                </li>
+            </ul>
+            <a href="/advisors/roi-calculator" class="btn btn-outline-primary">Calculate Your ROI</a>
+        </div>
+        <div class="col-lg-6 mt-5 mt-lg-0">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="h5 mb-0">What Financial Professionals Say</h3>
+                </div>
+                <div class="card-body">
+                    <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <blockquote class="blockquote mb-0">
+                                    <p>"The DEAF FIRST platform has transformed how I serve my deaf clients. The ASL videos make complex financial concepts clear, and my clients feel truly understood."</p>
+                                    <footer class="blockquote-footer mt-2">Financial Advisor in Texas</footer>
+                                </blockquote>
+                            </div>
+                            <div class="carousel-item">
+                                <blockquote class="blockquote mb-0">
+                                    <p>"After white-labeling the DEAF FIRST platform, I've been able to expand my practice to serve more deaf clients. The ROI has been incredible."</p>
+                                    <footer class="blockquote-footer mt-2">Insurance Agent in California</footer>
+                                </blockquote>
+                            </div>
+                            <div class="carousel-item">
+                                <blockquote class="blockquote mb-0">
+                                    <p>"As a financial educator, I've found the DEAF FIRST platform to be the perfect solution for teaching personal finance to deaf students. The ASL support is exceptional."</p>
+                                    <footer class="blockquote-footer mt-2">Financial Educator in New York</footer>
+                                </blockquote>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h2 class="mb-4">Platform Features</h2>
+            <p class="lead mb-5">
+                Everything you need to serve your deaf clients effectively, all in one platform.
+            </p>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">
+                        <i class="bi bi-camera-video me-2 text-primary"></i>
+                        ASL Video Library
+                    </h3>
+                    <p>
+                        Extensive library of financial concepts explained in ASL, making complex topics accessible to deaf clients.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">
+                        <i class="bi bi-book me-2 text-primary"></i>
+                        Financial Education Modules
+                    </h3>
+                    <p>
+                        Interactive learning modules covering budgeting, investing, retirement, insurance, and more.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">
+                        <i class="bi bi-list-check me-2 text-primary"></i>
+                        Financial Assessment Tools
+                    </h3>
+                    <p>
+                        Tools to assess client understanding, risk tolerance, and financial goals with ASL support.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">
+                        <i class="bi bi-palette me-2 text-primary"></i>
+                        White-Labeling Options
+                    </h3>
+                    <p>
+                        Customize colors, logos, and branding to match your practice and provide a cohesive client experience.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">
+                        <i class="bi bi-people me-2 text-primary"></i>
+                        Client Management
+                    </h3>
+                    <p>
+                        Track client progress, manage communication preferences, and assign specific resources to clients.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">
+                        <i class="bi bi-clipboard-data me-2 text-primary"></i>
+                        Usage Analytics
+                    </h3>
+                    <p>
+                        Insights into client engagement, popular modules, and areas where clients may need additional support.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="h4 mb-0">Licensing Options</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-4 mb-md-0">
+                            <div class="card h-100">
+                                <div class="card-header text-center">
+                                    <h4 class="h5 mb-0">Basic</h4>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <div class="text-center mb-4">
+                                        <span class="display-6">$199</span>
+                                        <span class="text-muted">/month</span>
+                                    </div>
+                                    <ul class="list-unstyled mb-4">
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Up to 50 deaf clients</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> ASL financial education modules</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Basic branding options</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Client progress tracking</li>
+                                        <li class="mb-2"><i class="bi bi-x-circle-fill text-danger me-2"></i> White-labeling</li>
+                                        <li class="mb-2"><i class="bi bi-x-circle-fill text-danger me-2"></i> Custom modules</li>
+                                        <li class="mb-2"><i class="bi bi-x-circle-fill text-danger me-2"></i> API access</li>
+                                    </ul>
+                                    <a href="/pricing" class="btn btn-outline-primary mt-auto">Learn More</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-4 mb-md-0">
+                            <div class="card h-100 border-primary">
+                                <div class="card-header text-center bg-primary text-white">
+                                    <h4 class="h5 mb-0">Professional</h4>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <div class="text-center mb-4">
+                                        <span class="display-6">$499</span>
+                                        <span class="text-muted">/month</span>
+                                    </div>
+                                    <ul class="list-unstyled mb-4">
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Up to 200 deaf clients</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> ASL financial education modules</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Full white-labeling</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Client progress tracking</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Usage analytics</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Priority support</li>
+                                        <li class="mb-2"><i class="bi bi-x-circle-fill text-danger me-2"></i> Custom modules</li>
+                                    </ul>
+                                    <a href="/pricing" class="btn btn-primary mt-auto">Most Popular</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-header text-center">
+                                    <h4 class="h5 mb-0">Enterprise</h4>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <div class="text-center mb-4">
+                                        <span class="display-6">$999</span>
+                                        <span class="text-muted">/month</span>
+                                    </div>
+                                    <ul class="list-unstyled mb-4">
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Unlimited deaf clients</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> ASL financial education modules</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Full white-labeling</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Client progress tracking</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Usage analytics</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Custom module creation</li>
+                                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> API access</li>
+                                    </ul>
+                                    <a href="/pricing" class="btn btn-outline-primary mt-auto">Learn More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h2 class="mb-4">Getting Started Is Easy</h2>
+            <p class="lead mb-5">
+                Begin offering accessible financial services to your deaf clients in three simple steps.
+            </p>
+        </div>
+        
+        <div class="col-md-4 mb-4 mb-md-0">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px;">
+                        <h3 class="h2 mb-0">1</h3>
+                    </div>
+                    <h3 class="h4 mb-3">Schedule a Demo</h3>
+                    <p>
+                        See the DEAF FIRST platform in action and learn how it can benefit your practice and deaf clients.
+                    </p>
+                    <a href="/demo" class="btn btn-sm btn-outline-primary">Request Demo</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4 mb-md-0">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px;">
+                        <h3 class="h2 mb-0">2</h3>
+                    </div>
+                    <h3 class="h4 mb-3">Choose Your Plan</h3>
+                    <p>
+                        Select the licensing plan that fits your practice size and needs for serving deaf clients.
+                    </p>
+                    <a href="/pricing" class="btn btn-sm btn-outline-primary">View Plans</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px;">
+                        <h3 class="h2 mb-0">3</h3>
+                    </div>
+                    <h3 class="h4 mb-3">Customize & Launch</h3>
+                    <p>
+                        Personalize your platform with your branding and start inviting your deaf clients to use it.
+                    </p>
+                    <a href="/platform/whitelabel" class="btn btn-sm btn-outline-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-dark text-white">
+                <div class="card-body p-5 text-center">
+                    <h2 class="mb-4">Ready to better serve your deaf clients?</h2>
+                    <p class="lead mb-4">
+                        Join the growing network of financial professionals using the DEAF FIRST platform.
+                    </p>
+                    <div class="d-flex justify-content-center">
+                        <a href="/demo" class="btn btn-primary me-3">Request Demo</a>
+                        <a href="/trial" class="btn btn-outline-light">Start Free Trial</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
