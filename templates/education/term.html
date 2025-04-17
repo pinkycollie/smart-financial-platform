@@ -1,0 +1,239 @@
+{% extends "education/layout.html" %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="{{ url_for('education.glossary') }}">Financial Terms Glossary</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ term.term|title }}</li>
+{% endblock %}
+
+{% block education_content %}
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Term details and video -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h1 class="mb-3">{{ term.term|title }}</h1>
+                
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <span class="badge bg-light text-dark">{{ term.category|default('finance')|title }}</span>
+                    <span class="badge difficulty-{{ term.difficulty }}">{{ term.difficulty|title }}</span>
+                    <span class="badge bg-primary">
+                        <i class="fas fa-hands me-1"></i> ASL Video
+                    </span>
+                </div>
+                
+                <!-- ASL video -->
+                <div class="mb-4">
+                    <div class="asl-video-container">
+                        {% if term.video_url %}
+                            <video 
+                                id="term-asl-video" 
+                                class="video-js vjs-big-play-centered" 
+                                controls 
+                                preload="auto"
+                                poster="{{ term.thumbnail_url }}"
+                                data-setup='{}'>
+                                <source src="{{ term.video_url }}" type="application/x-mpegURL">
+                                <p class="vjs-no-js">
+                                    To view this video please enable JavaScript, and consider upgrading to a
+                                    web browser that supports HTML5 video
+                                </p>
+                            </video>
+                        {% else %}
+                            <div class="d-flex align-items-center justify-content-center bg-dark text-white" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                                <div class="text-center">
+                                    <i class="fas fa-sign-language fa-5x mb-3"></i>
+                                    <h5 class="mb-1">ASL Video Coming Soon</h5>
+                                    <p class="mb-0 text-muted">Our interpreters are working on translating this term</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Term description -->
+                <div class="mb-4">
+                    <h3 class="h4 mb-3">Definition</h3>
+                    <p>{{ term.description }}</p>
+                    
+                    {% if term.transcript %}
+                        <div class="mt-4">
+                            <h4 class="h5 mb-3">ASL Video Transcript</h4>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <p class="mb-0">{{ term.transcript }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Usage examples -->
+                <div class="mt-5">
+                    <h3 class="h4 mb-3">How This Term Is Used</h3>
+                    
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Example 1</h5>
+                            <p class="card-text">
+                                {% if term.term == 'budget' %}
+                                    "Creating a monthly <strong>budget</strong> helped Sarah track her spending and save more money."
+                                {% elif term.term == 'investing' %}
+                                    "By <strong>investing</strong> a small amount each month in index funds, John was able to build wealth over time."
+                                {% elif term.term == 'mortgage' %}
+                                    "The family secured a 30-year <strong>mortgage</strong> with a fixed interest rate to purchase their first home."
+                                {% elif term.term == 'insurance' %}
+                                    "Having adequate <strong>insurance</strong> protected the family from financial hardship when their home was damaged in a storm."
+                                {% else %}
+                                    "Understanding how to use <strong>{{ term.term }}</strong> properly can help improve your financial situation and reach your goals faster."
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Example 2</h5>
+                            <p class="card-text">
+                                {% if term.term == 'budget' %}
+                                    "The company needed to <strong>budget</strong> carefully to ensure they didn't overspend during the economic downturn."
+                                {% elif term.term == 'investing' %}
+                                    "Rather than keeping all her money in a savings account, Maria began <strong>investing</strong> in a diversified portfolio of stocks and bonds."
+                                {% elif term.term == 'mortgage' %}
+                                    "They decided to refinance their <strong>mortgage</strong> when interest rates dropped significantly."
+                                {% elif term.term == 'insurance' %}
+                                    "Life <strong>insurance</strong> provides financial protection for your family in case something happens to you."
+                                {% else %}
+                                    "Financial experts recommend learning about <strong>{{ term.term }}</strong> as part of a comprehensive approach to managing your money."
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Related modules -->
+                <div class="mt-5">
+                    <h3 class="h4 mb-3">Learn More in These Modules</h3>
+                    
+                    <div class="row g-3">
+                        {% for i in range(2) %}
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            {% if term.term == 'budget' %}
+                                                {% if i == 0 %}Budgeting Basics{% else %}Creating a Personal Financial Plan{% endif %}
+                                            {% elif term.term == 'investing' %}
+                                                {% if i == 0 %}Introduction to Investing{% else %}Building a Diversified Portfolio{% endif %}
+                                            {% elif term.term == 'mortgage' %}
+                                                {% if i == 0 %}Home Buying 101{% else %}Understanding Mortgage Options{% endif %}
+                                            {% elif term.term == 'insurance' %}
+                                                {% if i == 0 %}Insurance Fundamentals{% else %}Protecting Your Financial Future{% endif %}
+                                            {% else %}
+                                                {% if i == 0 %}Financial Literacy Basics{% else %}Advanced Financial Planning{% endif %}
+                                            {% endif %}
+                                        </h5>
+                                        <p class="card-text text-muted">Learn more about {{ term.term }} and related concepts in our comprehensive module.</p>
+                                        <a href="#" class="btn btn-sm btn-primary">View Module</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Related terms section -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-transparent">
+                <h4 class="mb-0">Related Terms</h4>
+            </div>
+            <div class="card-body">
+                {% if term.related_terms %}
+                    <div class="list-group list-group-flush">
+                        {% for related_term in term.related_terms %}
+                            <a href="{{ url_for('education.glossary') }}?q={{ related_term }}" class="list-group-item list-group-item-action d-flex align-items-center px-0">
+                                <div class="me-3 p-2 rounded-circle bg-primary bg-opacity-10 text-primary">
+                                    <i class="fas fa-hands"></i>
+                                </div>
+                                <div>{{ related_term|title }}</div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-info-circle me-2"></i> Related terms will be available soon.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Difficulty explanation -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-transparent">
+                <h4 class="mb-0">Difficulty Level</h4>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="me-3 p-2 rounded difficulty-{{ term.difficulty }} text-center" style="width: 40px; height: 40px;">
+                        {% if term.difficulty == 'beginner' %}
+                            <i class="fas fa-star"></i>
+                        {% elif term.difficulty == 'intermediate' %}
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        {% else %}
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        {% endif %}
+                    </div>
+                    <h5 class="mb-0">{{ term.difficulty|title }}</h5>
+                </div>
+                
+                <p class="text-muted">
+                    {% if term.difficulty == 'beginner' %}
+                        This is a fundamental financial term that's appropriate for those just starting to learn about personal finance.
+                    {% elif term.difficulty == 'intermediate' %}
+                        This term requires some basic financial knowledge to fully understand and apply in your financial planning.
+                    {% else %}
+                        This is an advanced financial concept that builds on fundamental financial knowledge and principles.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        
+        <!-- Feedback section -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent">
+                <h4 class="mb-0">Feedback</h4>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Was this explanation helpful? Let us know how we can improve.</p>
+                
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-success">
+                        <i class="fas fa-thumbs-up me-2"></i> This was helpful
+                    </button>
+                    <button class="btn btn-outline-danger">
+                        <i class="fas fa-thumbs-down me-2"></i> This needs improvement
+                    </button>
+                    <button class="btn btn-outline-primary">
+                        <i class="fas fa-comment me-2"></i> Leave detailed feedback
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Example: Initialize video.js if available
+        if (typeof videojs !== 'undefined') {
+            var player = videojs('term-asl-video');
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "education/layout.html" %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item active" aria-current="page">Financial Terms Glossary</li>
+{% endblock %}
+
+{% block education_content %}
+<div class="education-header">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1 class="mb-2">ASL Financial Terms Glossary</h1>
+            <p class="lead mb-0">Learn financial terms with American Sign Language videos</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search terms..." aria-label="Search">
+                <button class="btn btn-primary" type="button" id="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Category filter -->
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="h4 mb-0">Categories</h3>
+    </div>
+    
+    <div class="d-flex flex-wrap gap-2">
+        {% for cat in categories %}
+            <a href="{{ url_for('education.glossary', category=cat) }}" class="btn {{ 'btn-primary' if cat == category else 'btn-outline-primary' }}">
+                {{ cat|title }}
+            </a>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Terms grid -->
+<div class="row g-4">
+    {% if financial_terms %}
+        {% for term in financial_terms %}
+            <div class="col-md-6 col-lg-4">
+                <a href="{{ url_for('education.term_detail', term_id=term.id) }}" class="text-decoration-none">
+                    <div class="card asl-term-card h-100">
+                        <div class="asl-term-thumbnail">
+                            <img src="{{ term.thumbnail_url }}" alt="{{ term.term }}" class="img-fluid d-none">
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="mb-0">{{ term.term|title }}</h5>
+                                <span class="badge difficulty-{{ term.difficulty }}">{{ term.difficulty|title }}</span>
+                            </div>
+                            <p class="text-muted mb-0">{{ term.description|truncate(100) }}</p>
+                        </div>
+                        <div class="card-footer bg-transparent d-flex justify-content-between align-items-center">
+                            <span class="badge bg-light text-dark">{{ term.category|title }}</span>
+                            <button class="btn btn-sm btn-primary">Watch ASL Video</button>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i> No terms found for this category. Please try another category or check back later.
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Pagination (if needed) -->
+{% if financial_terms and financial_terms|length > 24 %}
+    <div class="d-flex justify-content-center mt-5">
+        <nav aria-label="Glossary pagination">
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">3</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Search functionality
+        const searchInput = document.querySelector('input[aria-label="Search"]');
+        const searchButton = document.getElementById('search-button');
+        
+        if (searchInput && searchButton) {
+            const handleSearch = () => {
+                const query = searchInput.value.trim();
+                if (query) {
+                    window.location.href = `{{ url_for('education.search') }}?q=${encodeURIComponent(query)}`;
+                }
+            };
+            
+            searchButton.addEventListener('click', handleSearch);
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSearch();
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

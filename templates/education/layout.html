@@ -1,0 +1,564 @@
+{% extends "layout.html" %}
+
+{% block styles %}
+<style>
+    /* Education module specific styles */
+    .education-header {
+        border-bottom: 2px solid var(--bs-primary);
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+    }
+    
+    .module-card {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        height: 100%;
+        border: none;
+    }
+    
+    .module-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+    
+    .module-card .card-img-top {
+        height: 160px;
+        object-fit: cover;
+        background-color: var(--bs-primary);
+    }
+    
+    .module-card .card-header {
+        background-color: transparent;
+        border-bottom: 1px solid var(--bs-border-color);
+        padding: 1rem;
+    }
+    
+    .module-card .card-body {
+        padding: 1.25rem;
+    }
+    
+    .module-card .card-footer {
+        background-color: transparent;
+        border-top: 1px solid var(--bs-border-color);
+        padding: 1rem;
+    }
+    
+    .difficulty-badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 50px;
+    }
+    
+    .difficulty-beginner {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+    }
+    
+    .difficulty-intermediate {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+    }
+    
+    .difficulty-advanced {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+    
+    /* ASL video container */
+    .asl-video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        height: 0;
+        overflow: hidden;
+        max-width: 100%;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        background-color: #000;
+    }
+    
+    .asl-video-container video,
+    .asl-video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    
+    /* Glossary term cards */
+    .asl-term-card {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+        height: 100%;
+        border: none;
+    }
+    
+    .asl-term-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+    
+    .asl-term-card .card-body {
+        padding: 1.25rem;
+    }
+    
+    .asl-term-thumbnail {
+        height: 120px;
+        object-fit: cover;
+        background-color: #343a40;
+        position: relative;
+    }
+    
+    .asl-term-thumbnail:before {
+        content: '\f04b';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 2rem;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+    }
+    
+    .asl-term-card:hover .asl-term-thumbnail:before {
+        opacity: 1;
+    }
+    
+    /* Lesson navigation */
+    .lesson-nav {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--bs-border-color);
+    }
+    
+    /* Interactive elements */
+    .interactive-container {
+        border: 1px solid var(--bs-border-color);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+    
+    .interactive-container h4 {
+        margin-bottom: 1rem;
+        color: var(--bs-primary);
+    }
+    
+    /* Quiz styling */
+    .quiz-container {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .quiz-header {
+        background-color: var(--bs-primary);
+        color: white;
+        padding: 1.25rem;
+    }
+    
+    .quiz-body {
+        padding: 1.5rem;
+    }
+    
+    .quiz-question {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--bs-border-color);
+    }
+    
+    .quiz-question:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .quiz-options {
+        margin-top: 1rem;
+    }
+    
+    .quiz-option {
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--bs-border-color);
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .quiz-option:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+        border-color: var(--bs-primary);
+    }
+    
+    .quiz-option.selected {
+        background-color: rgba(0, 123, 255, 0.1);
+        border-color: var(--bs-primary);
+    }
+    
+    .quiz-option.correct {
+        background-color: rgba(40, 167, 69, 0.1);
+        border-color: #28a745;
+    }
+    
+    .quiz-option.incorrect {
+        background-color: rgba(220, 53, 69, 0.1);
+        border-color: #dc3545;
+    }
+    
+    .quiz-footer {
+        padding: 1.25rem;
+        background-color: rgba(0, 0, 0, 0.03);
+        border-top: 1px solid var(--bs-border-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ url_for('education.index') }}">Education</a></li>
+                    {% block breadcrumbs %}{% endblock %}
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    {% block education_content %}{% endblock %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize any education-specific scripts
+        
+        // Handle ASL video player controls
+        const aslPlayers = document.querySelectorAll('.asl-video-player');
+        aslPlayers.forEach(player => {
+            // Add custom controls if needed
+            const video = player.querySelector('video');
+            if (video) {
+                // Example: custom play button
+                const customPlay = player.querySelector('.custom-play-button');
+                if (customPlay) {
+                    customPlay.addEventListener('click', () => {
+                        if (video.paused) {
+                            video.play();
+                            customPlay.innerHTML = '<i class="fas fa-pause"></i>';
+                        } else {
+                            video.pause();
+                            customPlay.innerHTML = '<i class="fas fa-play"></i>';
+                        }
+                    });
+                }
+            }
+        });
+        
+        // Handle interactive elements initialization
+        const calculators = document.querySelectorAll('.financial-calculator');
+        calculators.forEach(calculator => {
+            const type = calculator.dataset.calculatorType;
+            const container = calculator.querySelector('.calculator-container');
+            
+            // Load calculator data
+            if (type) {
+                fetch(`/education/api/financial-calculator?type=${type}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Build calculator interface
+                        buildCalculator(container, data);
+                    })
+                    .catch(error => {
+                        console.error('Error loading calculator:', error);
+                        container.innerHTML = '<div class="alert alert-danger">Failed to load calculator</div>';
+                    });
+            }
+        });
+        
+        // Function to build calculator interface
+        function buildCalculator(container, data) {
+            // Create form elements based on data
+            let html = `
+                <h4>${data.title}</h4>
+                <p class="text-muted">${data.description}</p>
+                <form class="calculator-form">
+            `;
+            
+            // Add form fields
+            data.fields.forEach(field => {
+                html += `<div class="mb-3">
+                    <label for="${field.name}" class="form-label">${field.label}</label>
+                `;
+                
+                if (field.type === 'select') {
+                    html += `<select class="form-select" id="${field.name}" name="${field.name}">`;
+                    field.options.forEach(option => {
+                        const selected = option.value === field.default ? 'selected' : '';
+                        html += `<option value="${option.value}" ${selected}>${option.label}</option>`;
+                    });
+                    html += `</select>`;
+                } else {
+                    html += `<input type="${field.type}" class="form-control" id="${field.name}" name="${field.name}" value="${field.default}">`;
+                }
+                
+                html += `</div>`;
+            });
+            
+            // Add calculate button and results area
+            html += `
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-primary calculate-btn">Calculate</button>
+                </div>
+                <div class="mt-3 results-area"></div>
+                </form>
+            `;
+            
+            container.innerHTML = html;
+            
+            // Add event listener to calculate button
+            const calculateBtn = container.querySelector('.calculate-btn');
+            if (calculateBtn) {
+                calculateBtn.addEventListener('click', function() {
+                    calculateResults(container, data);
+                });
+            }
+        }
+        
+        // Function to calculate results based on calculator type
+        function calculateResults(container, data) {
+            const form = container.querySelector('form');
+            const resultsArea = container.querySelector('.results-area');
+            
+            // Get form values
+            const formData = new FormData(form);
+            const values = {};
+            for (let [key, value] of formData.entries()) {
+                values[key] = parseFloat(value);
+            }
+            
+            let result = 0;
+            let resultHtml = '';
+            
+            // Calculate based on calculator type
+            if (data.title.includes('Compound Interest')) {
+                // Compound interest calculation: A = P(1 + r/n)^(nt)
+                const principal = values.principal;
+                const rate = values.rate / 100;
+                const years = values.years;
+                const compound = values.compound;
+                
+                const finalAmount = principal * Math.pow(1 + (rate / compound), compound * years);
+                const interest = finalAmount - principal;
+                
+                resultHtml = `
+                    <div class="alert alert-success mt-3">
+                        <h5>Results:</h5>
+                        <p>Initial Investment: $${principal.toFixed(2)}</p>
+                        <p>Interest Earned: $${interest.toFixed(2)}</p>
+                        <p>Final Amount: $${finalAmount.toFixed(2)}</p>
+                    </div>
+                `;
+            } else if (data.title.includes('Mortgage')) {
+                // Mortgage payment calculation: M = P[r(1+r)^n]/[(1+r)^n-1]
+                const loanAmount = values.home_price - values.down_payment;
+                const monthlyRate = values.interest_rate / 100 / 12;
+                const numberOfPayments = values.loan_term * 12;
+                
+                const monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+                const totalPaid = monthlyPayment * numberOfPayments;
+                const totalInterest = totalPaid - loanAmount;
+                
+                resultHtml = `
+                    <div class="alert alert-success mt-3">
+                        <h5>Results:</h5>
+                        <p>Loan Amount: $${loanAmount.toFixed(2)}</p>
+                        <p>Monthly Payment: $${monthlyPayment.toFixed(2)}</p>
+                        <p>Total Interest: $${totalInterest.toFixed(2)}</p>
+                        <p>Total Amount Paid: $${totalPaid.toFixed(2)}</p>
+                    </div>
+                `;
+            }
+            
+            resultsArea.innerHTML = resultHtml;
+        }
+        
+        // Handle quiz functionality
+        const quizContainers = document.querySelectorAll('.quiz-interactive');
+        quizContainers.forEach(quizContainer => {
+            const quizId = quizContainer.dataset.quizId;
+            
+            if (quizId) {
+                // Load quiz data
+                fetch(`/education/api/quiz/${quizId}`)
+                    .then(response => response.json())
+                    .then(quizData => {
+                        buildQuiz(quizContainer, quizData);
+                    })
+                    .catch(error => {
+                        console.error('Error loading quiz:', error);
+                        quizContainer.innerHTML = '<div class="alert alert-danger">Failed to load quiz</div>';
+                    });
+            }
+        });
+        
+        // Function to build quiz interface
+        function buildQuiz(container, quizData) {
+            let html = `
+                <div class="quiz-container">
+                    <div class="quiz-header">
+                        <h4 class="mb-0">${quizData.title}</h4>
+                        <p class="mb-0 mt-2">${quizData.description}</p>
+                    </div>
+                    <div class="quiz-body">
+            `;
+            
+            // Add each question
+            quizData.questions.forEach((question, index) => {
+                html += `
+                    <div class="quiz-question" data-question-id="${question.id}">
+                        <h5>${index + 1}. ${question.text}</h5>
+                `;
+                
+                // Add ASL video if available
+                if (question.asl_video_id) {
+                    html += `
+                        <div class="asl-video-container mb-3">
+                            <div class="placeholder-video d-flex align-items-center justify-content-center bg-dark text-light" style="height: 150px;">
+                                <div>
+                                    <i class="fas fa-sign-language fa-3x mb-2"></i>
+                                    <p class="mb-0">ASL video would appear here</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Add options based on question type
+                html += `<div class="quiz-options">`;
+                
+                if (question.type === 'multiple_choice') {
+                    question.answers.forEach(answer => {
+                        html += `
+                            <div class="quiz-option" data-answer-id="${answer.id}">
+                                ${answer.text}
+                            </div>
+                        `;
+                    });
+                } else if (question.type === 'true_false') {
+                    html += `
+                        <div class="quiz-option" data-answer-value="true">True</div>
+                        <div class="quiz-option" data-answer-value="false">False</div>
+                    `;
+                } else if (question.type === 'open_ended') {
+                    html += `
+                        <div class="mb-3">
+                            <textarea class="form-control" rows="3" placeholder="Type your answer here"></textarea>
+                        </div>
+                    `;
+                }
+                
+                html += `</div></div>`;
+            });
+            
+            // Add submit button
+            html += `
+                    </div>
+                    <div class="quiz-footer">
+                        <button type="button" class="btn btn-primary quiz-submit-btn">Submit Answers</button>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            
+            // Add click handlers for options
+            const options = container.querySelectorAll('.quiz-option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from siblings
+                    const siblings = this.parentElement.querySelectorAll('.quiz-option');
+                    siblings.forEach(sib => sib.classList.remove('selected'));
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Add submit handler
+            const submitBtn = container.querySelector('.quiz-submit-btn');
+            if (submitBtn) {
+                submitBtn.addEventListener('click', function() {
+                    // Check if all questions have been answered
+                    const questions = container.querySelectorAll('.quiz-question');
+                    let allAnswered = true;
+                    
+                    questions.forEach(question => {
+                        const selected = question.querySelector('.quiz-option.selected');
+                        if (!selected && question.querySelector('.quiz-option')) {
+                            allAnswered = false;
+                        }
+                    });
+                    
+                    if (!allAnswered) {
+                        alert('Please answer all questions before submitting.');
+                        return;
+                    }
+                    
+                    // For demo purposes, show mock results
+                    showQuizResults(container, quizData);
+                });
+            }
+        }
+        
+        // Function to show quiz results
+        function showQuizResults(container, quizData) {
+            // For demo, mark random answers as correct or incorrect
+            const options = container.querySelectorAll('.quiz-option.selected');
+            let correctCount = 0;
+            
+            options.forEach(option => {
+                // Randomly mark as correct or incorrect for demo
+                const isCorrect = Math.random() > 0.3;
+                
+                if (isCorrect) {
+                    option.classList.add('correct');
+                    correctCount++;
+                } else {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Calculate score
+            const totalQuestions = container.querySelectorAll('.quiz-question').length;
+            const score = Math.round((correctCount / totalQuestions) * 100);
+            const passed = score >= quizData.passing_score;
+            
+            // Add results section
+            const quizFooter = container.querySelector('.quiz-footer');
+            quizFooter.innerHTML = `
+                <div class="alert ${passed ? 'alert-success' : 'alert-danger'}">
+                    <h5>${passed ? 'Congratulations!' : 'Try Again'}</h5>
+                    <p>You scored ${score}% (${correctCount} out of ${totalQuestions} correct)</p>
+                    <p>${passed ? 'You have passed this quiz!' : 'You need ' + quizData.passing_score + '% to pass this quiz.'}</p>
+                </div>
+                ${passed ? '<button class="btn btn-success">Continue to Next Module</button>' : '<button class="btn btn-primary">Retry Quiz</button>'}
+            `;
+        }
+    });
+</script>
+{% endblock %}

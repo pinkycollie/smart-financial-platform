@@ -1,0 +1,330 @@
+{% extends "education/layout.html" %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="{{ url_for('education.category_detail', category_id=module.category_id) }}">{{ module.category.name }}</a></li>
+<li class="breadcrumb-item"><a href="{{ url_for('education.module_detail', slug=module.slug) }}">{{ module.title }}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ lesson.title }}</li>
+{% endblock %}
+
+{% block education_content %}
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Lesson content -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h1 class="mb-4">{{ lesson.title }}</h1>
+                
+                <!-- ASL video -->
+                {% if asl_video_url %}
+                    <div class="mb-4">
+                        <div class="asl-video-container">
+                            <video 
+                                id="lesson-asl-video" 
+                                class="video-js vjs-big-play-centered" 
+                                controls 
+                                preload="auto"
+                                poster="https://placeholder.com/1280x720?text=ASL+Video"
+                                data-setup='{}'>
+                                <source src="{{ asl_video_url }}" type="application/x-mpegURL">
+                                <p class="vjs-no-js">
+                                    To view this video please enable JavaScript, and consider upgrading to a
+                                    web browser that supports HTML5 video
+                                </p>
+                            </video>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="mb-4">
+                        <div class="asl-video-container">
+                            <div class="d-flex align-items-center justify-content-center bg-dark text-white" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                                <div class="text-center">
+                                    <i class="fas fa-sign-language fa-5x mb-3"></i>
+                                    <h5 class="mb-1">ASL Video Coming Soon</h5>
+                                    <p class="mb-0 text-muted">Our interpreters are working on translating this content</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Lesson content -->
+                <div class="lesson-content">
+                    {% if lesson.content %}
+                        {{ lesson.content|safe }}
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> Detailed content for this lesson is coming soon. Please watch the ASL video for the lesson material.
+                        </div>
+                        
+                        <!-- Placeholder content -->
+                        <h3>Introduction to Financial Planning</h3>
+                        <p>Financial planning is the process of setting goals, developing a plan to achieve them, and putting that plan into action. It involves managing your income, expenses, investments, and protection to ensure financial stability and security.</p>
+                        
+                        <h4>Key Components of Financial Planning:</h4>
+                        <ul>
+                            <li><strong>Budgeting:</strong> Creating a plan for how to spend and save your money</li>
+                            <li><strong>Saving:</strong> Setting aside money for future needs and emergencies</li>
+                            <li><strong>Investing:</strong> Growing your money by putting it into assets that have the potential to increase in value</li>
+                            <li><strong>Protection:</strong> Safeguarding your financial well-being through insurance and risk management</li>
+                            <li><strong>Retirement Planning:</strong> Preparing financially for life after work</li>
+                            <li><strong>Tax Planning:</strong> Managing your finances to minimize tax burden</li>
+                            <li><strong>Estate Planning:</strong> Arranging for the management and disposal of your estate during life and after death</li>
+                        </ul>
+                    {% endif %}
+                </div>
+                
+                <!-- Interactive elements -->
+                {% if lesson.interactive_elements %}
+                    <div class="interactive-container mt-5">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3 p-2 rounded-circle bg-primary text-white">
+                                <i class="fas fa-puzzle-piece"></i>
+                            </div>
+                            <h4 class="mb-0">Interactive Activity</h4>
+                        </div>
+                        
+                        {% set interactive_type = lesson.interactive_elements.get('type', 'calculator') %}
+                        
+                        {% if interactive_type == 'calculator' %}
+                            {% set calculator_type = lesson.interactive_elements.get('calculator_type', 'compound_interest') %}
+                            <div class="financial-calculator" data-calculator-type="{{ calculator_type }}">
+                                <div class="calculator-container">
+                                    <div class="d-flex align-items-center justify-content-center py-4">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <span class="ms-2">Loading calculator...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i> Interactive content will be available soon.
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                
+                <!-- Resources -->
+                {% if resources and resources|length > 0 %}
+                    <div class="mt-5">
+                        <h4>Additional Resources</h4>
+                        <div class="list-group">
+                            {% for resource in resources %}
+                                <a href="{{ resource.url or '#' }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div>
+                                        {% if resource.resource_type == 'document' %}
+                                            <i class="fas fa-file-alt text-primary me-2"></i>
+                                        {% elif resource.resource_type == 'video' %}
+                                            <i class="fas fa-video text-danger me-2"></i>
+                                        {% else %}
+                                            <i class="fas fa-link text-success me-2"></i>
+                                        {% endif %}
+                                        {{ resource.title }}
+                                        
+                                        {% if resource.asl_explanation_id %}
+                                            <span class="badge bg-success ms-2">
+                                                <i class="fas fa-hands me-1"></i> ASL Available
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Quiz (if this is the last lesson) -->
+                {% if quiz and not next_lesson %}
+                    <div class="mt-5" id="quiz">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3>Module Assessment</h3>
+                            {% if quiz.asl_instructions_id %}
+                                <button class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-hands me-1"></i> View ASL Instructions
+                                </button>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="alert alert-info mb-4">
+                            <div class="d-flex">
+                                <div class="me-3">
+                                    <i class="fas fa-info-circle fa-2x"></i>
+                                </div>
+                                <div>
+                                    <h5>Quiz Instructions</h5>
+                                    <p class="mb-0">{{ quiz.description or 'This quiz will test your understanding of the concepts covered in this module. You need to score at least ' ~ quiz.passing_score ~ '% to pass and complete the module.' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="quiz-interactive" data-quiz-id="{{ quiz.id }}">
+                            <div class="d-flex align-items-center justify-content-center py-5 bg-light rounded">
+                                <div class="text-center">
+                                    <div class="spinner-border text-primary mb-3" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mb-0">Loading quiz questions...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Lesson navigation -->
+                <div class="lesson-nav">
+                    {% if prev_lesson %}
+                        <a href="{{ url_for('education.lesson_detail', lesson_id=prev_lesson.id) }}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i> Previous Lesson
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('education.module_detail', slug=module.slug) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-list-ul me-2"></i> Module Overview
+                        </a>
+                    {% endif %}
+                    
+                    {% if next_lesson %}
+                        <a href="{{ url_for('education.lesson_detail', lesson_id=next_lesson.id) }}" class="btn btn-primary">
+                            Next Lesson <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    {% else %}
+                        {% if quiz %}
+                            <a href="#quiz" class="btn btn-primary">
+                                Take Quiz <i class="fas fa-award ms-2"></i>
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('education.module_detail', slug=module.slug) }}" class="btn btn-success">
+                                Complete Module <i class="fas fa-check ms-2"></i>
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Module progress -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h4 class="mb-3">Module Progress</h4>
+                
+                {% set total_lessons = module.lessons.count() %}
+                {% set current_lesson_index = lesson.order %}
+                {% set progress_percentage = (current_lesson_index / total_lessons * 100)|int %}
+                
+                <div class="progress mb-3" style="height: 10px;">
+                    <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage }}%;" aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100">{{ progress_percentage }}%</div>
+                </div>
+                
+                <p class="text-muted mb-0">Lesson {{ current_lesson_index }} of {{ total_lessons }}</p>
+            </div>
+        </div>
+        
+        <!-- Module lessons -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-transparent">
+                <h4 class="mb-0">Lesson Plan</h4>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    {% set all_lessons = module.lessons.order_by(EducationLesson.order).all() %}
+                    {% for module_lesson in all_lessons %}
+                        <a href="{{ url_for('education.lesson_detail', lesson_id=module_lesson.id) }}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center py-3 px-3 {{ 'active bg-primary text-white' if module_lesson.id == lesson.id else '' }}">
+                            <div class="me-3 d-flex align-items-center justify-content-center rounded-circle {{ 'bg-white text-primary' if module_lesson.id == lesson.id else 'bg-primary bg-opacity-10 text-primary' }}" style="width: 28px; height: 28px; min-width: 28px;">
+                                {% if module_lesson.order < lesson.order %}
+                                    <i class="fas fa-check {{ 'text-primary' if module_lesson.id == lesson.id else '' }}" style="font-size: 0.75rem;"></i>
+                                {% else %}
+                                    <span class="fw-bold" style="font-size: 0.75rem;">{{ module_lesson.order }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="text-truncate">{{ module_lesson.title }}</div>
+                        </a>
+                    {% endfor %}
+                    
+                    {% if quiz %}
+                        <a href="{{ '#quiz' if lesson.id == all_lessons[-1].id else url_for('education.lesson_detail', lesson_id=all_lessons[-1].id) ~ '#quiz' }}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center py-3 px-3 {{ 'text-muted' if lesson.order < all_lessons|length }}">
+                            <div class="me-3 d-flex align-items-center justify-content-center rounded-circle bg-primary" style="width: 28px; height: 28px; min-width: 28px;">
+                                <i class="fas fa-award text-white" style="font-size: 0.75rem;"></i>
+                            </div>
+                            <div>Quiz: {{ quiz.title }}</div>
+                            {% if lesson.order < all_lessons|length %}
+                                <div class="ms-auto">
+                                    <i class="fas fa-lock text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- ASL Support Resources -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent">
+                <h4 class="mb-0">ASL Support</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success mb-4">
+                    <div class="d-flex">
+                        <div class="me-3">
+                            <i class="fas fa-hands fa-2x"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">ASL Video Available</h5>
+                            <p class="mb-0">This lesson includes ASL video content to support your learning.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <h5>Need Additional Support?</h5>
+                    <div class="list-group list-group-flush mt-3">
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center px-0">
+                            <div class="me-3 p-2 rounded-circle bg-primary bg-opacity-10 text-primary">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <div>Request custom ASL explanation</div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center px-0">
+                            <div class="me-3 p-2 rounded-circle bg-primary bg-opacity-10 text-primary">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div>Connect with ASL financial advisor</div>
+                        </a>
+                        <a href="{{ url_for('education.glossary') }}" class="list-group-item list-group-item-action d-flex align-items-center px-0">
+                            <div class="me-3 p-2 rounded-circle bg-primary bg-opacity-10 text-primary">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div>Financial terms glossary (ASL)</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Scroll to quiz if hash is present
+        if (window.location.hash === '#quiz') {
+            const quizElement = document.getElementById('quiz');
+            if (quizElement) {
+                quizElement.scrollIntoView();
+            }
+        }
+        
+        // Example: Initialize video.js if available
+        if (typeof videojs !== 'undefined') {
+            var player = videojs('lesson-asl-video');
+        }
+    });
+</script>
+{% endblock %}

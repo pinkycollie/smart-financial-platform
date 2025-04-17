@@ -1,0 +1,253 @@
+{% extends "education/layout.html" %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="{{ url_for('education.category_detail', category_id=module.category_id) }}">{{ module.category.name }}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ module.title }}</li>
+{% endblock %}
+
+{% block education_content %}
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Module header -->
+        <div class="mb-4">
+            <div class="d-flex align-items-center mb-2">
+                <span class="badge difficulty-{{ module.difficulty_level }} me-2">{{ module.difficulty_level|title }}</span>
+                <span class="text-muted"><i class="far fa-clock me-1"></i> {{ module.estimated_time }} min</span>
+            </div>
+            <h1>{{ module.title }}</h1>
+            
+            {% if module.has_asl %}
+                <div class="d-flex align-items-center mt-2 mb-3">
+                    <span class="badge bg-success me-2">
+                        <i class="fas fa-hands me-1"></i> ASL Support
+                    </span>
+                    {% if module.captions_available %}
+                        <span class="badge bg-info">
+                            <i class="fas fa-closed-captioning me-1"></i> Captions Available
+                        </span>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Module ASL video -->
+        {% if asl_video_url %}
+            <div class="mb-4">
+                <div class="asl-video-container">
+                    <video 
+                        id="module-asl-video" 
+                        class="video-js vjs-big-play-centered" 
+                        controls 
+                        preload="auto"
+                        poster="https://placeholder.com/1280x720?text=ASL+Video"
+                        data-setup='{}'>
+                        <source src="{{ asl_video_url }}" type="application/x-mpegURL">
+                        <p class="vjs-no-js">
+                            To view this video please enable JavaScript, and consider upgrading to a
+                            web browser that supports HTML5 video
+                        </p>
+                    </video>
+                </div>
+            </div>
+        {% else %}
+            <div class="mb-4">
+                <div class="asl-video-container">
+                    <div class="d-flex align-items-center justify-content-center bg-dark text-white" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                        <div class="text-center">
+                            <i class="fas fa-sign-language fa-5x mb-3"></i>
+                            <h5 class="mb-1">ASL Video Coming Soon</h5>
+                            <p class="mb-0 text-muted">Our interpreters are working on translating this content</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        
+        <!-- Module summary -->
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-body">
+                <h3 class="h4 mb-3">About This Module</h3>
+                <p>{{ module.summary|default('This module will help you understand key financial concepts with sign language support.') }}</p>
+                
+                {% if module.quiz %}
+                    <div class="alert alert-info d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-info-circle fa-2x"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Module Assessment</h5>
+                            <p class="mb-0">This module includes a quiz to test your knowledge. You'll need to score at least {{ module.quiz.passing_score }}% to complete the module.</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Lessons list -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent border-bottom-0">
+                <h3 class="h4 mb-0">Lesson Plan</h3>
+            </div>
+            <div class="card-body pt-0">
+                <div class="list-group list-group-flush">
+                    {% if lessons %}
+                        {% for lesson in lessons %}
+                            <div class="list-group-item p-0 bg-transparent">
+                                <a href="{{ url_for('education.lesson_detail', lesson_id=lesson.id) }}" class="d-flex align-items-center p-3 text-decoration-none text-body">
+                                    <div class="me-3 d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10" style="width: 40px; height: 40px;">
+                                        <span class="fw-bold text-primary">{{ loop.index }}</span>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1">{{ lesson.title }}</h5>
+                                        <div class="d-flex align-items-center">
+                                            {% if lesson.asl_video_id %}
+                                                <span class="badge bg-success me-2">
+                                                    <i class="fas fa-hands me-1"></i> ASL
+                                                </span>
+                                            {% endif %}
+                                            {% if lesson.interactive_elements %}
+                                                <span class="badge bg-warning text-dark me-2">
+                                                    <i class="fas fa-puzzle-piece me-1"></i> Interactive
+                                                </span>
+                                            {% endif %}
+                                            {% if lesson.resources.count() > 0 %}
+                                                <span class="badge bg-secondary me-2">
+                                                    <i class="fas fa-book me-1"></i> {{ lesson.resources.count() }} Resources
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="ms-auto">
+                                        <i class="fas fa-chevron-right text-muted"></i>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                        
+                        {% if module.quiz %}
+                            <div class="list-group-item p-0 bg-transparent">
+                                <a href="{{ url_for('education.lesson_detail', lesson_id=lessons[-1].id) }}#quiz" class="d-flex align-items-center p-3 text-decoration-none text-body">
+                                    <div class="me-3 d-flex align-items-center justify-content-center rounded-circle bg-primary" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-award text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1">{{ module.quiz.title }}</h5>
+                                        <p class="mb-0 text-muted small">Complete lessons to unlock this quiz</p>
+                                    </div>
+                                    <div class="ms-auto">
+                                        <i class="fas fa-lock text-muted"></i>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-info mb-0">
+                            <i class="fas fa-info-circle me-2"></i> Lessons for this module are coming soon.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card-footer bg-transparent">
+                {% if lessons %}
+                    <a href="{{ url_for('education.lesson_detail', lesson_id=lessons[0].id) }}" class="btn btn-primary">
+                        Start Learning <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                {% else %}
+                    <button class="btn btn-primary" disabled>Lessons Coming Soon</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 mt-4 mt-lg-0">
+        <!-- Progress card (placeholder for now) -->
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-body">
+                <h4 class="mb-3">Your Progress</h4>
+                <div class="progress mb-3" style="height: 10px;">
+                    <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                </div>
+                <p class="text-muted mb-0">Start learning to track your progress</p>
+            </div>
+        </div>
+        
+        <!-- Financial terms glossary -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Key Financial Terms</h4>
+                <a href="{{ url_for('education.glossary') }}" class="btn btn-sm btn-link">View All</a>
+            </div>
+            <div class="card-body">
+                {% if financial_terms %}
+                    <div class="row g-3">
+                        {% for term in financial_terms[:6] %}
+                            <div class="col-md-6">
+                                <a href="{{ url_for('education.term_detail', term_id=term.id) }}" class="text-decoration-none">
+                                    <div class="card asl-term-card">
+                                        <div class="asl-term-thumbnail"></div>
+                                        <div class="card-body py-2">
+                                            <h6 class="mb-0">{{ term.term|title }}</h6>
+                                            <span class="badge bg-light text-dark">{{ term.category|default('finance')|title }}</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-info-circle me-2"></i> Financial terms will be available soon.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Related modules (placeholder for now) -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent">
+                <h4 class="mb-0">Related Modules</h4>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    {% for i in range(3) %}
+                        <a href="#" class="list-group-item list-group-item-action bg-transparent px-0">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3 p-2 rounded bg-primary bg-opacity-10 text-primary">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">
+                                        {% if i == 0 %}
+                                            Understanding Credit Scores
+                                        {% elif i == 1 %}
+                                            Retirement Planning Basics
+                                        {% else %}
+                                            Insurance Coverage 101
+                                        {% endif %}
+                                    </h6>
+                                    <small class="text-muted">Coming soon</small>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Placeholder for any module-specific JavaScript
+        
+        // Example: Initialize video.js if available
+        if (typeof videojs !== 'undefined') {
+            var player = videojs('module-asl-video');
+        }
+    });
+</script>
+{% endblock %}

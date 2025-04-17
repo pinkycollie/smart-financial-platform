@@ -1,0 +1,221 @@
+{% extends "education/layout.html" %}
+
+{% block breadcrumbs %}
+<!-- No additional breadcrumbs for the index page -->
+{% endblock %}
+
+{% block education_content %}
+<div class="education-header">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1 class="mb-2">Financial Education</h1>
+            <p class="lead mb-0">Interactive financial learning with American Sign Language support</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search for topics..." aria-label="Search">
+                <button class="btn btn-primary" type="button" id="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured modules section -->
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0">Featured Modules</h2>
+        <a href="#all-modules" class="btn btn-sm btn-outline-primary">View All</a>
+    </div>
+    
+    <div class="row g-4">
+        {% if featured_modules %}
+            {% for module in featured_modules %}
+                <div class="col-md-6 col-lg-3">
+                    <div class="card module-card h-100">
+                        <div class="card-img-top d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary">
+                            <i class="fas fa-graduation-cap fa-3x"></i>
+                        </div>
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="badge difficulty-{{ module.difficulty_level }}">{{ module.difficulty_level|title }}</span>
+                            <span class="text-muted small">{{ module.estimated_time }} min</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ module.title }}</h5>
+                            <p class="card-text text-muted">{{ module.summary|truncate(100) }}</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <div>
+                                {% if module.has_asl %}
+                                    <span class="badge bg-success" title="ASL Support">
+                                        <i class="fas fa-hands me-1"></i> ASL
+                                    </span>
+                                {% endif %}
+                                {% if module.captions_available %}
+                                    <span class="badge bg-info" title="Captions Available">
+                                        <i class="fas fa-closed-captioning me-1"></i> CC
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <a href="{{ url_for('education.module_detail', slug=module.slug) }}" class="btn btn-sm btn-primary">Start Learning</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> Featured modules coming soon. Check back later!
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Categories section -->
+<section class="mb-5" id="all-modules">
+    <h2 class="h3 mb-4">Learning Categories</h2>
+    
+    {% if categories %}
+        <div class="row g-4">
+            {% for category in categories %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="me-3 p-3 rounded-circle bg-primary bg-opacity-10 text-primary">
+                                    <i class="fas fa-{{ category.icon|default('bookmark') }} fa-lg"></i>
+                                </div>
+                                <h3 class="h5 mb-0">{{ category.name }}</h3>
+                            </div>
+                            <p class="text-muted">{{ category.description|default('Financial education modules to help you understand and manage your finances effectively.')|truncate(120) }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-light text-dark">{{ category.modules.count() }} modules</span>
+                                <a href="{{ url_for('education.category_detail', category_id=category.id) }}" class="btn btn-sm btn-outline-primary">
+                                    Explore <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i> Categories will be available soon. Check back later!
+        </div>
+    {% endif %}
+</section>
+
+<!-- Financial glossary section -->
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0">ASL Financial Glossary</h2>
+        <a href="{{ url_for('education.glossary') }}" class="btn btn-sm btn-outline-primary">View Full Glossary</a>
+    </div>
+    
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h4 class="mb-3">Learn Financial Terms in ASL</h4>
+                    <p class="text-muted">Access a comprehensive glossary of financial terms with American Sign Language videos to help you understand key concepts in your preferred language.</p>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-light text-dark">Budget</span>
+                        <span class="badge bg-light text-dark">Investment</span>
+                        <span class="badge bg-light text-dark">Mortgage</span>
+                        <span class="badge bg-light text-dark">Insurance</span>
+                        <span class="badge bg-light text-dark">Retirement</span>
+                        <span class="badge bg-light text-dark">Credit Score</span>
+                        <span class="badge bg-light text-dark">Tax</span>
+                        <span class="badge bg-light text-dark">401(k)</span>
+                    </div>
+                    <a href="{{ url_for('education.glossary') }}" class="btn btn-primary">
+                        Explore Glossary <i class="fas fa-external-link-alt ms-1"></i>
+                    </a>
+                </div>
+                <div class="col-md-4 text-center mt-4 mt-md-0">
+                    <div class="p-3 rounded-circle bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center" style="width: 150px; height: 150px;">
+                        <i class="fas fa-hands fa-5x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Interactive tools section -->
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0">Interactive Financial Tools</h2>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <h4 class="mb-3"><i class="fas fa-calculator text-primary me-2"></i> Compound Interest Calculator</h4>
+                    <p class="text-muted">See how your investments can grow over time with our interactive compound interest calculator. Includes ASL video explanation.</p>
+                    <div class="financial-calculator" data-calculator-type="compound_interest">
+                        <div class="calculator-container">
+                            <div class="d-flex align-items-center justify-content-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <span class="ms-2">Loading calculator...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <h4 class="mb-3"><i class="fas fa-home text-primary me-2"></i> Mortgage Payment Calculator</h4>
+                    <p class="text-muted">Calculate your monthly mortgage payments and total interest. Includes ASL video explanation of mortgage concepts.</p>
+                    <div class="financial-calculator" data-calculator-type="mortgage">
+                        <div class="calculator-container">
+                            <div class="d-flex align-items-center justify-content-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <span class="ms-2">Loading calculator...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Search functionality
+        const searchInput = document.querySelector('input[aria-label="Search"]');
+        const searchButton = document.getElementById('search-button');
+        
+        if (searchInput && searchButton) {
+            const handleSearch = () => {
+                const query = searchInput.value.trim();
+                if (query) {
+                    window.location.href = `{{ url_for('education.search') }}?q=${encodeURIComponent(query)}`;
+                }
+            };
+            
+            searchButton.addEventListener('click', handleSearch);
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSearch();
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
