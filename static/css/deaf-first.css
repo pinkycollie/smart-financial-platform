@@ -1,81 +1,46 @@
 /**
  * DEAF FIRST Digital Framework CSS
  * -----------------------------------
- * A design framework that prioritizes deaf accessibility from the beginning,
- * not as an afterthought. These styles implement the DEAF FIRST movement's 
- * principles for digital experiences.
+ * A simplified framework prioritizing deaf accessibility
+ * with clear visual cues and high contrast.
  */
 
 :root {
-    /* Core DEAF FIRST color palette - high contrast for visual accessibility */
-    --deaf-first-blue: #0055AA;        /* Primary blue - strong, vivid blue for main elements */
-    --deaf-first-yellow: #FFD700;      /* Gold/yellow - high contrast accent to blue */
-    --deaf-first-orange: #FF6600;      /* Attention orange - for calls to action */
-    --deaf-first-red: #DD0000;         /* Alert red - for important notices */
-    --deaf-first-green: #00AA55;       /* Success green - for positive feedback */
+    /* Core DEAF FIRST colors - simple, high contrast palette */
+    --deaf-first-blue: #0066CC;    /* Primary blue - clear, vibrant */
+    --deaf-first-yellow: #FFCC00;  /* High contrast accent */
+    --deaf-first-red: #DD0000;     /* Clear warning */
+    --deaf-first-green: #00AA55;   /* Success feedback */
     
-    /* Neutral palette - carefully balanced for text contrast */
-    --deaf-first-black: #000000;       /* Pure black - maximum contrast for critical text */
-    --deaf-first-dark: #222222;        /* Near black - for primary text */
-    --deaf-first-medium: #777777;      /* Mid gray - for secondary text */
-    --deaf-first-light: #EEEEEE;       /* Light gray - for backgrounds */
-    --deaf-first-white: #FFFFFF;       /* Pure white - for maximum contrast backgrounds */
+    /* Simplified shadows for depth */
+    --deaf-first-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     
-    /* Shadow variables for depth perception */
-    --deaf-first-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
-    --deaf-first-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.2);
-    --deaf-first-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
-    --deaf-first-shadow-medium: 0 6px 10px rgba(0, 0, 0, 0.3);
-    
-    /* Focus outline variables */
-    --deaf-first-focus-width: 3px;
-    --deaf-first-focus-color: var(--deaf-first-yellow);
-    
-    /* Animation timing */
-    --deaf-first-transition-fast: 0.2s;
-    --deaf-first-transition-medium: 0.3s;
-    --deaf-first-transition-slow: 0.5s;
-    
-    /* Spacing variables */
-    --deaf-first-spacing-xs: 0.25rem;
-    --deaf-first-spacing-sm: 0.5rem;
-    --deaf-first-spacing-md: 1rem;
-    --deaf-first-spacing-lg: 1.5rem;
-    --deaf-first-spacing-xl: 2rem;
-    
-    /* Border radius */
-    --deaf-first-radius-sm: 4px;
-    --deaf-first-radius-md: 8px;
-    --deaf-first-radius-lg: 12px;
-    --deaf-first-radius-pill: 50px;
+    /* Focus styles */
+    --deaf-first-focus: 3px solid var(--deaf-first-yellow);
 }
 
-/* Enhanced focus styles for keyboard navigation */
+/* Simple clear focus styles for accessibility */
 *:focus {
-    outline: var(--deaf-first-focus-width) solid var(--deaf-first-focus-color);
+    outline: var(--deaf-first-focus);
     outline-offset: 2px;
 }
 
-/* Enhanced typography for readability */
+/* Clean readable typography */
 body {
-    font-family: 'Noto Sans', 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: var(--bs-body-color);
+    font-family: 'Noto Sans', 'Open Sans', sans-serif;
+    line-height: 1.6;
 }
 
 h1, h2, h3, h4, h5, h6 {
     margin-bottom: 1rem;
     font-weight: 700;
-    line-height: 1.3;
 }
 
-/* Special headings for DEAF FIRST branding */
+/* Distinctive heading style */
 .deaf-first-heading {
     position: relative;
     display: inline-block;
     margin-bottom: 1.5rem;
-    color: var(--bs-body-color);
 }
 
 .deaf-first-heading::after {
@@ -88,7 +53,7 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--deaf-first-blue);
 }
 
-/* Buttons with DEAF FIRST styling */
+/* Clear high-contrast buttons */
 .deaf-first-button, 
 .btn-deaf-first {
     background-color: var(--deaf-first-blue);
@@ -96,63 +61,20 @@ h1, h2, h3, h4, h5, h6 {
     border: none;
     font-weight: 600;
     padding: 0.5rem 1.25rem;
-    border-radius: var(--deaf-first-radius-md);
-    transition: transform var(--deaf-first-transition-medium), 
-                box-shadow var(--deaf-first-transition-medium),
-                background-color var(--deaf-first-transition-medium);
-    position: relative;
-    overflow: hidden;
+    border-radius: 6px;
+    transition: all 0.3s;
 }
 
 .deaf-first-button:hover, 
 .btn-deaf-first:hover {
-    background-color: #0044AA;
+    background-color: #0055aa;
     transform: translateY(-2px);
     color: white;
-    box-shadow: var(--deaf-first-shadow-md);
-}
-
-.deaf-first-button:active, 
-.btn-deaf-first:active {
-    transform: translateY(0);
-    box-shadow: var(--deaf-first-shadow-sm);
-}
-
-/* Button with visual ripple effect for clear feedback */
-.deaf-first-button::after,
-.btn-deaf-first::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 5px;
-    height: 5px;
-    background: rgba(255, 255, 255, 0.5);
-    opacity: 0;
-    border-radius: 100%;
-    transform: scale(1, 1) translate(-50%, -50%);
-    transform-origin: 50% 50%;
-}
-
-.deaf-first-button:focus::after,
-.btn-deaf-first:focus::after {
-    animation: deaf-first-ripple 1s ease-out;
-}
-
-@keyframes deaf-first-ripple {
-    0% {
-        transform: scale(0, 0);
-        opacity: 0.5;
-    }
-    100% {
-        transform: scale(20, 20);
-        opacity: 0;
-    }
+    box-shadow: var(--deaf-first-shadow);
 }
 
 /* ASL video button styles */
 .asl-button {
-    position: relative;
     display: inline-flex;
     align-items: center;
     background-color: var(--deaf-first-blue);
@@ -161,35 +83,31 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0.4rem 1rem;
     border-radius: 50px;
     font-weight: 600;
-    font-size: 0.85rem;
-    transition: all var(--deaf-first-transition-medium);
+    transition: all 0.3s;
 }
 
 .asl-button:hover {
     background-color: #004499;
     transform: translateY(-2px);
-    box-shadow: var(--deaf-first-shadow-sm);
+    box-shadow: var(--deaf-first-shadow);
 }
 
 .asl-button .asl-icon {
     margin-right: 0.5rem;
-    font-size: 1rem;
 }
 
-/* Card styling with clear visual hierarchy */
+/* Simple card with clear visual hierarchy */
 .deaf-first-card {
     background-color: var(--bs-body-bg);
-    border-radius: var(--deaf-first-radius-md);
-    box-shadow: var(--deaf-first-shadow-sm);
-    transition: transform var(--deaf-first-transition-medium), 
-                box-shadow var(--deaf-first-transition-medium);
+    border-radius: 8px;
+    box-shadow: var(--deaf-first-shadow);
     overflow: hidden;
     position: relative;
+    transition: all 0.3s;
 }
 
 .deaf-first-card:hover {
     transform: translateY(-5px);
-    box-shadow: var(--deaf-first-shadow-md);
 }
 
 .deaf-first-card::before {
@@ -207,13 +125,12 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 1rem;
 }
 
-/* Visual alert system for notifications */
+/* Clear visual alerts */
 .deaf-first-alert {
-    position: relative;
     padding: 1rem;
-    border-radius: var(--deaf-first-radius-md);
+    border-radius: 8px;
     border-left: 4px solid var(--deaf-first-blue);
-    background-color: rgba(0, 85, 170, 0.1);
+    background-color: rgba(0, 102, 204, 0.1);
     margin-bottom: 1rem;
 }
 
@@ -224,7 +141,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .deaf-first-alert.alert-warning {
     border-left-color: var(--deaf-first-yellow);
-    background-color: rgba(255, 215, 0, 0.1);
+    background-color: rgba(255, 204, 0, 0.1);
 }
 
 .deaf-first-alert.alert-danger {
@@ -383,7 +300,7 @@ h1, h2, h3, h4, h5, h6 {
     height: 3rem;
 }
 
-/* Accessibility widget styles */
+/* Simple accessibility widget */
 .accessibility-widget {
     position: fixed;
     bottom: 20px;
@@ -401,8 +318,8 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: var(--deaf-first-shadow-md);
-    transition: all var(--deaf-first-transition-medium);
+    box-shadow: var(--deaf-first-shadow);
+    transition: all 0.3s;
 }
 
 .accessibility-toggle:hover {
@@ -415,18 +332,15 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     width: 280px;
     background-color: var(--bs-body-bg);
-    border-radius: var(--deaf-first-radius-md);
-    box-shadow: var(--deaf-first-shadow-lg);
+    border-radius: 8px;
+    box-shadow: var(--deaf-first-shadow);
     padding: 1.25rem;
-    transform: scale(0.95);
-    transform-origin: bottom left;
     opacity: 0;
     visibility: hidden;
-    transition: all var(--deaf-first-transition-medium);
+    transition: all 0.3s;
 }
 
 .accessibility-panel.active {
-    transform: scale(1);
     opacity: 1;
     visibility: visible;
 }
