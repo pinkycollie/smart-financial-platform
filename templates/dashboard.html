@@ -124,10 +124,181 @@
     .asl-badge i {
         margin-right: 0.25rem;
     }
+    
+    /* Beta banner styling */
+    .beta-banner {
+        background: linear-gradient(90deg, #0066CC, #0055AA);
+        color: white;
+        padding: 0.75rem 0;
+        text-align: center;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .beta-banner .badge {
+        background-color: #FF5500;
+        margin-right: 0.5rem;
+    }
+    
+    /* Promotions styling */
+    .promo-card {
+        background: linear-gradient(135deg, rgba(0, 119, 204, 0.9), rgba(0, 85, 170, 0.9));
+        border-radius: 8px;
+        border: none;
+        padding: 1.5rem;
+        color: white;
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .promo-card::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .promo-card::after {
+        content: '';
+        position: absolute;
+        bottom: -30px;
+        left: -30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .promo-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        display: block;
+    }
+    
+    .btn-promo {
+        background-color: #FF5500;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        font-weight: 600;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s ease;
+    }
+    
+    .btn-promo:hover {
+        background-color: #E04800;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Feedback and Survey Modal */
+    .modal-deaf-first .modal-content {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .modal-deaf-first .modal-header {
+        background-color: #0066CC;
+        color: white;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .modal-deaf-first .modal-title {
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+    }
+    
+    .modal-deaf-first .modal-title i {
+        margin-right: 0.75rem;
+        font-size: 1.25rem;
+    }
+    
+    .modal-deaf-first .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .modal-deaf-first .modal-footer {
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 1rem 1.5rem;
+    }
+    
+    .feedback-form label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .rating-stars {
+        display: flex;
+        gap: 0.5rem;
+        font-size: 1.5rem;
+        color: #888;
+        cursor: pointer;
+    }
+    
+    .rating-stars i.active {
+        color: #FFAA00;
+    }
+    
+    /* Welcome popup */
+    .welcome-popup .modal-body {
+        padding: 2rem;
+    }
+    
+    .welcome-popup .welcome-icon {
+        font-size: 3rem;
+        color: #0066CC;
+        margin-bottom: 1rem;
+        display: block;
+        text-align: center;
+    }
+    
+    .welcome-popup h4 {
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .welcome-feature {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+    
+    .welcome-feature i {
+        font-size: 1.25rem;
+        color: #0066CC;
+        margin-right: 1rem;
+        margin-top: 0.25rem;
+    }
+    
+    .welcome-cta {
+        background-color: rgba(0, 102, 204, 0.05);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1.5rem;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
+<!-- Beta Banner -->
+<div class="container">
+    <div class="beta-banner">
+        <span class="badge rounded-pill">BETA</span>
+        DEAF FIRST Platform under development - Help us improve and receive <strong>$300 OFF</strong> services in 2026!
+    </div>
+</div>
+
 <div class="container py-4">
     <div class="row mb-4">
         <div class="col">
@@ -138,6 +309,25 @@
             <button class="asl-badge">
                 <i class="fas fa-hands"></i> ASL Overview
             </button>
+        </div>
+    </div>
+    
+    <!-- Promotional Banner -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="promo-card">
+                <div class="row align-items-center">
+                    <div class="col-lg-7 mb-3 mb-lg-0">
+                        <h3 class="mb-2">Contribute to DEAF FIRST Platform</h3>
+                        <p class="mb-0">Help us improve by providing feedback through our surveys and testing features. In return, you'll receive <span class="promo-value">$300 OFF</span> services in 2026.</p>
+                    </div>
+                    <div class="col-lg-5 text-lg-end">
+                        <button class="btn btn-light btn-promo" data-bs-toggle="modal" data-bs-target="#surveyModal">
+                            <i class="fas fa-clipboard-list me-2"></i> Take Survey Now
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -254,13 +444,118 @@
                             </a>
                         </div>
                         <div class="col-md-3 col-sm-6">
-                            <a href="/support" class="btn btn-outline-secondary w-100 py-3">
-                                <i class="fas fa-hands-helping d-block mb-2 fs-3"></i>
-                                Get Help
-                            </a>
+                            <button class="btn btn-outline-secondary w-100 py-3" data-bs-toggle="modal" data-bs-target="#feedbackModal">
+                                <i class="fas fa-comment-alt d-block mb-2 fs-3"></i>
+                                Give Feedback
+                            </button>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feedback Modal with Google Forms Integration -->
+<div class="modal fade modal-deaf-first" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="feedbackModalLabel">
+                    <i class="fas fa-comment-alt"></i> Share Your Feedback
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Google Forms Feedback Form Embed -->
+                <div class="ratio" style="--bs-aspect-ratio: 100%;">
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe0gB6jYWPJHUHJGAKVGqT1lRXi_9VZhVUysxMQ1JRuRr2yzg/viewform?embedded=true" 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            marginheight="0" 
+                            marginwidth="0">
+                        Loading Google Form...
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Survey Modal with Google Forms Integration -->
+<div class="modal fade modal-deaf-first" id="surveyModal" tabindex="-1" aria-labelledby="surveyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="surveyModalLabel">
+                    <i class="fas fa-clipboard-list"></i> DEAF FIRST Development Survey
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Complete this survey to help us improve and receive <strong>$300 OFF</strong> services in 2026!
+                </div>
+                
+                <!-- Google Forms Embed -->
+                <div class="ratio" style="--bs-aspect-ratio: 100%;">
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfYL4Fz7qIUVlbB2A1wwvhN45A8z0yVwPgv7Uv_dIGRGo5qLw/viewform?embedded=true" 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            marginheight="0" 
+                            marginwidth="0">
+                        Loading Google Form...
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Welcome Modal -->
+<div class="modal fade modal-deaf-first welcome-popup" id="welcomeModal" tabindex="-1" aria-labelledby="welcomeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <i class="fas fa-hands-helping welcome-icon"></i>
+                <h4 class="text-center">Welcome to DEAF FIRST Platform</h4>
+                <p>We're building a revolutionary financial platform designed specifically for the deaf community. Our focus is on accessibility, simplicity, and empowerment.</p>
+                
+                <div class="welcome-feature">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Development in Progress</strong>
+                        <p class="mb-0">We're currently in beta, actively building and improving our platform with your needs in mind.</p>
+                    </div>
+                </div>
+                
+                <div class="welcome-feature">
+                    <i class="fas fa-hands"></i>
+                    <div>
+                        <strong>Made for You</strong>
+                        <p class="mb-0">Everything is being designed with ASL support, visual clarity, and deaf-friendly navigation.</p>
+                    </div>
+                </div>
+                
+                <div class="welcome-feature">
+                    <i class="fas fa-comment-alt"></i>
+                    <div>
+                        <strong>We Need Your Input</strong>
+                        <p class="mb-0">Your feedback is essential to creating the best possible experience.</p>
+                    </div>
+                </div>
+                
+                <div class="welcome-cta">
+                    <p class="mb-2 fw-bold">Special Offer: $300 OFF Services in 2026</p>
+                    <p class="mb-0">Complete our development survey and contribute feedback to receive this exclusive discount when our full services launch.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Skip for Now</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#surveyModal">Take Survey</button>
             </div>
         </div>
     </div>
@@ -270,12 +565,37 @@
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Show welcome popup on first visit
+        const hasVisitedBefore = localStorage.getItem('df_visited');
+        if (!hasVisitedBefore) {
+            setTimeout(() => {
+                const welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'));
+                welcomeModal.show();
+                localStorage.setItem('df_visited', 'true');
+            }, 1000);
+        }
+        
         // Add click event for ASL video button
         const aslButton = document.querySelector('.asl-badge');
         if (aslButton) {
             aslButton.addEventListener('click', function() {
                 alert('ASL video overview will be available soon.');
             });
+        }
+        
+        // Add a link to investor demo page in the user dropdown
+        const userDropdown = document.querySelector('.dropdown-menu.dropdown-menu-end');
+        if (userDropdown) {
+            const investorDemoItem = document.createElement('li');
+            investorDemoItem.innerHTML = '<a class="dropdown-item" href="/investor-demo"><i class="fas fa-chart-line me-2"></i>Investor Demo</a>';
+            
+            // Insert before the last divider
+            const lastDivider = userDropdown.querySelectorAll('.dropdown-divider')[1];
+            if (lastDivider) {
+                userDropdown.insertBefore(investorDemoItem, lastDivider);
+            } else {
+                userDropdown.appendChild(investorDemoItem);
+            }
         }
     });
 </script>

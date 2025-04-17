@@ -1,0 +1,512 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block styles %}
+<style>
+    /* Investor Demo Page Styling */
+    .investor-section {
+        padding: 3rem 0;
+        border-bottom: 1px solid var(--bs-border-color);
+    }
+    
+    .investor-section:last-child {
+        border-bottom: none;
+    }
+    
+    .section-heading {
+        margin-bottom: 2.5rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .section-heading::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background-color: #0066CC;
+    }
+    
+    /* Hero Section */
+    .investor-hero {
+        background: linear-gradient(135deg, #0066CC, #004499);
+        color: white;
+        padding: 4rem 0;
+        margin-bottom: 3rem;
+    }
+    
+    .hero-badge {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+        border-radius: 50px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Market Stats */
+    .stat-card {
+        background-color: var(--bs-body-bg);
+        border-radius: 8px;
+        border: 1px solid var(--bs-border-color);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        height: 100%;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #0066CC;
+    }
+    
+    .stat-label {
+        color: var(--bs-secondary);
+        font-weight: 600;
+    }
+    
+    /* Impact Metrics */
+    .impact-meter {
+        height: 8px;
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+    
+    .impact-meter-fill {
+        height: 100%;
+        background-color: #0066CC;
+        border-radius: 4px;
+    }
+    
+    /* Advantages */
+    .advantage-card {
+        border-left: 4px solid #0066CC;
+        padding: 1.5rem;
+        background-color: var(--bs-body-bg);
+        border-radius: 0 8px 8px 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        margin-bottom: 1.5rem;
+    }
+    
+    .advantage-icon {
+        font-size: 2rem;
+        color: #0066CC;
+        margin-bottom: 1rem;
+    }
+    
+    /* Roadmap */
+    .roadmap-timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+    
+    .roadmap-timeline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 2px;
+        height: 100%;
+        background-color: var(--bs-border-color);
+    }
+    
+    .timeline-item {
+        position: relative;
+        padding-bottom: 2rem;
+    }
+    
+    .timeline-item:last-child {
+        padding-bottom: 0;
+    }
+    
+    .timeline-bullet {
+        position: absolute;
+        left: -39px;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid var(--bs-border-color);
+        background-color: var(--bs-body-bg);
+    }
+    
+    .timeline-bullet.in-progress {
+        border-color: #0066CC;
+        background-color: #0066CC;
+    }
+    
+    .timeline-date {
+        font-weight: 600;
+        color: var(--bs-secondary);
+        margin-bottom: 0.25rem;
+    }
+    
+    .timeline-content {
+        font-weight: 700;
+    }
+    
+    /* Team Section */
+    .team-card {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .team-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 60px;
+        object-fit: cover;
+        margin-bottom: 1rem;
+        border: 4px solid rgba(0, 102, 204, 0.1);
+    }
+    
+    .team-badge {
+        background-color: rgba(0, 102, 204, 0.1);
+        color: #0066CC;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-block;
+        margin-top: 0.5rem;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        background-color: rgba(0, 102, 204, 0.05);
+        padding: 3rem;
+        border-radius: 8px;
+        text-align: center;
+        margin-top: 3rem;
+    }
+    
+    .cta-headline {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .btn-invest {
+        background-color: #0066CC;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        border-radius: 4px;
+        margin-top: 1rem;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-invest:hover {
+        background-color: #0055AA;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Back button */
+    .back-btn {
+        margin-bottom: 2rem;
+        display: inline-flex;
+        align-items: center;
+        color: inherit;
+        text-decoration: none;
+    }
+    
+    .back-btn i {
+        margin-right: 0.5rem;
+    }
+    
+    .back-btn:hover {
+        color: #0066CC;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="investor-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center">
+                <div class="hero-badge">For Investors & Partners</div>
+                <h1 class="display-4 fw-bold mb-3">DEAF FIRST Financial Platform</h1>
+                <p class="lead mb-4">Revolutionizing financial accessibility for 37+ million deaf and hard-of-hearing Americans through our specialized, deaf-first digital platform.</p>
+                <a href="#opportunity" class="btn btn-light px-4 py-2 fw-bold">
+                    <i class="fas fa-chart-line me-2"></i> Explore the Opportunity
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <a href="/dashboard" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+    
+    <!-- Market Opportunity Section -->
+    <section id="opportunity" class="investor-section">
+        <h2 class="section-heading">Market Opportunity</h2>
+        
+        <div class="row">
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="stat-card text-center">
+                    <div class="stat-value">{{ '{:,}'.format(market_data.deaf_population) }}</div>
+                    <div class="stat-label">Deaf/HOH Americans</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="stat-card text-center">
+                    <div class="stat-value">${{ '{:,.0f}'.format(market_data.market_size / 1000000000) }}B</div>
+                    <div class="stat-label">Market Size</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="stat-card text-center">
+                    <div class="stat-value">{{ market_data.unserved_percentage }}%</div>
+                    <div class="stat-label">Underserved</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="stat-card text-center">
+                    <div class="stat-value">{{ market_data.projected_growth }}%</div>
+                    <div class="stat-label">Annual Growth</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-lg-8 offset-lg-2">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">The Opportunity</h5>
+                        <p>The deaf and hard-of-hearing community has been chronically underserved by traditional financial institutions, creating a significant market gap. Our DEAF FIRST platform addresses this unmet need with specialized services that prioritize visual communication, ASL support, and deaf-friendly design.</p>
+                        <p class="mb-0">With minimal competition in this specialized space and growing awareness of accessibility needs, we are positioned to capture a significant share of this underserved market.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Impact Metrics Section -->
+    <section class="investor-section">
+        <h2 class="section-heading">Social Impact Metrics</h2>
+        
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <h5>Accessibility Increase</h5>
+                <div class="impact-meter">
+                    <div class="impact-meter-fill" style="width: {{ impact_metrics.accessibility_increase }}%"></div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>0%</span>
+                    <span class="fw-bold">{{ impact_metrics.accessibility_increase }}%</span>
+                    <span>100%</span>
+                </div>
+                <p class="mt-2">Increase in financial services accessibility for deaf users</p>
+            </div>
+            
+            <div class="col-lg-4 mb-4">
+                <h5>Cost Savings</h5>
+                <div class="impact-meter">
+                    <div class="impact-meter-fill" style="width: {{ impact_metrics.cost_savings }}%"></div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>0%</span>
+                    <span class="fw-bold">{{ impact_metrics.cost_savings }}%</span>
+                    <span>100%</span>
+                </div>
+                <p class="mt-2">Average cost savings compared to traditional financial services</p>
+            </div>
+            
+            <div class="col-lg-4 mb-4">
+                <h5>Financial Literacy</h5>
+                <div class="impact-meter">
+                    <div class="impact-meter-fill" style="width: {{ impact_metrics.financial_literacy }}%"></div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>0%</span>
+                    <span class="fw-bold">{{ impact_metrics.financial_literacy }}%</span>
+                    <span>100%</span>
+                </div>
+                <p class="mt-2">Improvement in financial literacy among platform users</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Competitive Advantages Section -->
+    <section class="investor-section">
+        <h2 class="section-heading">Our Competitive Advantages</h2>
+        
+        <div class="row">
+            {% for advantage in advantages %}
+            <div class="col-md-6 mb-4">
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <i class="{{ advantage.icon }}"></i>
+                    </div>
+                    <h4>{{ advantage.title }}</h4>
+                    <p class="mb-0">{{ advantage.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    
+    <!-- Revenue Streams Section -->
+    <section class="investor-section">
+        <h2 class="section-heading">Revenue Streams</h2>
+        
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div style="height: 300px; border-radius: 8px; overflow: hidden; background-color: var(--bs-border-color);">
+                    <!-- Placeholder for revenue chart -->
+                    <div style="height: 100%; display: flex; align-items: center; justify-content: center;">
+                        <div class="text-center">
+                            <i class="fas fa-chart-pie fa-3x mb-3 text-secondary"></i>
+                            <p class="mb-0">Interactive revenue breakdown chart<br>will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Diversified Revenue Model</h5>
+                        
+                        {% for stream in revenue_streams %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span>{{ stream.name }}</span>
+                                <span class="fw-bold">{{ stream.projected_percentage }}%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar" role="progressbar" style="width: {{ stream.projected_percentage }}%; background-color: {{ stream.color }};" aria-valuenow="{{ stream.projected_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <p class="mt-3 mb-0">Our diverse revenue streams create a sustainable business model while maintaining our mission of accessibility and affordability for the deaf community.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Roadmap Section -->
+    <section class="investor-section">
+        <h2 class="section-heading">Development Roadmap</h2>
+        
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3">
+                <div class="roadmap-timeline">
+                    {% for item in roadmap %}
+                    <div class="timeline-item">
+                        <div class="timeline-bullet {% if item.status == 'in_progress' %}in-progress{% endif %}"></div>
+                        <div class="timeline-date">{{ item.date }}</div>
+                        <div class="timeline-content">{{ item.milestone }}</div>
+                        {% if item.status == 'in_progress' %}
+                        <div class="badge bg-primary mt-2">In Progress</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Team Section -->
+    <section class="investor-section">
+        <h2 class="section-heading">Our Team</h2>
+        
+        <div class="row">
+            {% for member in team %}
+            <div class="col-md-6 col-lg-3">
+                <div class="team-card">
+                    <img src="{{ url_for('static', filename='img/' + member.photo) }}" alt="{{ member.name }}" class="team-photo" onerror="this.src='{{ url_for('static', filename='img/placeholder-user.jpg') }}'">
+                    <h5 class="mb-0">{{ member.name }}</h5>
+                    <p class="text-muted">{{ member.role }}</p>
+                    {% if member.deaf %}
+                    <div class="team-badge">Deaf Community Member</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <h3 class="cta-headline">Join us in revolutionizing financial accessibility</h3>
+                <p>DEAF FIRST is seeking strategic partners and investors who share our vision of creating financial equity for the deaf community. With your support, we can accelerate our development and reach millions of underserved Americans.</p>
+                <a href="#" class="btn btn-invest" data-bs-toggle="modal" data-bs-target="#investorContactModal">
+                    <i class="fas fa-handshake me-2"></i> Connect With Our Team
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Investor Contact Modal -->
+<div class="modal fade" id="investorContactModal" tabindex="-1" aria-labelledby="investorContactModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="investorContactModalLabel">Connect With Our Team</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Thank you for your interest in DEAF FIRST. Please provide your information below and a member of our team will contact you shortly.</p>
+                
+                <!-- Google Forms Embed -->
+                <div class="text-center">
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdwxRSUmDHvZDbmQFCvrm-LKO5mDNJ_SPslo0B9qRQOcRUUdQ/viewform?embedded=true" width="100%" height="450" frameborder="0" marginheight="0" marginwidth="0">Loading Google Form...</iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,8 @@
+<svg width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="60" cy="60" r="60" fill="#f0f0f0"/>
+  
+  <!-- Person Icon -->
+  <circle cx="60" cy="45" r="20" fill="#c0c0c0"/>
+  <path d="M30,100 C30,80 90,80 90,100" fill="#c0c0c0"/>
+</svg>

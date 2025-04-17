@@ -92,6 +92,83 @@ def dashboard():
                           financial_summary=financial_summary,
                           recent_transactions=recent_transactions,
                           upcoming_tasks=upcoming_tasks)
+                          
+@app.route('/investor-demo')
+def investor_demo():
+    """Demo page specially designed for investors, shareholders, and potential partners"""
+    
+    # Market opportunity data
+    market_data = {
+        'deaf_population': 37000000,  # US Deaf/HOH population
+        'market_size': 250000000000,  # $250B estimated market size
+        'unserved_percentage': 78,    # % of deaf population underserved
+        'projected_growth': 14.5      # Annual growth % in deaf fintech
+    }
+    
+    # Impact metrics
+    impact_metrics = {
+        'accessibility_increase': 85,  # % increase in financial access 
+        'cost_savings': 35,           # % cost savings vs traditional services
+        'financial_literacy': 65      # % improvement in financial literacy
+    }
+    
+    # Competitive advantage
+    advantages = [
+        {
+            'title': 'Deaf First Design',
+            'description': 'Built from the ground up for the deaf community rather than as an afterthought.',
+            'icon': 'fas fa-universal-access'
+        },
+        {
+            'title': 'Multi-Layer ASL Integration',
+            'description': 'Comprehensive video ASL integration through Mux, SignASL, and VSL Labs technologies.',
+            'icon': 'fas fa-hands'
+        },
+        {
+            'title': 'Specialized Insurance Products',
+            'description': 'First-of-its-kind deaf-specific insurance coverage through Boost Insurance API.',
+            'icon': 'fas fa-shield-alt'
+        },
+        {
+            'title': 'Holistic Financial Approach',
+            'description': 'Complete suite spanning tax, insurance, real estate, business and estate planning.',
+            'icon': 'fas fa-chart-line'
+        }
+    ]
+    
+    # Revenue streams
+    revenue_streams = [
+        {'name': 'Premium Subscriptions', 'projected_percentage': 45, 'color': '#0066CC'},
+        {'name': 'Insurance Commissions', 'projected_percentage': 30, 'color': '#00AA55'},
+        {'name': 'Tax Preparation Fees', 'projected_percentage': 15, 'color': '#FFAA00'},
+        {'name': 'Partner Referrals', 'projected_percentage': 10, 'color': '#FF5500'}
+    ]
+    
+    # Roadmap milestones 
+    roadmap = [
+        {'date': '2025 Q2', 'milestone': 'Public Beta Launch', 'status': 'in_progress'},
+        {'date': '2025 Q3', 'milestone': 'Insurance Integration', 'status': 'upcoming'},
+        {'date': '2025 Q4', 'milestone': 'ASL Video Library Complete', 'status': 'upcoming'},
+        {'date': '2026 Q1', 'milestone': 'Full Platform Launch', 'status': 'upcoming'},
+        {'date': '2026 Q2', 'milestone': 'Mobile App Release', 'status': 'upcoming'}
+    ]
+    
+    # Team members
+    team = [
+        {'name': 'Jane Doe', 'role': 'CEO & Founder', 'deaf': True, 'photo': 'team1.jpg'},
+        {'name': 'John Smith', 'role': 'CTO', 'deaf': False, 'photo': 'team2.jpg'},
+        {'name': 'Sarah Johnson', 'role': 'Director of Accessibility', 'deaf': True, 'photo': 'team3.jpg'},
+        {'name': 'Michael Chen', 'role': 'Financial Services Lead', 'deaf': False, 'photo': 'team4.jpg'}
+    ]
+    
+    return render_template('investor_demo.html',
+                          title='Investor Demo - DEAF FIRST Platform',
+                          market_data=market_data,
+                          impact_metrics=impact_metrics,
+                          advantages=advantages,
+                          revenue_streams=revenue_streams,
+                          roadmap=roadmap,
+                          team=team)
 
 @app.route('/fintech/tax-filing')
 def tax_filing():
