@@ -1,190 +1,278 @@
 """
-Database models for DEAF FIRST platform licensing program.
-Enables white-label licensing and customization for licensees.
+Database models for licensing system in the DEAF FIRST platform.
 """
 
 from datetime import datetime
 from simple_app import db
 
-class Licensee(db.Model):
+class LicenseType(db.Model):
     """
-    Licensee model for entities that license the DEAF FIRST platform.
-    Represents an organization that uses a white-labeled version of the platform.
+    Types of licenses available for the platform.
     """
-    __tablename__ = 'licensees'
+    __tablename__ = 'license_types'
     
     id = db.Column(db.Integer, primary_key=True)
-    company_name = db.Column(db.String(100), nullable=False)
-    subdomain = db.Column(db.String(100), unique=True)
-    license_tier = db.Column(db.String(20), default='basic')  # basic, professional, enterprise
-    status = db.Column(db.String(20), default='active')  # active, suspended, expired
+    name = db.Column(db.String(50), nullable=False, unique=True)
+    code = db.Column(db.String(50), nullable=False, unique=True)
+    description = db.Column(db.Text)
     
-    # Business details
-    business_type = db.Column(db.String(50))  # financial_advisor, insurance_agency, education_provider, etc.
-    tax_id = db.Column(db.String(50))
-    address = db.Column(db.String(255))
-    city = db.Column(db.String(100))
-    state = db.Column(db.String(2))
-    zip_code = db.Column(db.String(20))
-    country = db.Column(db.String(50), default='USA')
+    # License features
+    max_users = db.Column(db.Integer, default=10)
+    max_storage_gb = db.Column(db.Integer)
+    is_white_label = db.Column(db.Boolean, default=False)
+    can_create_sublicenses = db.Column(db.Boolean, default=False)
     
-    # Contact information
-    contact_name = db.Column(db.String(100))
-    contact_email = db.Column(db.String(100), nullable=False)
-    contact_phone = db.Column(db.String(20))
+    # License limitations
+    api_rate_limit = db.Column(db.Integer)
+    concurrent_users = db.Column(db.Integer)
     
-    # License details
-    license_key = db.Column(db.String(100), unique=True)
-    api_key = db.Column(db.String(100), unique=True)
-    license_start_date = db.Column(db.Date, nullable=False)
-    license_end_date = db.Column(db.Date)
-    auto_renew = db.Column(db.Boolean, default=True)
+    # Billing info
+    suggested_price = db.Column(db.Float)
+    billing_cycle = db.Column(db.String(20), default='monthly')  # monthly, quarterly, yearly
     
-    # Billing information
-    billing_cycle = db.Column(db.String(20), default='monthly')  # monthly, quarterly, annually
-    billing_amount = db.Column(db.Float, nullable=False)
-    next_billing_date = db.Column(db.Date)
-    payment_method = db.Column(db.String(50))
+    # Features as JSON
+    included_features = db.Column(db.JSON)  # Array of feature codes included
     
-    # Usage limits
-    max_clients = db.Column(db.Integer, default=25)
-    current_clients = db.Column(db.Integer, default=0)
+    # Status
+    is_active = db.Column(db.Boolean, default=True)
     
-    # Feature flags
-    white_label_enabled = db.Column(db.Boolean, default=False)
-    custom_modules_enabled = db.Column(db.Boolean, default=False)
-    api_access_enabled = db.Column(db.Boolean, default=False)
-    
-    # Reseller relationship (optional)
-    reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id', use_alter=True, name='fk_licensee_reseller'))
-    sub_reseller_id = db.Column(db.Integer, db.ForeignKey('sub_resellers.id', use_alter=True, name='fk_licensee_sub_reseller'))
-    
+    # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     
     # Relationships
-    branding = db.relationship('LicenseeBranding', backref='licensee', uselist=False, cascade='all, delete-orphan')
-    features = db.relationship('LicenseeFeatures', backref='licensee', uselist=False, cascade='all, delete-orphan')
-    billing_history = db.relationship('LicenseeBillingHistory', backref='licensee', lazy='dynamic', cascade='all, delete-orphan')
+    licenses = db.relationship('License', back_populates='license_type')
     
     def __repr__(self):
-        return f"<Licensee {self.company_name}>"
-    
-    def get_portal_url(self):
-        """Get licensee portal URL"""
-        if self.subdomain:
-            return f"https://{self.subdomain}.deaffirst.com"
-        return f"https://app.deaffirst.com/licensee/{self.id}"
-    
-    def can_add_client(self):
-        """Check if licensee can add more clients"""
-        return self.max_clients == float('inf') or self.current_clients < self.max_clients
+        return f"<LicenseType {self.id}: {self.name}>"
 
-
-class LicenseeBranding(db.Model):
+class License(db.Model):
     """
-    Branding and customization settings for licensees.
-    Only available for licensees with white_label_enabled=True.
+    License instances issued to licensees.
     """
-    __tablename__ = 'licensee_branding'
+    __tablename__ = 'licenses'
     
     id = db.Column(db.Integer, primary_key=True)
+    license_key = db.Column(db.String(100), nullable=False, unique=True)
     licensee_id = db.Column(db.Integer, db.ForeignKey('licensees.id'), nullable=False)
+    license_type_id = db.Column(db.Integer, db.ForeignKey('license_types.id'), nullable=False)
     
-    # Branding elements
-    logo_path = db.Column(db.String(255))
-    logo_light_path = db.Column(db.String(255))  # Light version for dark backgrounds
-    favicon_path = db.Column(db.String(255))
-    primary_color = db.Column(db.String(20), default='#0066CC')
-    secondary_color = db.Column(db.String(20), default='#00AA55')
-    accent_color = db.Column(db.String(20))
-    font_family = db.Column(db.String(100), default='Open Sans, sans-serif')
+    # License status
+    status = db.Column(db.String(20), default='active')  # active, suspended, expired, revoked
+    activation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    expiration_date = db.Column(db.DateTime)
+    last_verified = db.Column(db.DateTime)
     
-    # Custom text
-    company_tagline = db.Column(db.String(255))
-    welcome_message = db.Column(db.Text)
-    footer_text = db.Column(db.Text)
-    legal_disclaimer = db.Column(db.Text)
+    # Custom overrides
+    max_users_override = db.Column(db.Integer)
+    max_storage_gb_override = db.Column(db.Integer)
+    custom_features = db.Column(db.JSON)  # Custom feature configuration
     
-    # Email customization
-    sender_email = db.Column(db.String(100))
-    sender_name = db.Column(db.String(100))
-    email_header_image = db.Column(db.String(255))
-    email_footer_text = db.Column(db.Text)
+    # Usage statistics
+    current_user_count = db.Column(db.Integer, default=0)
+    current_storage_usage_gb = db.Column(db.Float, default=0.0)
+    api_calls_count = db.Column(db.Integer, default=0)
     
-    # Advanced customization
-    show_powered_by = db.Column(db.Boolean, default=True)
-    custom_css = db.Column(db.Text)
-    custom_javascript = db.Column(db.Text)
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     
-    # Social media
-    facebook_url = db.Column(db.String(255))
-    twitter_url = db.Column(db.String(255))
-    linkedin_url = db.Column(db.String(255))
-    instagram_url = db.Column(db.String(255))
+    # Relationships
+    licensee = db.relationship('Licensee', backref='licenses')
+    license_type = db.relationship('LicenseType', back_populates='licenses')
+    usage_logs = db.relationship('LicenseUsageLog', back_populates='license', cascade='all, delete-orphan')
     
+    def __repr__(self):
+        return f"<License {self.id}: {self.license_key}>"
+    
+    @property
+    def is_active(self):
+        """Check if license is active"""
+        return self.status == 'active'
+    
+    @property
+    def days_until_expiration(self):
+        """Get days until license expires"""
+        if not self.expiration_date:
+            return None
+        
+        days = (self.expiration_date - datetime.utcnow()).days
+        return max(0, days)
+    
+    @property
+    def effective_max_users(self):
+        """Get effective maximum users allowed"""
+        return self.max_users_override or self.license_type.max_users
+    
+    @property
+    def effective_max_storage(self):
+        """Get effective maximum storage allowed"""
+        return self.max_storage_gb_override or self.license_type.max_storage_gb
+
+class LicenseUsageLog(db.Model):
+    """
+    Usage logs for licenses.
+    """
+    __tablename__ = 'license_usage_logs'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    license_id = db.Column(db.Integer, db.ForeignKey('licenses.id'), nullable=False)
+    
+    # Usage metrics
+    user_count = db.Column(db.Integer)
+    storage_usage_gb = db.Column(db.Float)
+    api_calls_count = db.Column(db.Integer)
+    feature_usage = db.Column(db.JSON)  # Usage statistics for specific features
+    
+    # Timestamp
+    logged_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    license = db.relationship('License', back_populates='usage_logs')
+    
+    def __repr__(self):
+        return f"<LicenseUsageLog {self.id} for License {self.license_id}>"
+
+class Feature(db.Model):
+    """
+    Platform features that can be enabled or disabled by license.
+    """
+    __tablename__ = 'features'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(50), nullable=False, unique=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    category = db.Column(db.String(50))  # core, addon, premium, etc.
+    
+    # UI display
+    icon = db.Column(db.String(50))
+    ui_component = db.Column(db.String(100))  # Reference to UI component
+    
+    # Technical details
+    implementation_path = db.Column(db.String(255))  # Path to implementation code
+    dependencies = db.Column(db.JSON)  # Feature dependencies
+    
+    # Status
+    is_active = db.Column(db.Boolean, default=True)
+    is_beta = db.Column(db.Boolean, default=False)
+    
+    # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     
     def __repr__(self):
-        return f"<LicenseeBranding for {self.licensee_id}>"
+        return f"<Feature {self.id}: {self.name}>"
 
-
-class LicenseeFeatures(db.Model):
+class PlatformConfig(db.Model):
     """
-    Feature configuration for licensees.
-    Controls which modules are enabled for each licensee.
+    Global platform configuration.
     """
-    __tablename__ = 'licensee_features'
+    __tablename__ = 'platform_configs'
     
     id = db.Column(db.Integer, primary_key=True)
-    licensee_id = db.Column(db.Integer, db.ForeignKey('licensees.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    code = db.Column(db.String(50), nullable=False, unique=True)
+    value = db.Column(db.JSON)
+    description = db.Column(db.Text)
     
-    # Available modules
-    enabled_modules = db.Column(db.JSON, default=[])
+    # Access control
+    is_public = db.Column(db.Boolean, default=False)
+    access_roles = db.Column(db.JSON)  # Roles allowed to access this config
     
-    # Enhanced features
-    enhanced_asl_support = db.Column(db.Boolean, default=False)
-    advanced_analytics = db.Column(db.Boolean, default=False)
-    premium_templates = db.Column(db.Boolean, default=False)
-    priority_support = db.Column(db.Boolean, default=False)
+    # Environment specific
+    environment = db.Column(db.String(20), default='all')  # all, production, staging, development
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    updated_by_user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    
+    def __repr__(self):
+        return f"<PlatformConfig {self.id}: {self.name}>"
+
+class WhiteLabelConfig(db.Model):
+    """
+    White-label configuration templates.
+    """
+    __tablename__ = 'white_label_configs'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    description = db.Column(db.Text)
+    
+    # Theme configuration
+    theme_data = db.Column(db.JSON)  # Theme colors, layout, fonts
+    
+    # Component visibility
+    component_visibility = db.Column(db.JSON)  # Components to show/hide
+    
+    # Custom code
+    custom_css = db.Column(db.Text)
+    custom_js = db.Column(db.Text)
+    
+    # Content overrides
+    content_overrides = db.Column(db.JSON)
+    
+    # Status
+    is_active = db.Column(db.Boolean, default=True)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    
+    def __repr__(self):
+        return f"<WhiteLabelConfig {self.id}: {self.name}>"
+
+class ApiKey(db.Model):
+    """
+    API keys for platform access.
+    """
+    __tablename__ = 'api_keys'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(255), nullable=False, unique=True)
+    name = db.Column(db.String(100), nullable=False)
+    
+    # Owner information
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    licensee_id = db.Column(db.Integer, db.ForeignKey('licensees.id'))
+    
+    # Permissions
+    scopes = db.Column(db.JSON)  # API access scopes
     
     # Usage limits
-    storage_limit_gb = db.Column(db.Integer, default=5)
-    monthly_api_calls = db.Column(db.Integer, default=0)  # 0 means no API access
+    rate_limit = db.Column(db.Integer)
+    daily_limit = db.Column(db.Integer)
+    monthly_limit = db.Column(db.Integer)
     
+    # Status
+    is_active = db.Column(db.Boolean, default=True)
+    expires_at = db.Column(db.DateTime)
+    
+    # Usage tracking
+    last_used_at = db.Column(db.DateTime)
+    last_ip = db.Column(db.String(50))
+    usage_count = db.Column(db.Integer, default=0)
+    
+    # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     
-    def __repr__(self):
-        return f"<LicenseeFeatures for {self.licensee_id}>"
-
-
-class LicenseeBillingHistory(db.Model):
-    """
-    Billing history for licensees.
-    Tracks all payments and invoices.
-    """
-    __tablename__ = 'licensee_billing_history'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    licensee_id = db.Column(db.Integer, db.ForeignKey('licensees.id'), nullable=False)
-    
-    billing_date = db.Column(db.Date, nullable=False)
-    amount = db.Column(db.Float, nullable=False)
-    
-    # Billing details
-    invoice_number = db.Column(db.String(50), unique=True)
-    payment_status = db.Column(db.String(20), default='pending')  # pending, paid, failed, refunded
-    payment_method = db.Column(db.String(50))
-    transaction_id = db.Column(db.String(100))
-    
-    # Billing period
-    period_start = db.Column(db.Date)
-    period_end = db.Column(db.Date)
-    
-    notes = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # Relationships
+    user = db.relationship('User', backref='api_keys')
+    licensee = db.relationship('Licensee', backref='api_keys')
     
     def __repr__(self):
-        return f"<LicenseeBillingHistory {self.invoice_number} for {self.licensee_id}>"
+        return f"<ApiKey {self.id}: {self.name}>"
+    
+    @property
+    def is_valid(self):
+        """Check if API key is valid"""
+        if not self.is_active:
+            return False
+        
+        if self.expires_at and self.expires_at < datetime.utcnow():
+            return False
+        
+        return True

@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block title %}ASL Videos - DEAF FIRST{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 mb-4 mb-md-0">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Video Categories</h5>
+                    
+                    <div class="list-group list-group-flush">
+                        <a href="{{ url_for('asl_support.videos') }}" class="list-group-item list-group-item-action {% if not current_category %}active{% endif %}">
+                            <i class="fas fa-video me-2"></i> All Videos
+                        </a>
+                        
+                        {% for category in categories %}
+                            <a href="{{ url_for('asl_support.videos', category=category.id) }}" 
+                               class="list-group-item list-group-item-action {% if current_category == category.id %}active{% endif %}">
+                                <i class="fas fa-{{ category.icon|default('folder') }} me-2"></i> {{ category.name }}
+                            </a>
+                            
+                            {% for subcategory in category.subcategories %}
+                                <a href="{{ url_for('asl_support.videos', category=subcategory.id) }}"
+                                   class="list-group-item list-group-item-action ps-5 {% if current_category == subcategory.id %}active{% endif %}">
+                                    {{ subcategory.name }}
+                                </a>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <h5 class="card-title mb-3">Filter by Level</h5>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" value="" id="beginnerCheck">
+                        <label class="form-check-label" for="beginnerCheck">
+                            Beginner
+                        </label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" value="" id="intermediateCheck">
+                        <label class="form-check-label" for="intermediateCheck">
+                            Intermediate
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="advancedCheck">
+                        <label class="form-check-label" for="advancedCheck">
+                            Advanced
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>ASL Videos</h1>
+                
+                <form action="{{ url_for('asl_support.videos') }}" method="GET" class="d-flex">
+                    {% if current_category %}
+                        <input type="hidden" name="category" value="{{ current_category }}">
+                    {% endif %}
+                    <input type="text" name="q" class="form-control me-2" placeholder="Search videos" value="{{ search_query }}">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+            
+            {% if search_query %}
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-search me-2"></i> Search results for: <strong>{{ search_query }}</strong>
+                    <a href="{{ url_for('asl_support.videos', category=current_category) }}" class="float-end">Clear</a>
+                </div>
+            {% endif %}
+            
+            <div class="row g-4">
+                {% if videos.items %}
+                    {% for video in videos.items %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="position-relative">
+                                    {% if video.thumbnail_url %}
+                                        <img src="{{ video.thumbnail_url }}" class="card-img-top" alt="{{ video.title }}">
+                                    {% else %}
+                                        <div class="bg-light text-center py-5">
+                                            <i class="fas fa-film fa-3x text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                    {% if video.duration %}
+                                        <div class="position-absolute bottom-0 end-0 p-2 bg-dark text-white rounded-start">
+                                            <small>{{ video.duration|int }} min</small>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ video.title }}</h5>
+                                    <p class="card-text small text-muted">{{ video.description|truncate(100) }}</p>
+                                    
+                                    {% if video.difficulty_level %}
+                                        <span class="badge bg-{% if video.difficulty_level == 'beginner' %}success{% elif video.difficulty_level == 'intermediate' %}primary{% else %}danger{% endif %} me-2">
+                                            {{ video.difficulty_level|title }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <div class="card-footer bg-white border-0">
+                                    <a href="{{ url_for('asl_support.view_video', video_id=video.id) }}" class="btn btn-primary btn-sm">Watch Video</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                
+                    <!-- Pagination -->
+                    {% if videos.pages > 1 %}
+                        <div class="d-flex justify-content-center mt-4">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    {% if videos.has_prev %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ url_for('asl_support.videos', page=videos.prev_num, category=current_category, q=search_query) }}">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                                        </li>
+                                    {% endif %}
+                                    
+                                    {% for page_num in videos.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                                        {% if page_num %}
+                                            {% if videos.page == page_num %}
+                                                <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+                                            {% else %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ url_for('asl_support.videos', page=page_num, category=current_category, q=search_query) }}">{{ page_num }}</a>
+                                                </li>
+                                            {% endif %}
+                                        {% else %}
+                                            <li class="page-item disabled"><span class="page-link">…</span></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if videos.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ url_for('asl_support.videos', page=videos.next_num, category=current_category, q=search_query) }}">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> No videos found. {% if search_query %}Try a different search term or <a href="{{ url_for('asl_support.videos', category=current_category) }}">browse all videos</a>.{% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

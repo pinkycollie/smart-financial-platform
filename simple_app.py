@@ -80,8 +80,8 @@ except NameError:
 # Define routes
 @app.route('/')
 def index():
-    """Home page of the MbTQ Financial Platform"""
-    return render_template('index.html', title='MbTQ Financial Platform')
+    """Home page of the DEAF FIRST Platform"""
+    return render_template('index.html', title='DEAF FIRST Platform')
 
 @app.route('/dashboard')
 def dashboard():
@@ -265,6 +265,7 @@ import models_additions
 import models_education
 import models_licensing
 import models_reseller
+import models_asl_support
 from models_import import *
 
 # Create tables and seed data
@@ -276,88 +277,121 @@ with app.app_context():
     # Add seed data for education categories
     from datetime import datetime
     
-    # Check if categories already exist
-    if models_education.EducationCategory.query.count() == 0:
-        app.logger.info("Creating seed data for education categories")
-        categories = [
-            {
-                'name': 'Personal Finance Basics',
-                'description': 'Fundamental concepts of personal finance with ASL support',
-                'icon': 'wallet',
-                'display_order': 1
-            },
-            {
-                'name': 'Investing',
-                'description': 'Learn about investing principles and strategies with ASL support',
-                'icon': 'chart-line',
-                'display_order': 2
-            },
-            {
-                'name': 'Insurance',
-                'description': 'Understanding insurance concepts and products with ASL support',
-                'icon': 'shield-alt',
-                'display_order': 3
-            },
-            {
-                'name': 'Retirement Planning',
-                'description': 'Prepare for retirement with these ASL-supported modules',
-                'icon': 'umbrella-beach',
-                'display_order': 4
-            }
-        ]
+    try:
+        # Check if categories exist and add seed data if needed
+        # Only attempt to query if the table exists
+        from sqlalchemy import inspect
+        inspector = inspect(db.engine)
         
-        for category_data in categories:
-            category = models_education.EducationCategory(**category_data)
-            db.session.add(category)
-        
-        # Add a sample module
-        basic_category = models_education.EducationCategory.query.filter_by(name='Personal Finance Basics').first()
-        if basic_category:
-            module = models_education.EducationModule(
-                category_id=basic_category.id,
-                title='Budgeting 101',
-                slug='budgeting-101',
-                summary='Learn the basics of creating and maintaining a budget with ASL support',
-                difficulty_level='beginner',
-                estimated_time=30,
-                has_asl=True,
-                captions_available=True,
-                published=True,
-                published_at=datetime.utcnow()
-            )
-            db.session.add(module)
-            # Commit to get the module ID
-            db.session.commit()
-            
-            # Add some lessons to the module
-            lessons = [
-                {
-                    'module_id': module.id,
-                    'title': 'What is a Budget?',
-                    'content': '<p>A budget is a plan that helps you manage your money. It shows your income and expenses for a specific period of time.</p><p>Creating a budget helps you track where your money is going and make sure you have enough for your needs and goals.</p>',
-                    'order': 1
-                },
-                {
-                    'module_id': module.id,
-                    'title': 'Setting Financial Goals',
-                    'content': '<p>Financial goals give your budget purpose. Short-term goals might include saving for a vacation, while long-term goals might include saving for retirement.</p><p>SMART goals are Specific, Measurable, Achievable, Relevant, and Time-bound.</p>',
-                    'order': 2
-                },
-                {
-                    'module_id': module.id,
-                    'title': 'Tracking Income and Expenses',
-                    'content': '<p>To create an effective budget, you need to know how much money you have coming in and going out.</p><p>Track all sources of income and categorize your expenses to get a clear picture of your financial situation.</p>',
-                    'order': 3
-                }
-            ]
-            
-            for lesson_data in lessons:
-                lesson = models_education.EducationLesson(**lesson_data)
-                db.session.add(lesson)
-        
-        # Commit all the seed data
-        db.session.commit()
-        app.logger.info("Seed data created successfully")
+        if 'education_categories' in inspector.get_table_names():
+            from models_education import EducationCategory, EducationModule, EducationLesson
+            if EducationCategory.query.count() == 0:
+                app.logger.info("Creating seed data for education categories")
+                categories = [
+                    {
+                        'name': 'Personal Finance Basics',
+                        'description': 'Fundamental concepts of personal finance with ASL support',
+                        'icon': 'wallet',
+                        'slug': 'personal-finance-basics',
+                        'sort_order': 1
+                    },
+                    {
+                        'name': 'Investing',
+                        'description': 'Learn about investing principles and strategies with ASL support',
+                        'icon': 'chart-line',
+                        'slug': 'investing',
+                        'sort_order': 2
+                    },
+                    {
+                        'name': 'Insurance',
+                        'description': 'Understanding insurance concepts and products with ASL support',
+                        'icon': 'shield-alt',
+                        'slug': 'insurance',
+                        'sort_order': 3
+                    },
+                    {
+                        'name': 'Retirement Planning',
+                        'description': 'Prepare for retirement with these ASL-supported modules',
+                        'icon': 'umbrella-beach',
+                        'slug': 'retirement-planning',
+                        'sort_order': 4
+                    }
+                ]
+                
+                for category_data in categories:
+                    category = EducationCategory(**category_data)
+                    db.session.add(category)
+                
+                # Commit the categories first
+                db.session.commit()
+                
+                # Add a sample module
+                basic_category = EducationCategory.query.filter_by(name='Personal Finance Basics').first()
+                if basic_category:
+                    module = EducationModule(
+                        category_id=basic_category.id,
+                        title='Budgeting 101',
+                        slug='budgeting-101',
+                        description='Learn the basics of creating and maintaining a budget with ASL support',
+                        level='beginner',
+                        duration_minutes=30,
+                        is_premium=False,
+                        is_published=True
+                    )
+                    db.session.add(module)
+                    # Commit to get the module ID
+                    db.session.commit()
+                    
+                    # Add some units to the module
+                    from models_education import EducationUnit
+                    unit = EducationUnit(
+                        module_id=module.id,
+                        title='Introduction to Budgeting',
+                        slug='intro-to-budgeting',
+                        description='Learn the fundamental concepts of budgeting',
+                        sort_order=1
+                    )
+                    db.session.add(unit)
+                    db.session.commit()
+                    
+                    # Add some lessons to the units
+                    lessons = [
+                        {
+                            'unit_id': unit.id,
+                            'title': 'What is a Budget?',
+                            'slug': 'what-is-a-budget',
+                            'content_type': 'text',
+                            'content': '<p>A budget is a plan that helps you manage your money. It shows your income and expenses for a specific period of time.</p><p>Creating a budget helps you track where your money is going and make sure you have enough for your needs and goals.</p>',
+                            'sort_order': 1
+                        },
+                        {
+                            'unit_id': unit.id,
+                            'title': 'Setting Financial Goals',
+                            'slug': 'setting-financial-goals',
+                            'content_type': 'text',
+                            'content': '<p>Financial goals give your budget purpose. Short-term goals might include saving for a vacation, while long-term goals might include saving for retirement.</p><p>SMART goals are Specific, Measurable, Achievable, Relevant, and Time-bound.</p>',
+                            'sort_order': 2
+                        },
+                        {
+                            'unit_id': unit.id,
+                            'title': 'Tracking Income and Expenses',
+                            'slug': 'tracking-income-expenses',
+                            'content_type': 'text',
+                            'content': '<p>To create an effective budget, you need to know how much money you have coming in and going out.</p><p>Track all sources of income and categorize your expenses to get a clear picture of your financial situation.</p>',
+                            'sort_order': 3
+                        }
+                    ]
+                    
+                    for lesson_data in lessons:
+                        lesson = EducationLesson(**lesson_data)
+                        db.session.add(lesson)
+                
+                # Commit all the seed data
+                db.session.commit()
+                app.logger.info("Education seed data created successfully")
+    except Exception as e:
+        app.logger.error(f"Error setting up education seed data: {e}")
+        db.session.rollback()
 
 # Register blueprints
 try:
@@ -384,6 +418,17 @@ try:
     app.logger.info("Demo blueprint registered")
 except Exception as e:
     app.logger.error(f"Failed to register demo blueprint: {e}")
+
+# Register ASL support blueprint
+try:
+    from routes.asl_support import asl_support_bp
+    app.register_blueprint(asl_support_bp)
+    app.logger.info("ASL support blueprint registered")
+except Exception as e:
+    app.logger.error(f"Failed to register ASL support blueprint: {e}")
+
+# Routes already defined above
+# No need to redefine
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

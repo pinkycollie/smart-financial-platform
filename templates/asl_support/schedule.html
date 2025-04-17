@@ -1,156 +1,325 @@
-{% extends "layout.html" %}
+{% extends 'base.html' %}
 
 {% block title %}Schedule ASL Support - DEAF FIRST{% endblock %}
 
-{% block head %}
-<style>
-    .category-card {
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-    .category-card:hover {
-        transform: translateY(-5px);
-    }
-    .category-card.selected {
-        border-color: var(--bs-primary) !important;
-        background-color: rgba(var(--bs-primary-rgb), 0.1);
-    }
-    .provider-card {
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-    .provider-card:hover {
-        transform: translateY(-5px);
-    }
-    .provider-card.selected {
-        border-color: var(--bs-primary) !important;
-        background-color: rgba(var(--bs-primary-rgb), 0.1);
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="display-5">Schedule ASL Support</h1>
-        <a href="{{ url_for('asl_support.index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-2"></i> Back to Support
-        </a>
-    </div>
-    
+<div class="container py-5">
     <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <div class="card shadow-sm">
+        <!-- Left Column: Schedule Form -->
+        <div class="col-lg-7 mb-5 mb-lg-0">
+            <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
-                    <form action="{{ url_for('asl_support.schedule') }}" method="post" class="needs-validation" novalidate>
-                        <div class="step-container" id="step1">
-                            <h2 class="h4 mb-4">Step 1: Select Support Category</h2>
-                            
-                            <div class="row g-3 mb-4">
-                                {% for category_id, category in categories.items() %}
-                                <div class="col-md-6">
-                                    <div class="card category-card h-100 shadow-sm" data-category="{{ category_id }}">
-                                        <div class="card-body">
-                                            <div class="d-flex">
-                                                <div class="flex-shrink-0 text-primary me-3">
-                                                    <i class="bi bi-{{ category.icon }} fs-3"></i>
+                    <h2 class="mb-4">Schedule ASL Support Session</h2>
+                    <p class="text-muted mb-4">Book a live session with an ASL-fluent financial expert to get personalized support.</p>
+                    
+                    <form action="{{ url_for('asl_support.create_session') }}" method="POST">
+                        <div class="mb-4">
+                            <label class="form-label">Session Type</label>
+                            <div class="row gx-2">
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-check custom-radio border rounded p-3">
+                                        <input class="form-check-input" type="radio" name="session_type" id="typeLiveSupport" value="live_support" checked>
+                                        <label class="form-check-label w-100" for="typeLiveSupport">
+                                            <div class="d-flex align-items-center">
+                                                <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3">
+                                                    <i class="fas fa-video text-primary"></i>
                                                 </div>
                                                 <div>
-                                                    <h3 class="h5">{{ category.name }}</h3>
-                                                    <p class="mb-0 text-muted small">{{ category.description }}</p>
+                                                    <p class="mb-0 fw-medium">Live Support</p>
+                                                    <small class="text-muted">General questions</small>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </label>
                                     </div>
                                 </div>
-                                {% endfor %}
-                            </div>
-                            
-                            <input type="hidden" name="category" id="category-input" required>
-                            <div class="invalid-feedback mb-3" id="category-feedback" style="display: none;">
-                                Please select a support category.
-                            </div>
-                            
-                            <div class="d-flex justify-content-end">
-                                <button type="button" class="btn btn-primary" id="step1-next">
-                                    Next <i class="bi bi-arrow-right ms-2"></i>
-                                </button>
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-check custom-radio border rounded p-3">
+                                        <input class="form-check-input" type="radio" name="session_type" id="typeConsultation" value="consultation">
+                                        <label class="form-check-label w-100" for="typeConsultation">
+                                            <div class="d-flex align-items-center">
+                                                <div class="rounded-circle bg-success bg-opacity-10 p-2 me-3">
+                                                    <i class="fas fa-comments text-success"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="mb-0 fw-medium">Consultation</p>
+                                                    <small class="text-muted">Expert advice</small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-check custom-radio border rounded p-3">
+                                        <input class="form-check-input" type="radio" name="session_type" id="typeTraining" value="training">
+                                        <label class="form-check-label w-100" for="typeTraining">
+                                            <div class="d-flex align-items-center">
+                                                <div class="rounded-circle bg-info bg-opacity-10 p-2 me-3">
+                                                    <i class="fas fa-graduation-cap text-info"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="mb-0 fw-medium">Training</p>
+                                                    <small class="text-muted">Learn skills</small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="step-container" id="step2" style="display: none;">
-                            <h2 class="h4 mb-4">Step 2: Schedule Your Session</h2>
-                            
-                            <div class="row g-3 mb-4">
-                                <div class="col-md-6">
-                                    <label for="scheduled_date" class="form-label">Date</label>
-                                    <input type="date" class="form-control" id="scheduled_date" name="scheduled_date" value="{{ default_date }}" min="{{ default_date }}" required>
-                                    <div class="invalid-feedback">
-                                        Please select a valid date.
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="scheduled_time" class="form-label">Time</label>
-                                    <input type="time" class="form-control" id="scheduled_time" name="scheduled_time" value="{{ default_time }}" required>
-                                    <div class="invalid-feedback">
-                                        Please select a valid time.
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <label for="notes" class="form-label">Additional Notes</label>
-                                    <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Describe your issue or question..."></textarea>
-                                </div>
+                        <div class="mb-4">
+                            <label for="topic" class="form-label">Topic</label>
+                            <select id="topic" name="topic" class="form-select">
+                                <option value="" selected disabled>Select a topic</option>
+                                <optgroup label="Tax Services">
+                                    <option value="tax_filing">Tax Filing Assistance</option>
+                                    <option value="tax_planning">Tax Planning</option>
+                                    <option value="tax_credits">Tax Credits & Deductions</option>
+                                </optgroup>
+                                <optgroup label="Insurance">
+                                    <option value="health_insurance">Health Insurance</option>
+                                    <option value="life_insurance">Life Insurance</option>
+                                    <option value="property_insurance">Property & Casualty Insurance</option>
+                                </optgroup>
+                                <optgroup label="Financial Planning">
+                                    <option value="budgeting">Budgeting & Saving</option>
+                                    <option value="debt_management">Debt Management</option>
+                                    <option value="investing">Investing</option>
+                                    <option value="retirement">Retirement Planning</option>
+                                </optgroup>
+                                <optgroup label="Credit Building">
+                                    <option value="credit_repair">Credit Repair</option>
+                                    <option value="credit_cards">Credit Cards</option>
+                                    <option value="loans">Loans & Financing</option>
+                                </optgroup>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label for="date" class="form-label">Date</label>
+                                <input type="date" id="date" name="date" class="form-control" required min="{{ now.strftime('%Y-%m-%d') }}">
                             </div>
-                            
-                            <div class="d-flex justify-content-between">
-                                <button type="button" class="btn btn-outline-secondary" id="step2-prev">
-                                    <i class="bi bi-arrow-left me-2"></i> Previous
-                                </button>
-                                <button type="button" class="btn btn-primary" id="step2-next">
-                                    Next <i class="bi bi-arrow-right ms-2"></i>
-                                </button>
+                            <div class="col-md-6">
+                                <label for="time" class="form-label">Time</label>
+                                <select id="time" name="time" class="form-select" required>
+                                    <option value="" selected disabled>Select a time</option>
+                                    <option value="09:00">9:00 AM</option>
+                                    <option value="10:00">10:00 AM</option>
+                                    <option value="11:00">11:00 AM</option>
+                                    <option value="13:00">1:00 PM</option>
+                                    <option value="14:00">2:00 PM</option>
+                                    <option value="15:00">3:00 PM</option>
+                                    <option value="16:00">4:00 PM</option>
+                                </select>
                             </div>
                         </div>
                         
-                        <div class="step-container" id="step3" style="display: none;">
-                            <h2 class="h4 mb-4">Step 3: Select Video Provider</h2>
-                            
-                            <div class="row g-3 mb-4">
+                        <div class="mb-4">
+                            <label for="notes" class="form-label">Additional Notes</label>
+                            <textarea id="notes" name="notes" class="form-control" rows="4" placeholder="Please provide any specific questions or information that will help us prepare for your session."></textarea>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Provider Preference</label>
+                            <div class="row">
                                 {% if providers %}
-                                    {% for provider_id, provider in providers.items() %}
-                                    <div class="col-md-6">
-                                        <div class="card provider-card h-100 shadow-sm" data-provider="{{ provider_id }}">
-                                            <div class="card-body">
-                                                <h3 class="h5">{{ provider.name }}</h3>
-                                                <p class="mb-0 text-muted small">Video call provider for ASL support</p>
+                                    {% for provider in providers %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-check custom-radio border rounded p-3">
+                                                <input class="form-check-input" type="radio" name="provider_id" id="provider{{ provider.id }}" value="{{ provider.id }}" {% if loop.first %}checked{% endif %}>
+                                                <label class="form-check-label" for="provider{{ provider.id }}">
+                                                    <div class="d-flex align-items-center">
+                                                        {% if provider.profile_image %}
+                                                            <img src="{{ provider.profile_image }}" alt="{{ provider.name }}" class="rounded-circle me-3" width="40" height="40">
+                                                        {% else %}
+                                                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                                                {{ provider.name[0] }}
+                                                            </div>
+                                                        {% endif %}
+                                                        <div>
+                                                            <p class="mb-0 fw-medium">{{ provider.name }}</p>
+                                                            <small class="text-muted">{{ provider.specialization }}</small>
+                                                        </div>
+                                                    </div>
+                                                </label>
                                             </div>
                                         </div>
-                                    </div>
                                     {% endfor %}
                                 {% else %}
                                     <div class="col-12">
-                                        <div class="card provider-card h-100 shadow-sm selected" data-provider="demo">
-                                            <div class="card-body">
-                                                <h3 class="h5">Demo Provider</h3>
-                                                <p class="mb-0 text-muted small">This is a demo video provider for testing purposes.</p>
-                                            </div>
+                                        <div class="alert alert-info mb-0">
+                                            <i class="fas fa-info-circle me-2"></i> Our default ASL interpreters will be assigned to your session.
                                         </div>
                                     </div>
                                 {% endif %}
                             </div>
-                            
-                            <input type="hidden" name="provider" id="provider-input" value="demo">
-                            
-                            <div class="d-flex justify-content-between">
-                                <button type="button" class="btn btn-outline-secondary" id="step3-prev">
-                                    <i class="bi bi-arrow-left me-2"></i> Previous
-                                </button>
-                                <button type="submit" class="btn btn-success">
-                                    <i class="bi bi-calendar-check me-2"></i> Schedule Session
-                                </button>
-                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Schedule Session</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Column: My Sessions -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">My Upcoming Sessions</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if upcoming_sessions %}
+                        <div class="list-group list-group-flush">
+                            {% for session in upcoming_sessions %}
+                                <div class="list-group-item p-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                                            <i class="fas fa-video text-primary"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-0">{{ session.topic|replace('_', ' ')|title }}</h6>
+                                            <p class="text-muted small mb-0">{{ session.scheduled_date.strftime('%b %d, %Y at %I:%M %p') }}</p>
+                                            <p class="mb-0 mt-1">
+                                                <span class="badge bg-success">{{ session.status|title }}</span>
+                                                <span class="badge bg-primary">{{ session.session_type|replace('_', ' ')|title }}</span>
+                                            </p>
+                                        </div>
+                                        <div class="ms-auto">
+                                            {% if session.join_url %}
+                                                <a href="{{ session.join_url }}" target="_blank" class="btn btn-primary btn-sm mb-2">Join</a>
+                                            {% endif %}
+                                            <form action="{{ url_for('asl_support.cancel_session', session_id=session.id) }}" method="POST" class="d-inline">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to cancel this session?')">Cancel</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="p-4 text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-calendar-alt fa-3x text-muted"></i>
+                            </div>
+                            <h6>No Upcoming Sessions</h6>
+                            <p class="text-muted mb-0">Schedule a session to get ASL support for your financial needs.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">Past Sessions</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if past_sessions %}
+                        <div class="list-group list-group-flush">
+                            {% for session in past_sessions %}
+                                <div class="list-group-item p-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-secondary bg-opacity-10 p-3 me-3">
+                                            <i class="fas fa-video text-secondary"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-0">{{ session.topic|replace('_', ' ')|title }}</h6>
+                                            <p class="text-muted small mb-0">{{ session.scheduled_date.strftime('%b %d, %Y at %I:%M %p') }}</p>
+                                            <p class="mb-0 mt-1">
+                                                <span class="badge bg-secondary">{{ session.status|title }}</span>
+                                                <span class="badge bg-primary">{{ session.session_type|replace('_', ' ')|title }}</span>
+                                            </p>
+                                        </div>
+                                        <div class="ms-auto">
+                                            {% if not session.feedback %}
+                                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#feedbackModal{{ session.id }}">
+                                                    Feedback
+                                                </button>
+                                                
+                                                <!-- Feedback Modal -->
+                                                <div class="modal fade" id="feedbackModal{{ session.id }}" tabindex="-1" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Session Feedback</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <form action="{{ url_for('asl_support.submit_feedback', session_id=session.id) }}" method="POST">
+                                                                <div class="modal-body">
+                                                                    <p class="text-muted">Your feedback helps us improve our ASL support services.</p>
+                                                                    
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Overall Rating</label>
+                                                                        <div class="rating">
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input class="form-check-input" type="radio" name="rating" id="rating1{{ session.id }}" value="1" required>
+                                                                                <label class="form-check-label" for="rating1{{ session.id }}">1</label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input class="form-check-input" type="radio" name="rating" id="rating2{{ session.id }}" value="2">
+                                                                                <label class="form-check-label" for="rating2{{ session.id }}">2</label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input class="form-check-input" type="radio" name="rating" id="rating3{{ session.id }}" value="3">
+                                                                                <label class="form-check-label" for="rating3{{ session.id }}">3</label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input class="form-check-input" type="radio" name="rating" id="rating4{{ session.id }}" value="4">
+                                                                                <label class="form-check-label" for="rating4{{ session.id }}">4</label>
+                                                                            </div>
+                                                                            <div class="form-check form-check-inline">
+                                                                                <input class="form-check-input" type="radio" name="rating" id="rating5{{ session.id }}" value="5" checked>
+                                                                                <label class="form-check-label" for="rating5{{ session.id }}">5</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="mb-3">
+                                                                        <label for="communication{{ session.id }}" class="form-label">Communication Quality (1-5)</label>
+                                                                        <input type="number" class="form-control" id="communication{{ session.id }}" name="communication_quality" min="1" max="5" value="5">
+                                                                    </div>
+                                                                    
+                                                                    <div class="mb-3">
+                                                                        <label for="helpfulness{{ session.id }}" class="form-label">Helpfulness (1-5)</label>
+                                                                        <input type="number" class="form-control" id="helpfulness{{ session.id }}" name="helpfulness" min="1" max="5" value="5">
+                                                                    </div>
+                                                                    
+                                                                    <div class="mb-3">
+                                                                        <label for="technical{{ session.id }}" class="form-label">Technical Quality (1-5)</label>
+                                                                        <input type="number" class="form-control" id="technical{{ session.id }}" name="technical_quality" min="1" max="5" value="5">
+                                                                    </div>
+                                                                    
+                                                                    <div class="mb-3">
+                                                                        <label for="comments{{ session.id }}" class="form-label">Comments</label>
+                                                                        <textarea class="form-control" id="comments{{ session.id }}" name="comments" rows="3"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                    <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="p-4 text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-history fa-3x text-muted"></i>
+                            </div>
+                            <h6>No Past Sessions</h6>
+                            <p class="text-muted mb-0">Your session history will appear here.</p>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -160,107 +329,16 @@
 
 {% block scripts %}
 <script>
+    // Initialize date input with today's date
     document.addEventListener('DOMContentLoaded', function() {
-        // Multi-step form functionality
-        const step1 = document.getElementById('step1');
-        const step2 = document.getElementById('step2');
-        const step3 = document.getElementById('step3');
-        
-        const step1Next = document.getElementById('step1-next');
-        const step2Prev = document.getElementById('step2-prev');
-        const step2Next = document.getElementById('step2-next');
-        const step3Prev = document.getElementById('step3-prev');
-        
-        const categoryInput = document.getElementById('category-input');
-        const categoryFeedback = document.getElementById('category-feedback');
-        const providerInput = document.getElementById('provider-input');
-        
-        // Category selection
-        const categoryCards = document.querySelectorAll('.category-card');
-        categoryCards.forEach(card => {
-            card.addEventListener('click', function() {
-                // Remove selected class from all cards
-                categoryCards.forEach(c => c.classList.remove('selected'));
-                
-                // Add selected class to clicked card
-                this.classList.add('selected');
-                
-                // Set input value
-                categoryInput.value = this.dataset.category;
-                
-                // Hide feedback message
-                categoryFeedback.style.display = 'none';
-            });
-        });
-        
-        // Provider selection
-        const providerCards = document.querySelectorAll('.provider-card');
-        providerCards.forEach(card => {
-            card.addEventListener('click', function() {
-                // Remove selected class from all cards
-                providerCards.forEach(c => c.classList.remove('selected'));
-                
-                // Add selected class to clicked card
-                this.classList.add('selected');
-                
-                // Set input value
-                providerInput.value = this.dataset.provider;
-            });
-        });
-        
-        // Navigation between steps
-        step1Next.addEventListener('click', function() {
-            if (!categoryInput.value) {
-                categoryFeedback.style.display = 'block';
-                return;
-            }
-            
-            step1.style.display = 'none';
-            step2.style.display = 'block';
-        });
-        
-        step2Prev.addEventListener('click', function() {
-            step2.style.display = 'none';
-            step1.style.display = 'block';
-        });
-        
-        step2Next.addEventListener('click', function() {
-            const dateInput = document.getElementById('scheduled_date');
-            const timeInput = document.getElementById('scheduled_time');
-            
-            if (!dateInput.value || !timeInput.value) {
-                if (!dateInput.value) dateInput.classList.add('is-invalid');
-                if (!timeInput.value) timeInput.classList.add('is-invalid');
-                return;
-            }
-            
-            step2.style.display = 'none';
-            step3.style.display = 'block';
-        });
-        
-        step3Prev.addEventListener('click', function() {
-            step3.style.display = 'none';
-            step2.style.display = 'block';
-        });
-        
-        // Form validation
-        const form = document.querySelector('form.needs-validation');
-        form.addEventListener('submit', function(event) {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            
-            form.classList.add('was-validated');
-        });
-        
-        // Reset validation when editing fields
-        const inputs = document.querySelectorAll('input, textarea');
-        inputs.forEach(input => {
-            input.addEventListener('input', function() {
-                this.classList.remove('is-invalid');
-            });
-        });
+        const dateInput = document.getElementById('date');
+        if (dateInput) {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            dateInput.value = `${year}-${month}-${day}`;
+        }
     });
 </script>
 {% endblock %}

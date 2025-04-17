@@ -1,0 +1,248 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ module.title }} - DEAF FIRST Training{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('training.index') }}">Training</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('training.modules', type=module.type) }}">{{ module.type|title }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ module.title }}</li>
+                </ol>
+            </nav>
+            <h1 class="display-5 mb-2">{{ module.title }}</h1>
+            
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge bg-primary">{{ module.type|title }}</span>
+                <span class="badge bg-secondary">Level {{ module.level }}</span>
+                <span class="badge bg-info text-dark">
+                    <i class="bi bi-clock me-1"></i> {{ module.estimated_duration_minutes }} min
+                </span>
+                {% if module.is_required %}
+                <span class="badge bg-danger">Required</span>
+                {% endif %}
+            </div>
+            
+            <p class="lead mb-4">{{ module.description }}</p>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    {% if progress %}
+                        <h2 class="h5 mb-3">Your Progress</h2>
+                        <div class="progress mb-3" style="height: 10px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ progress.progress_percent }}%;" aria-valuenow="{{ progress.progress_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <p class="mb-3">
+                            <span class="fw-bold">Status:</span> 
+                            <span class="badge bg-{{ progress.status_color }}">{{ progress.status|title }}</span>
+                        </p>
+                        {% if progress.last_activity_at %}
+                        <p class="small text-muted mb-3">Last activity: {{ progress.last_activity_at.strftime('%B %d, %Y') }}</p>
+                        {% endif %}
+                        
+                        <a href="{{ url_for('training.continue_module', module_id=module.id) }}" class="btn btn-primary w-100">
+                            {{ 'Continue' if progress.progress_percent > 0 else 'Start' }} Module
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('training.start_module', module_id=module.id) }}" class="btn btn-primary w-100">
+                            Start Module
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Module Content Preview -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0">Module Contents</h2>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="moduleContents">
+                        {% for unit in module.units %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading-unit-{{ unit.id }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-unit-{{ unit.id }}" aria-expanded="false" aria-controls="collapse-unit-{{ unit.id }}">
+                                    {{ unit.title }}
+                                </button>
+                            </h2>
+                            <div id="collapse-unit-{{ unit.id }}" class="accordion-collapse collapse" aria-labelledby="heading-unit-{{ unit.id }}" data-bs-parent="#moduleContents">
+                                <div class="accordion-body">
+                                    <p class="mb-3">{{ unit.description }}</p>
+                                    
+                                    <ul class="list-group list-group-flush">
+                                        {% for lesson in unit.lessons %}
+                                        <li class="list-group-item px-0 py-2">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 me-3">
+                                                    {% if lesson.content_type == 'video' %}
+                                                    <i class="bi bi-play-circle text-primary"></i>
+                                                    {% elif lesson.content_type == 'quiz' %}
+                                                    <i class="bi bi-question-circle text-warning"></i>
+                                                    {% elif lesson.content_type == 'interactive' %}
+                                                    <i class="bi bi-hand-index text-success"></i>
+                                                    {% else %}
+                                                    <i class="bi bi-file-text text-info"></i>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    <span>{{ lesson.title }}</span>
+                                                    {% if lesson.duration_minutes %}
+                                                    <span class="ms-2 text-muted small">{{ lesson.duration_minutes }} min</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        {% if module.quizzes %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading-assessment">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-assessment" aria-expanded="false" aria-controls="collapse-assessment">
+                                    Final Assessment
+                                </button>
+                            </h2>
+                            <div id="collapse-assessment" class="accordion-collapse collapse" aria-labelledby="heading-assessment" data-bs-parent="#moduleContents">
+                                <div class="accordion-body">
+                                    <p class="mb-3">Complete this assessment to earn your certification.</p>
+                                    
+                                    <ul class="list-group list-group-flush">
+                                        {% for quiz in module.quizzes %}
+                                        <li class="list-group-item px-0 py-2">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <i class="bi bi-clipboard-check text-danger"></i>
+                                                </div>
+                                                <div>
+                                                    <span>{{ quiz.title }}</span>
+                                                    <span class="ms-2 text-muted small">Required: {{ 'Yes' if quiz.is_required else 'No' }}</span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Prerequisites -->
+            {% if module.prerequisites %}
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0">Prerequisites</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for prereq in prerequisites %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h3 class="h6 mb-0">{{ prereq.title }}</h3>
+                                    <p class="mb-0 small text-muted">{{ prereq.description|truncate(100) }}</p>
+                                </div>
+                                {% if prereq.completed %}
+                                <span class="badge bg-success">Completed</span>
+                                {% else %}
+                                <a href="{{ url_for('training.module_detail', module_id=prereq.id) }}" class="btn btn-sm btn-outline-primary">
+                                    Start
+                                </a>
+                                {% endif %}
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Learning Outcomes -->
+            {% if module.learning_outcomes %}
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0">Learning Outcomes</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        {% for outcome in module.learning_outcomes %}
+                        <li class="mb-2">{{ outcome }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Certification -->
+            {% if module.certification_valid_days %}
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0">Certification</h2>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-award text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <p>Complete this module to earn your certification in {{ module.title }}.</p>
+                    
+                    {% if module.certification_valid_days %}
+                    <p class="small text-muted mb-0">
+                        <i class="bi bi-info-circle me-1"></i> Certification valid for {{ module.certification_valid_days }} days
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Related Modules -->
+            {% if related_modules %}
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0">Related Modules</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for related in related_modules %}
+                        <li class="list-group-item px-0">
+                            <div class="d-flex align-items-start">
+                                {% if related.thumbnail_url %}
+                                <img src="{{ related.thumbnail_url }}" class="me-3 rounded" style="width: 50px; height: 50px; object-fit: cover;" alt="{{ related.title }}">
+                                {% else %}
+                                <div class="me-3 bg-light rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <i class="bi bi-journal text-muted"></i>
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <h3 class="h6 mb-1">{{ related.title }}</h3>
+                                    <p class="mb-1 small text-muted">{{ related.description|truncate(60) }}</p>
+                                    <a href="{{ url_for('training.module_detail', module_id=related.id) }}" class="btn btn-sm btn-outline-primary">
+                                        View Module
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

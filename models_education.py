@@ -1,9 +1,15 @@
+"""
+Database models for education features in the DEAF FIRST platform.
+Handles financial education content with ASL videos.
+"""
+
 from datetime import datetime
 from simple_app import db
-from models import User  # Import User model needed for foreign key relationships
 
 class EducationCategory(db.Model):
-    """Categories for financial education content"""
+    """
+    Categories for financial education content.
+    """
     __tablename__ = 'education_categories'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -14,228 +20,206 @@ class EducationCategory(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationships
-    modules = db.relationship('EducationModule', backref='category', lazy='dynamic', cascade='all, delete-orphan')
+    modules = db.relationship('EducationModule', back_populates='category', cascade='all, delete-orphan')
     
     def __repr__(self):
-        return f"<EducationCategory {self.name}>"
-
+        return f"<EducationCategory {self.id}: {self.name}>"
 
 class EducationModule(db.Model):
-    """Financial education module with sign language support"""
+    """
+    Education modules containing financial education content.
+    """
     __tablename__ = 'education_modules'
     
     id = db.Column(db.Integer, primary_key=True)
-    category_id = db.Column(db.Integer, db.ForeignKey('education_categories.id'), nullable=False)
     title = db.Column(db.String(255), nullable=False)
-    slug = db.Column(db.String(100), unique=True, nullable=False)
-    summary = db.Column(db.Text)
-    difficulty_level = db.Column(db.String(20), default='beginner')  # beginner, intermediate, advanced
-    estimated_time = db.Column(db.Integer)  # in minutes
-    has_asl = db.Column(db.Boolean, default=True)
-    asl_video_id = db.Column(db.String(100))
-    captions_available = db.Column(db.Boolean, default=True)
-    published = db.Column(db.Boolean, default=False)
+    slug = db.Column(db.String(255), nullable=False, unique=True)
+    description = db.Column(db.Text)
+    category_id = db.Column(db.Integer, db.ForeignKey('education_categories.id'), nullable=False)
+    level = db.Column(db.String(20), default='beginner')  # beginner, intermediate, advanced
+    author = db.Column(db.String(100))
+    duration_minutes = db.Column(db.Integer)
+    prerequisites = db.Column(db.JSON)  # Array of prerequisite module slugs
+    is_premium = db.Column(db.Boolean, default=False)
+    thumbnail_url = db.Column(db.String(255))
+    
+    # White-label customization
+    reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id'))
+    licensee_id = db.Column(db.Integer, db.ForeignKey('licensees.id'))
+    is_white_labeled = db.Column(db.Boolean, default=False)
+    
+    # Publication status
+    is_published = db.Column(db.Boolean, default=False)
     published_at = db.Column(db.DateTime)
+    
+    # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     
     # Relationships
-    lessons = db.relationship('EducationLesson', backref='module', lazy='dynamic', cascade='all, delete-orphan')
-    quiz = db.relationship('EducationQuiz', backref='module', uselist=False, cascade='all, delete-orphan')
-    completions = db.relationship('ModuleCompletion', backref='module', lazy='dynamic', cascade='all, delete-orphan')
+    category = db.relationship('EducationCategory', back_populates='modules')
+    units = db.relationship('EducationUnit', back_populates='module', cascade='all, delete-orphan')
+    enrollments = db.relationship('ModuleEnrollment', back_populates='module', cascade='all, delete-orphan')
     
     def __repr__(self):
-        return f"<EducationModule {self.title}>"
+        return f"<EducationModule {self.id}: {self.title}>"
 
+class EducationUnit(db.Model):
+    """
+    Education units within modules, containing individual lessons.
+    """
+    __tablename__ = 'education_units'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    slug = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text)
+    module_id = db.Column(db.Integer, db.ForeignKey('education_modules.id'), nullable=False)
+    sort_order = db.Column(db.Integer, default=0)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    
+    # Relationships
+    module = db.relationship('EducationModule', back_populates='units')
+    lessons = db.relationship('EducationLesson', back_populates='unit', cascade='all, delete-orphan')
+    
+    # Unique constraint for slug within a module
+    __table_args__ = (
+        db.UniqueConstraint('module_id', 'slug', name='uix_unit_module_slug'),
+    )
+    
+    def __repr__(self):
+        return f"<EducationUnit {self.id}: {self.title}>"
 
 class EducationLesson(db.Model):
-    """Individual lesson within a financial education module"""
+    """
+    Individual lessons within units, containing educational content.
+    """
     __tablename__ = 'education_lessons'
     
     id = db.Column(db.Integer, primary_key=True)
-    module_id = db.Column(db.Integer, db.ForeignKey('education_modules.id'), nullable=False)
     title = db.Column(db.String(255), nullable=False)
-    content = db.Column(db.Text)
-    order = db.Column(db.Integer, default=1)
-    asl_video_id = db.Column(db.String(100))
-    captions_available = db.Column(db.Boolean, default=True)
-    interactive_elements = db.Column(db.JSON)  # Store JSON with interactive elements configuration
+    slug = db.Column(db.String(255), nullable=False)
+    unit_id = db.Column(db.Integer, db.ForeignKey('education_units.id'), nullable=False)
+    content_type = db.Column(db.String(50), nullable=False)  # text, video, quiz, interactive
+    content = db.Column(db.Text)  # HTML content or JSON data
+    duration_minutes = db.Column(db.Integer)
+    sort_order = db.Column(db.Integer, default=0)
+    
+    # Video content (if applicable)
+    video_url = db.Column(db.String(255))
+    asl_video_id = db.Column(db.String(100))  # Mux video ID for ASL version
+    transcript = db.Column(db.Text)
+    
+    # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     
     # Relationships
-    resources = db.relationship('LessonResource', backref='lesson', lazy='dynamic', cascade='all, delete-orphan')
+    unit = db.relationship('EducationUnit', back_populates='lessons')
+    progress = db.relationship('LessonProgress', back_populates='lesson', cascade='all, delete-orphan')
+    
+    # Unique constraint for slug within a unit
+    __table_args__ = (
+        db.UniqueConstraint('unit_id', 'slug', name='uix_lesson_unit_slug'),
+    )
     
     def __repr__(self):
-        return f"<EducationLesson {self.title}>"
+        return f"<EducationLesson {self.id}: {self.title}>"
 
-
-class LessonResource(db.Model):
-    """Additional resources for a lesson"""
-    __tablename__ = 'lesson_resources'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    lesson_id = db.Column(db.Integer, db.ForeignKey('education_lessons.id'), nullable=False)
-    title = db.Column(db.String(255), nullable=False)
-    resource_type = db.Column(db.String(20))  # document, video, link
-    url = db.Column(db.String(255))
-    file_path = db.Column(db.String(255))
-    asl_explanation_id = db.Column(db.String(100))  # Video ID for ASL explanation
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    def __repr__(self):
-        return f"<LessonResource {self.title} - {self.resource_type}>"
-
-
-class EducationQuiz(db.Model):
-    """Quiz associated with a financial education module"""
-    __tablename__ = 'education_quizzes'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    module_id = db.Column(db.Integer, db.ForeignKey('education_modules.id'), nullable=False)
-    title = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.Text)
-    passing_score = db.Column(db.Integer, default=70)  # Percentage needed to pass
-    asl_instructions_id = db.Column(db.String(100))  # Video ID for ASL instructions
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
-    
-    # Relationships
-    questions = db.relationship('QuizQuestion', backref='quiz', lazy='dynamic', cascade='all, delete-orphan')
-    attempts = db.relationship('QuizAttempt', backref='quiz', lazy='dynamic', cascade='all, delete-orphan')
-    
-    def __repr__(self):
-        return f"<EducationQuiz {self.title}>"
-
-
-class QuizQuestion(db.Model):
-    """Question for a financial education quiz"""
-    __tablename__ = 'quiz_questions'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    quiz_id = db.Column(db.Integer, db.ForeignKey('education_quizzes.id'), nullable=False)
-    question_text = db.Column(db.Text, nullable=False)
-    question_type = db.Column(db.String(20), default='multiple_choice')  # multiple_choice, true_false, open_ended
-    points = db.Column(db.Integer, default=1)
-    asl_video_id = db.Column(db.String(100))
-    order = db.Column(db.Integer, default=1)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    # Relationships
-    answers = db.relationship('QuizAnswer', backref='question', lazy='dynamic', cascade='all, delete-orphan')
-    
-    def __repr__(self):
-        return f"<QuizQuestion {self.id}>"
-
-
-class QuizAnswer(db.Model):
-    """Possible answer for a quiz question"""
-    __tablename__ = 'quiz_answers'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    question_id = db.Column(db.Integer, db.ForeignKey('quiz_questions.id'), nullable=False)
-    answer_text = db.Column(db.Text, nullable=False)
-    is_correct = db.Column(db.Boolean, default=False)
-    explanation = db.Column(db.Text)
-    asl_explanation_id = db.Column(db.String(100))  # Video ID for ASL explanation
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    def __repr__(self):
-        return f"<QuizAnswer {self.id}>"
-
-
-class QuizAttempt(db.Model):
-    """Record of a user's attempt at a quiz"""
-    __tablename__ = 'quiz_attempts'
+class ModuleEnrollment(db.Model):
+    """
+    User enrollments in education modules.
+    """
+    __tablename__ = 'module_enrollments'
     
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    quiz_id = db.Column(db.Integer, db.ForeignKey('education_quizzes.id'), nullable=False)
-    score = db.Column(db.Integer)  # Percentage score
-    passed = db.Column(db.Boolean)
-    started_at = db.Column(db.DateTime, default=datetime.utcnow)
+    module_id = db.Column(db.Integer, db.ForeignKey('education_modules.id'), nullable=False)
+    
+    # Enrollment status
+    status = db.Column(db.String(20), default='active')  # active, completed, dropped
+    progress_percent = db.Column(db.Float, default=0.0)
+    
+    # Timestamps
+    enrolled_at = db.Column(db.DateTime, default=datetime.utcnow)
     completed_at = db.Column(db.DateTime)
-    
-    # Relationships
-    responses = db.relationship('QuizResponse', backref='attempt', lazy='dynamic', cascade='all, delete-orphan')
-    user = db.relationship('User', backref=db.backref('quiz_attempts', lazy='dynamic'))
-    
-    def __repr__(self):
-        return f"<QuizAttempt {self.id} - User {self.user_id}>"
-
-
-class QuizResponse(db.Model):
-    """User's response to a quiz question"""
-    __tablename__ = 'quiz_responses'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    attempt_id = db.Column(db.Integer, db.ForeignKey('quiz_attempts.id'), nullable=False)
-    question_id = db.Column(db.Integer, db.ForeignKey('quiz_questions.id'), nullable=False)
-    selected_answer_id = db.Column(db.Integer, db.ForeignKey('quiz_answers.id'))
-    text_response = db.Column(db.Text)  # For open-ended questions
-    is_correct = db.Column(db.Boolean)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    # Relationships
-    question = db.relationship('QuizQuestion')
-    selected_answer = db.relationship('QuizAnswer')
-    
-    def __repr__(self):
-        return f"<QuizResponse {self.id}>"
-
-
-class ModuleCompletion(db.Model):
-    """Record of a user completing an education module"""
-    __tablename__ = 'module_completions'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    module_id = db.Column(db.Integer, db.ForeignKey('education_modules.id'), nullable=False)
-    quiz_attempt_id = db.Column(db.Integer, db.ForeignKey('quiz_attempts.id'))
-    completed_at = db.Column(db.DateTime, default=datetime.utcnow)
-    certificate_generated = db.Column(db.Boolean, default=False)
-    
-    # Relationships
-    user = db.relationship('User', backref=db.backref('module_completions', lazy='dynamic'))
-    quiz_attempt = db.relationship('QuizAttempt')
-    
-    def __repr__(self):
-        return f"<ModuleCompletion User {self.user_id} - Module {self.module_id}>"
-
-
-class InteractiveElement(db.Model):
-    """Interactive elements for financial education"""
-    __tablename__ = 'interactive_elements'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    element_type = db.Column(db.String(50), nullable=False)  # calculator, simulation, drag_drop, etc.
-    name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text)
-    config_data = db.Column(db.JSON, nullable=False)  # Configuration data for the interactive element
-    asl_instructions_id = db.Column(db.String(100))  # Video ID for ASL instructions
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
-    
-    def __repr__(self):
-        return f"<InteractiveElement {self.name} - {self.element_type}>"
-
-
-class UserProgress(db.Model):
-    """Track user progress through education modules"""
-    __tablename__ = 'user_progress'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    module_id = db.Column(db.Integer, db.ForeignKey('education_modules.id'), nullable=False)
-    last_lesson_id = db.Column(db.Integer, db.ForeignKey('education_lessons.id'))
-    progress_percentage = db.Column(db.Integer, default=0)  # 0-100
-    started_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_accessed_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationships
-    user = db.relationship('User', backref=db.backref('learning_progress', lazy='dynamic'))
-    module = db.relationship('EducationModule')
-    last_lesson = db.relationship('EducationLesson')
+    user = db.relationship('User', backref=db.backref('module_enrollments', lazy='dynamic'))
+    module = db.relationship('EducationModule', back_populates='enrollments')
+    lesson_progress = db.relationship('LessonProgress', back_populates='enrollment', cascade='all, delete-orphan')
+    
+    # Unique constraint
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'module_id', name='uix_user_module'),
+    )
     
     def __repr__(self):
-        return f"<UserProgress User {self.user_id} - Module {self.module_id} - {self.progress_percentage}%>"
+        return f"<ModuleEnrollment {self.id}: User {self.user_id} in Module {self.module_id}>"
+
+class LessonProgress(db.Model):
+    """
+    User progress in individual lessons.
+    """
+    __tablename__ = 'lesson_progress'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    enrollment_id = db.Column(db.Integer, db.ForeignKey('module_enrollments.id'), nullable=False)
+    lesson_id = db.Column(db.Integer, db.ForeignKey('education_lessons.id'), nullable=False)
+    
+    # Progress status
+    status = db.Column(db.String(20), default='not_started')  # not_started, in_progress, completed
+    progress_percent = db.Column(db.Float, default=0.0)
+    
+    # Quiz results (if applicable)
+    quiz_score = db.Column(db.Float)
+    quiz_attempts = db.Column(db.Integer, default=0)
+    quiz_data = db.Column(db.JSON)
+    
+    # Timestamps
+    started_at = db.Column(db.DateTime)
+    completed_at = db.Column(db.DateTime)
+    last_accessed_at = db.Column(db.DateTime)
+    
+    # Relationships
+    enrollment = db.relationship('ModuleEnrollment', back_populates='lesson_progress')
+    lesson = db.relationship('EducationLesson', back_populates='progress')
+    
+    # Unique constraint
+    __table_args__ = (
+        db.UniqueConstraint('enrollment_id', 'lesson_id', name='uix_enrollment_lesson'),
+    )
+    
+    def __repr__(self):
+        return f"<LessonProgress {self.id}: Enrollment {self.enrollment_id}, Lesson {self.lesson_id}>"
+
+class FinancialTerm(db.Model):
+    """
+    Financial terminology with ASL video explanations.
+    """
+    __tablename__ = 'financial_terms'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    term = db.Column(db.String(100), nullable=False, unique=True)
+    definition = db.Column(db.Text, nullable=False)
+    category = db.Column(db.String(50))  # tax, investment, insurance, etc.
+    complexity_level = db.Column(db.String(20), default='beginner')  # beginner, intermediate, advanced
+    
+    # ASL video explanation
+    asl_video_id = db.Column(db.String(100))  # Mux video ID
+    
+    # White-label customization
+    reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id'))
+    licensee_id = db.Column(db.Integer, db.ForeignKey('licensees.id'))
+    is_white_labeled = db.Column(db.Boolean, default=False)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    
+    def __repr__(self):
+        return f"<FinancialTerm {self.id}: {self.term}>"

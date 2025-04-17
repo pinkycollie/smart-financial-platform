@@ -1,132 +1,258 @@
 """
-Database models for DEAF FIRST platform reseller program.
-Enables white-label reselling with multi-tier architecture.
+Database models for multi-tier white-label reseller system in the DEAF FIRST platform.
 """
 
 from datetime import datetime
 from simple_app import db
-from models import User
-from models_licensing import Licensee, LicenseeBranding
 
 class Reseller(db.Model):
     """
-    Reseller model for entities that resell the DEAF FIRST platform.
-    Represents an organization that white-labels and resells the platform to other businesses.
+    Primary reseller for the white-label platform.
+    Can create and manage sub-licensees.
     """
     __tablename__ = 'resellers'
     
     id = db.Column(db.Integer, primary_key=True)
-    company_name = db.Column(db.String(100), nullable=False)
-    primary_domain = db.Column(db.String(100), unique=True)
-    reseller_tier = db.Column(db.String(20), default='standard')  # standard, premium, enterprise
-    status = db.Column(db.String(20), default='active')  # active, suspended, expired
     
-    # Business details
-    business_type = db.Column(db.String(50))  # financial_advisor, insurance_agency, education_provider, etc.
-    tax_id = db.Column(db.String(50))
-    address = db.Column(db.String(255))
-    city = db.Column(db.String(100))
-    state = db.Column(db.String(2))
-    zip_code = db.Column(db.String(20))
-    country = db.Column(db.String(50), default='USA')
+    # Basic information
+    company_name = db.Column(db.String(100), nullable=False)
+    reseller_code = db.Column(db.String(50), unique=True, nullable=False)
+    external_id = db.Column(db.String(100), unique=True)  # Cheddar customer ID
     
     # Contact information
-    contact_name = db.Column(db.String(100))
-    contact_email = db.Column(db.String(100))
+    contact_email = db.Column(db.String(120), nullable=False)
     contact_phone = db.Column(db.String(20))
+    owner_first_name = db.Column(db.String(50))
+    owner_last_name = db.Column(db.String(50))
     
-    # License details
-    license_key = db.Column(db.String(100), unique=True)
-    api_key = db.Column(db.String(100), unique=True)
-    license_start_date = db.Column(db.Date, nullable=False)
-    license_end_date = db.Column(db.Date)
-    auto_renew = db.Column(db.Boolean, default=True)
+    # Business information
+    business_type = db.Column(db.String(50))  # corporation, llc, partnership, sole_proprietorship
+    tax_id = db.Column(db.String(50))
+    tax_exempt = db.Column(db.Boolean, default=False)
     
-    # Billing information
-    billing_cycle = db.Column(db.String(20), default='monthly')  # monthly, quarterly, annually
-    billing_amount = db.Column(db.Float, nullable=False)
-    next_billing_date = db.Column(db.Date)
-    payment_method = db.Column(db.String(50))
+    # Address
+    address_line1 = db.Column(db.String(100))
+    address_line2 = db.Column(db.String(100))
+    city = db.Column(db.String(50))
+    state = db.Column(db.String(50))
+    postal_code = db.Column(db.String(20))
+    country = db.Column(db.String(50))
     
-    # Reseller capabilities
-    max_sub_resellers = db.Column(db.Integer, default=0)
-    current_sub_resellers = db.Column(db.Integer, default=0)
-    max_licensees = db.Column(db.Integer, default=50)
-    current_licensees = db.Column(db.Integer, default=0)
-    commission_rate = db.Column(db.Float, default=20.0)  # percentage
+    # Platform settings
+    domain_name = db.Column(db.String(255))
+    subdomain = db.Column(db.String(50), unique=True)
+    white_label_enabled = db.Column(db.Boolean, default=True)
     
-    # Feature flags
-    can_customize_modules = db.Column(db.Boolean, default=False)
-    can_set_pricing = db.Column(db.Boolean, default=False)
-    can_create_sub_resellers = db.Column(db.Boolean, default=False)
-    can_edit_source_code = db.Column(db.Boolean, default=False)
+    # Account status
+    status = db.Column(db.String(20), default='pending')  # pending, active, suspended, terminated
+    approval_date = db.Column(db.DateTime)
+    suspension_reason = db.Column(db.Text)
     
+    # Reseller type and parent relationship (for multi-tier)
+    reseller_type = db.Column(db.String(20), default='primary')  # primary, secondary
+    parent_id = db.Column(db.Integer, db.ForeignKey('resellers.id'))
+    
+    # Revenue sharing
+    commission_rate = db.Column(db.Float, default=0.0)  # Percentage of revenue shared with parent
+    revenue_share_type = db.Column(db.String(20), default='percentage')  # percentage, fixed
+    
+    # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     
     # Relationships
-    branding = db.relationship('ResellerBranding', backref='reseller', uselist=False, cascade='all, delete-orphan')
-    sub_resellers = db.relationship('SubReseller', backref='parent_reseller', lazy='dynamic', cascade='all, delete-orphan')
-    licensees = db.relationship('Licensee', backref='reseller', lazy='dynamic')
-    admins = db.relationship('ResellerAdmin', backref='reseller', lazy='dynamic', cascade='all, delete-orphan')
+    parent = db.relationship('Reseller', remote_side=[id], backref='sub_resellers')
+    branding = db.relationship('ResellerBranding', uselist=False, back_populates='reseller', cascade='all, delete-orphan')
+    subscriptions = db.relationship('ResellerSubscription', back_populates='reseller', cascade='all, delete-orphan')
+    invoices = db.relationship('ResellerInvoice', back_populates='reseller', cascade='all, delete-orphan')
+    # The revenue_transactions and sub_reseller_revenue are now defined on ResellerRevenue with backref
+    licensees = db.relationship('Licensee', back_populates='reseller', cascade='all, delete-orphan')
+    portal_users = db.relationship('PortalUser', back_populates='reseller', cascade='all, delete-orphan')
     
     def __repr__(self):
-        return f"<Reseller {self.company_name}>"
+        return f"<Reseller {self.id}: {self.company_name}>"
     
-    def get_portal_url(self):
-        """Get reseller portal URL"""
-        if self.primary_domain:
-            return f"https://{self.primary_domain}"
-        return f"https://reseller.deaffirst.com/portal/{self.id}"
+    @property
+    def full_domain(self):
+        """Get the full domain for the reseller"""
+        if self.domain_name:
+            return self.domain_name
+        elif self.subdomain:
+            return f"{self.subdomain}.deaffirst.com"
+        else:
+            return None
     
-    def can_add_sub_reseller(self):
-        """Check if reseller can add more sub-resellers"""
-        return self.can_create_sub_resellers and (self.current_sub_resellers < self.max_sub_resellers)
+    @property
+    def is_active(self):
+        """Check if reseller is active"""
+        return self.status == 'active'
     
-    def can_add_licensee(self):
-        """Check if reseller can add more licensees"""
-        return self.current_licensees < self.max_licensees
+    @property
+    def active_subscription(self):
+        """Get the active subscription for the reseller"""
+        return ResellerSubscription.query.filter_by(
+            reseller_id=self.id, 
+            status='active'
+        ).first()
 
-
-class ResellerBranding(db.Model):
+class ResellerSubscription(db.Model):
     """
-    Branding and customization settings for resellers.
-    Allows resellers to customize the platform appearance for their customers.
+    Subscription information for resellers.
     """
-    __tablename__ = 'reseller_branding'
+    __tablename__ = 'reseller_subscriptions'
     
     id = db.Column(db.Integer, primary_key=True)
     reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id'), nullable=False)
     
-    # Branding elements
+    # Subscription details
+    plan_code = db.Column(db.String(50), nullable=False)
+    status = db.Column(db.String(20), default='pending')  # pending, active, canceled, expired
+    external_id = db.Column(db.String(100))  # Cheddar subscription ID
+    
+    # Billing details
+    billing_period = db.Column(db.String(20), default='month')  # month, year
+    price = db.Column(db.Float, nullable=False)
+    currency_code = db.Column(db.String(3), default='USD')
+    
+    # Dates
+    start_date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.DateTime)
+    next_billing_date = db.Column(db.DateTime)
+    cancellation_date = db.Column(db.DateTime)
+    
+    # Payment information
+    payment_method = db.Column(db.String(20), default='credit_card')  # credit_card, invoice, bank_transfer
+    payment_status = db.Column(db.String(20), default='pending')  # pending, paid, failed
+    cancellation_reason = db.Column(db.Text)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    
+    # Relationships
+    reseller = db.relationship('Reseller', back_populates='subscriptions')
+    
+    def __repr__(self):
+        return f"<ResellerSubscription {self.id}: {self.plan_code} for Reseller {self.reseller_id}>"
+    
+    @property
+    def is_active(self):
+        """Check if subscription is active"""
+        return self.status == 'active'
+    
+    @property
+    def formatted_price(self):
+        """Get formatted price with currency"""
+        return f"{self.currency_code} {self.price:.2f}"
+
+class ResellerInvoice(db.Model):
+    """
+    Invoice information for resellers.
+    """
+    __tablename__ = 'reseller_invoices'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id'), nullable=False)
+    
+    # Invoice details
+    external_id = db.Column(db.String(100))  # Cheddar invoice ID
+    invoice_number = db.Column(db.String(50))
+    amount = db.Column(db.Float, nullable=False)
+    currency_code = db.Column(db.String(3), default='USD')
+    status = db.Column(db.String(20), default='open')  # open, paid, failed, canceled
+    
+    # Dates
+    due_date = db.Column(db.DateTime, nullable=False)
+    paid_date = db.Column(db.DateTime)
+    
+    # Additional data
+    invoice_data = db.Column(db.JSON)  # Full invoice data from Cheddar
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    
+    # Relationships
+    reseller = db.relationship('Reseller', back_populates='invoices')
+    
+    def __repr__(self):
+        return f"<ResellerInvoice {self.id}: {self.invoice_number} for Reseller {self.reseller_id}>"
+    
+    @property
+    def is_paid(self):
+        """Check if invoice is paid"""
+        return self.status == 'paid'
+    
+    @property
+    def formatted_amount(self):
+        """Get formatted amount with currency"""
+        return f"{self.currency_code} {self.amount:.2f}"
+
+class ResellerRevenue(db.Model):
+    """
+    Revenue transactions for resellers.
+    """
+    __tablename__ = 'reseller_revenue'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id'), nullable=False)
+    
+    # Transaction details
+    transaction_type = db.Column(db.String(20), nullable=False)  # subscription, commission, fee
+    amount = db.Column(db.Float, nullable=False)
+    currency_code = db.Column(db.String(3), default='USD')
+    description = db.Column(db.String(255))
+    
+    # Related entities
+    licensee_id = db.Column(db.Integer, db.ForeignKey('licensees.id'))
+    parent_reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id'))
+    
+    # External reference
+    external_id = db.Column(db.String(100))  # Reference ID from payment processor
+    
+    # Timestamps
+    transaction_date = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationships - specify foreign keys explicitly to resolve ambiguity
+    reseller = db.relationship('Reseller', foreign_keys=[reseller_id], backref=db.backref(
+        'revenue_transactions', lazy='dynamic'
+    ))
+    parent_reseller = db.relationship('Reseller', foreign_keys=[parent_reseller_id], backref=db.backref(
+        'sub_reseller_revenue', lazy='dynamic'
+    ))
+    licensee = db.relationship('Licensee', backref='revenue_transactions')
+    
+    def __repr__(self):
+        return f"<ResellerRevenue {self.id}: {self.transaction_type} for Reseller {self.reseller_id}>"
+    
+    @property
+    def formatted_amount(self):
+        """Get formatted amount with currency"""
+        return f"{self.currency_code} {self.amount:.2f}"
+
+class ResellerBranding(db.Model):
+    """
+    Branding customization for resellers.
+    """
+    __tablename__ = 'reseller_branding'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id'), nullable=False, unique=True)
+    
+    # Brand assets
     logo_path = db.Column(db.String(255))
-    logo_light_path = db.Column(db.String(255))  # Light version for dark backgrounds
     favicon_path = db.Column(db.String(255))
-    primary_color = db.Column(db.String(20), default='#0066CC')
-    secondary_color = db.Column(db.String(20), default='#00AA55')
+    banner_path = db.Column(db.String(255))
+    
+    # Brand colors
+    primary_color = db.Column(db.String(20), default='#0d6efd')
+    secondary_color = db.Column(db.String(20), default='#6c757d')
     accent_color = db.Column(db.String(20))
-    font_family = db.Column(db.String(100), default='Open Sans, sans-serif')
     
-    # Custom text
+    # Brand content
     company_tagline = db.Column(db.String(255))
-    welcome_message = db.Column(db.Text)
-    footer_text = db.Column(db.Text)
-    legal_disclaimer = db.Column(db.Text)
-    
-    # Domain settings
-    custom_domain_enabled = db.Column(db.Boolean, default=False)
-    sub_domains_pattern = db.Column(db.String(100))  # E.g., "{licensee}.{reseller}.deaffirst.com"
-    
-    # Email customization
-    sender_email = db.Column(db.String(100))
-    sender_name = db.Column(db.String(100))
-    email_header_image = db.Column(db.String(255))
-    email_footer_text = db.Column(db.Text)
-    
-    # Advanced customization
-    show_powered_by = db.Column(db.Boolean, default=True)
-    custom_css = db.Column(db.Text)
-    custom_javascript = db.Column(db.Text)
+    company_description = db.Column(db.Text)
     
     # Social media
     facebook_url = db.Column(db.String(255))
@@ -134,177 +260,158 @@ class ResellerBranding(db.Model):
     linkedin_url = db.Column(db.String(255))
     instagram_url = db.Column(db.String(255))
     
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    # Contact information (override)
+    contact_email_override = db.Column(db.String(120))
+    contact_phone_override = db.Column(db.String(20))
     
-    def __repr__(self):
-        return f"<ResellerBranding for {self.reseller_id}>"
-
-
-class SubReseller(db.Model):
-    """
-    Sub-reseller model for multi-tier reseller structure.
-    Represents a secondary reseller operating under a primary reseller.
-    """
-    __tablename__ = 'sub_resellers'
+    # Footer customization
+    custom_footer_html = db.Column(db.Text)
     
-    id = db.Column(db.Integer, primary_key=True)
-    parent_reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id'), nullable=False)
-    company_name = db.Column(db.String(100), nullable=False)
-    subdomain = db.Column(db.String(50), unique=True)
-    status = db.Column(db.String(20), default='active')  # active, suspended, expired
-    
-    # Contact information
-    contact_name = db.Column(db.String(100))
-    contact_email = db.Column(db.String(100))
-    contact_phone = db.Column(db.String(20))
-    
-    # Sub-reseller capabilities
-    max_licensees = db.Column(db.Integer, default=10)
-    current_licensees = db.Column(db.Integer, default=0)
-    commission_rate = db.Column(db.Float, default=10.0)  # percentage (of parent reseller's commission)
-    
-    # Feature flags
-    can_customize_branding = db.Column(db.Boolean, default=True)
-    can_set_pricing = db.Column(db.Boolean, default=False)
-    
+    # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     
     # Relationships
-    branding = db.relationship('SubResellerBranding', backref='sub_reseller', uselist=False, cascade='all, delete-orphan')
-    licensees = db.relationship('Licensee', backref='sub_reseller', lazy='dynamic')
+    reseller = db.relationship('Reseller', back_populates='branding')
     
     def __repr__(self):
-        return f"<SubReseller {self.company_name} under {self.parent_reseller_id}>"
-    
-    def get_portal_url(self):
-        """Get sub-reseller portal URL"""
-        if self.subdomain:
-            parent = Reseller.query.get(self.parent_reseller_id)
-            if parent and parent.primary_domain:
-                return f"https://{self.subdomain}.{parent.primary_domain}"
-        return f"https://reseller.deaffirst.com/sub-portal/{self.id}"
+        return f"<ResellerBranding {self.id} for Reseller {self.reseller_id}>"
 
-
-class SubResellerBranding(db.Model):
+class PortalUser(db.Model):
     """
-    Branding and customization settings for sub-resellers.
+    Users with access to reseller portal.
     """
-    __tablename__ = 'sub_reseller_branding'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    sub_reseller_id = db.Column(db.Integer, db.ForeignKey('sub_resellers.id'), nullable=False)
-    
-    # Branding elements (similar to ResellerBranding but with possibly fewer options)
-    logo_path = db.Column(db.String(255))
-    primary_color = db.Column(db.String(20), default='#0066CC')
-    secondary_color = db.Column(db.String(20), default='#00AA55')
-    
-    # Custom text
-    company_tagline = db.Column(db.String(255))
-    welcome_message = db.Column(db.Text)
-    
-    # Branding options
-    show_powered_by = db.Column(db.Boolean, default=True)
-    
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
-    
-    def __repr__(self):
-        return f"<SubResellerBranding for {self.sub_reseller_id}>"
-
-
-class ResellerAdmin(db.Model):
-    """
-    Admin users for resellers.
-    These users can manage the reseller portal and licensees.
-    """
-    __tablename__ = 'reseller_admins'
+    __tablename__ = 'portal_users'
     
     id = db.Column(db.Integer, primary_key=True)
     reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     
-    role = db.Column(db.String(20), default='admin')  # admin, sales, support, billing
-    permissions = db.Column(db.JSON, default={})
-    is_primary = db.Column(db.Boolean, default=False)
+    # Role and permissions
+    role = db.Column(db.String(20), default='admin')  # admin, manager, viewer
+    permissions = db.Column(db.JSON)
     
+    # Status
+    is_active = db.Column(db.Boolean, default=True)
+    notes = db.Column(db.Text)
+    
+    # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    last_login = db.Column(db.DateTime)
     
     # Relationships
-    user = db.relationship('User')
+    reseller = db.relationship('Reseller', back_populates='portal_users')
+    user = db.relationship('User', backref='portal_access')
     
     def __repr__(self):
-        return f"<ResellerAdmin {self.user_id} for {self.reseller_id}>"
+        return f"<PortalUser {self.id}: User {self.user_id} for Reseller {self.reseller_id}>"
 
-
-class ResellerRevenue(db.Model):
+class Licensee(db.Model):
     """
-    Revenue tracking for resellers, including commissions and sales.
+    End customer licensee of the white-label platform.
     """
-    __tablename__ = 'reseller_revenue'
+    __tablename__ = 'licensees'
     
     id = db.Column(db.Integer, primary_key=True)
     reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id'), nullable=False)
-    sub_reseller_id = db.Column(db.Integer, db.ForeignKey('sub_resellers.id'))
-    licensee_id = db.Column(db.Integer, db.ForeignKey('licensees.id'))
     
-    transaction_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    amount = db.Column(db.Float, nullable=False)
-    commission_amount = db.Column(db.Float, nullable=False)
-    transaction_type = db.Column(db.String(50))  # new_license, renewal, upgrade, etc.
+    # Basic information
+    company_name = db.Column(db.String(100), nullable=False)
+    license_key = db.Column(db.String(100), unique=True, nullable=False)
+    external_id = db.Column(db.String(100), unique=True)  # Cheddar customer ID
     
-    # Payment tracking
-    payment_status = db.Column(db.String(20), default='pending')  # pending, paid, failed
-    payment_date = db.Column(db.DateTime)
-    payment_method = db.Column(db.String(50))
-    transaction_id = db.Column(db.String(100))
+    # Contact information
+    contact_email = db.Column(db.String(120), nullable=False)
+    contact_phone = db.Column(db.String(20))
+    contact_name = db.Column(db.String(100))
     
-    notes = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # Platform settings
+    domain_name = db.Column(db.String(255))
+    subdomain = db.Column(db.String(50), unique=True)
+    white_label_enabled = db.Column(db.Boolean, default=True)
     
-    def __repr__(self):
-        return f"<ResellerRevenue {self.amount} for {self.reseller_id}>"
-
-
-class ResellerTheme(db.Model):
-    """
-    Predefined themes that resellers can use and customize.
-    """
-    __tablename__ = 'reseller_themes'
+    # License details
+    license_type = db.Column(db.String(20), default='standard')  # standard, premium, enterprise
+    license_status = db.Column(db.String(20), default='active')  # active, suspended, expired
+    max_users = db.Column(db.Integer, default=10)
+    features = db.Column(db.JSON)  # Enabled features
     
-    id = db.Column(db.Integer, primary_key=True)
-    reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id'))  # Null for global themes
+    # Dates
+    start_date = db.Column(db.DateTime, default=datetime.utcnow)
+    expiration_date = db.Column(db.DateTime)
     
-    theme_name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text)
-    is_public = db.Column(db.Boolean, default=False)  # Can be used by other resellers
-    
-    # Theme properties
-    primary_color = db.Column(db.String(20), nullable=False)
-    secondary_color = db.Column(db.String(20), nullable=False)
-    accent_color = db.Column(db.String(20))
-    font_family = db.Column(db.String(100))
-    background_color = db.Column(db.String(20))
-    text_color = db.Column(db.String(20))
-    
-    # Component styling
-    button_style = db.Column(db.JSON)  # radius, shadow, etc.
-    card_style = db.Column(db.JSON)
-    header_style = db.Column(db.JSON)
-    
-    # Additional CSS
-    custom_css = db.Column(db.Text)
-    
+    # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     
+    # Relationships
+    reseller = db.relationship('Reseller', back_populates='licensees')
+    branding = db.relationship('LicenseeBranding', uselist=False, back_populates='licensee', cascade='all, delete-orphan')
+    
     def __repr__(self):
-        return f"<ResellerTheme {self.theme_name}>"
+        return f"<Licensee {self.id}: {self.company_name}>"
+    
+    @property
+    def full_domain(self):
+        """Get the full domain for the licensee"""
+        if self.domain_name:
+            return self.domain_name
+        elif self.subdomain:
+            if self.reseller.domain_name:
+                return f"{self.subdomain}.{self.reseller.domain_name}"
+            else:
+                return f"{self.subdomain}.{self.reseller.subdomain}.deaffirst.com"
+        else:
+            return None
+    
+    @property
+    def is_active(self):
+        """Check if license is active"""
+        return self.license_status == 'active'
 
-
-# Add relationships to existing models
-# These foreign keys are already defined in models_licensing.py with deferred references
-# Licensee.reseller_id = db.Column(db.Integer, db.ForeignKey('resellers.id'))
-# Licensee.sub_reseller_id = db.Column(db.Integer, db.ForeignKey('sub_resellers.id'))
+class LicenseeBranding(db.Model):
+    """
+    Branding customization for licensees.
+    """
+    __tablename__ = 'licensee_branding'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    licensee_id = db.Column(db.Integer, db.ForeignKey('licensees.id'), nullable=False, unique=True)
+    
+    # Brand assets
+    logo_path = db.Column(db.String(255))
+    favicon_path = db.Column(db.String(255))
+    banner_path = db.Column(db.String(255))
+    
+    # Brand colors
+    primary_color = db.Column(db.String(20), default='#0d6efd')
+    secondary_color = db.Column(db.String(20), default='#6c757d')
+    accent_color = db.Column(db.String(20))
+    
+    # Brand content
+    company_tagline = db.Column(db.String(255))
+    company_description = db.Column(db.Text)
+    
+    # Social media
+    facebook_url = db.Column(db.String(255))
+    twitter_url = db.Column(db.String(255))
+    linkedin_url = db.Column(db.String(255))
+    instagram_url = db.Column(db.String(255))
+    
+    # Contact information (override)
+    contact_email_override = db.Column(db.String(120))
+    contact_phone_override = db.Column(db.String(20))
+    
+    # Custom CSS
+    custom_css = db.Column(db.Text)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    
+    # Relationships
+    licensee = db.relationship('Licensee', back_populates='branding')
+    
+    def __repr__(self):
+        return f"<LicenseeBranding {self.id} for Licensee {self.licensee_id}>"

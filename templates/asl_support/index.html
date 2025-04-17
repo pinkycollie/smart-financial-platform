@@ -1,172 +1,197 @@
-{% extends "layout.html" %}
+{% extends 'base.html' %}
 
-{% block title %}ASL Technical Support - DEAF FIRST{% endblock %}
+{% block title %}ASL Support - DEAF FIRST{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row mb-4">
+<div class="container py-5">
+    <div class="row mb-5">
         <div class="col-md-8">
-            <h1 class="display-5 mb-3">ASL Technical Support</h1>
-            <p class="lead">Get help directly in American Sign Language from our deaf-first support team.</p>
-        </div>
-        <div class="col-md-4 d-flex align-items-center justify-content-end">
-            <a href="{{ url_for('asl_support.schedule') }}" class="btn btn-primary btn-lg">
-                <i class="bi bi-calendar-plus me-2"></i> Schedule Support
-            </a>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-lg-8">
-            <!-- Support Categories -->
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="h5 mb-0">Support Categories</h2>
-                </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        {% for category_id, category in categories.items() %}
-                        <div class="col-md-6">
-                            <div class="card h-100 border-0 shadow-sm">
-                                <div class="card-body">
-                                    <div class="d-flex">
-                                        <div class="flex-shrink-0 text-primary me-3">
-                                            <i class="bi bi-{{ category.icon }} fs-3"></i>
-                                        </div>
-                                        <div>
-                                            <h3 class="h5">{{ category.name }}</h3>
-                                            <p class="mb-0 text-muted">{{ category.description }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer bg-transparent border-0 d-flex justify-content-between">
-                                    <a href="{{ url_for('asl_support.resources', category=category_id) }}" class="text-decoration-none">
-                                        <i class="bi bi-play-circle me-1"></i> Watch Videos
-                                    </a>
-                                    <a href="{{ url_for('asl_support.schedule', category=category_id) }}" class="text-decoration-none">
-                                        <i class="bi bi-headset me-1"></i> Get Support
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
+            <h1 class="mb-4">ASL Support Services</h1>
+            <p class="lead">DEAF FIRST provides comprehensive ASL support services to ensure all financial information is accessible to the Deaf community.</p>
+            <p>Our platform integrates multiple video services to offer different types of ASL support:</p>
             
-            <!-- FAQs -->
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="h5 mb-0">Frequently Asked Questions</h2>
-                </div>
-                <div class="card-body">
-                    <div class="accordion" id="faqAccordion">
-                        {% for faq in faqs %}
-                        <div class="accordion-item">
-                            <h3 class="accordion-header" id="faq-heading-{{ loop.index }}">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-{{ loop.index }}" aria-expanded="false" aria-controls="faq-collapse-{{ loop.index }}">
-                                    {{ faq.question }}
-                                </button>
-                            </h3>
-                            <div id="faq-collapse-{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="faq-heading-{{ loop.index }}" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    <div class="mb-3">
-                                        {{ faq.answer }}
-                                    </div>
-                                    {% if faq.video_url %}
-                                    <div class="ratio ratio-16x9 mb-3">
-                                        <video controls poster="https://via.placeholder.com/640x360" class="rounded">
-                                            <source src="{{ faq.video_url }}" type="video/mp4">
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    </div>
-                                    {% endif %}
-                                </div>
+            <div class="row mt-4">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-video fa-3x text-primary"></i>
                             </div>
+                            <h5 class="card-title">ASL Video Library</h5>
+                            <p class="card-text">Access hundreds of financial terms and concepts explained in ASL.</p>
+                            <a href="{{ url_for('asl_support.videos') }}" class="btn btn-outline-primary">Explore Library</a>
                         </div>
-                        {% endfor %}
                     </div>
-                    
-                    <div class="text-center mt-3">
-                        <a href="{{ url_for('asl_support.faq') }}" class="btn btn-outline-primary">View All FAQs</a>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-video-slash fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title">Live ASL Support</h5>
+                            <p class="card-text">Schedule live sessions with ASL-fluent financial advisors.</p>
+                            <a href="{{ url_for('asl_support.schedule') }}" class="btn btn-outline-primary">Schedule Session</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-book fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title">Financial Glossary</h5>
+                            <p class="card-text">Comprehensive dictionary of financial terms with ASL videos.</p>
+                            <a href="{{ url_for('asl_support.financial_terms') }}" class="btn btn-outline-primary">View Glossary</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="col-lg-4">
-            <!-- Upcoming Sessions -->
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="h5 mb-0">Your Upcoming Sessions</h2>
-                </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow">
                 <div class="card-body">
-                    {% if upcoming_sessions %}
-                        {% for session in upcoming_sessions %}
-                        <div class="card mb-3 border-0 shadow-sm">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h3 class="h6 mb-0">{{ categories[session.category].name }}</h3>
-                                    <span class="badge bg-primary">{{ session.status }}</span>
-                                </div>
-                                <p class="text-muted mb-2">
-                                    <i class="bi bi-calendar3 me-1"></i> 
-                                    {{ session.scheduled_time.strftime('%B %d, %Y') }} at 
-                                    {{ session.scheduled_time.strftime('%I:%M %p') }}
-                                </p>
-                                <p class="text-muted mb-2">
-                                    <i class="bi bi-person-video3 me-1"></i> 
-                                    Provider: {{ session.provider|title }}
-                                </p>
-                                <div class="d-flex gap-2 mt-3">
-                                    <a href="{{ url_for('asl_support.session_detail', session_id=session.id) }}" class="btn btn-sm btn-outline-primary">Details</a>
-                                    {% if session.scheduled_time - now < timedelta(minutes=5) %}
-                                    <a href="{{ url_for('asl_support.join_session', session_id=session.id) }}" class="btn btn-sm btn-success">Join</a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="text-center py-4">
-                            <i class="bi bi-calendar-x text-muted mb-3" style="font-size: 3rem;"></i>
-                            <p>You don't have any upcoming sessions.</p>
-                            <a href="{{ url_for('asl_support.schedule') }}" class="btn btn-primary">Schedule Now</a>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <!-- Support Resources -->
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="h5 mb-0">Self-Help Resources</h2>
-                </div>
-                <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <a href="{{ url_for('asl_support.resources') }}" class="btn btn-outline-primary">
-                            <i class="bi bi-play-circle me-2"></i> Video Tutorials
-                        </a>
-                        <a href="{{ url_for('asl_support.faq') }}" class="btn btn-outline-primary">
-                            <i class="bi bi-question-circle me-2"></i> FAQs
-                        </a>
-                        <a href="#" class="btn btn-outline-primary">
-                            <i class="bi bi-book me-2"></i> User Guide
-                        </a>
-                        <a href="#" class="btn btn-outline-primary">
-                            <i class="bi bi-chat-dots me-2"></i> Community Forum
-                        </a>
+                    <h5 class="card-title">Why ASL Support Matters</h5>
+                    <p>Financial information is often complex even in written English. For many Deaf individuals, ASL is their primary language, making ASL videos essential for true comprehension.</p>
+                    
+                    <div class="mt-4">
+                        <h6><i class="fas fa-check-circle text-success me-2"></i> Native ASL Presenters</h6>
+                        <p class="small text-muted">All our ASL content is created by native ASL users with financial expertise.</p>
+                        
+                        <h6><i class="fas fa-check-circle text-success me-2"></i> Culturally Responsive</h6>
+                        <p class="small text-muted">Content is designed with Deaf cultural norms and communication preferences in mind.</p>
+                        
+                        <h6><i class="fas fa-check-circle text-success me-2"></i> Multiple Video Sources</h6>
+                        <p class="small text-muted">We integrate content from specialized ASL financial resources and create custom videos.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- Featured Videos Section -->
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Featured ASL Videos</h2>
+            <a href="{{ url_for('asl_support.videos') }}" class="btn btn-sm btn-outline-primary">View All Videos</a>
+        </div>
+        
+        <div class="row">
+            {% if featured_videos %}
+                {% for video in featured_videos %}
+                    <div class="col-md-3 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="position-relative">
+                                {% if video.thumbnail_url %}
+                                    <img src="{{ video.thumbnail_url }}" class="card-img-top" alt="{{ video.title }}">
+                                {% else %}
+                                    <div class="bg-light text-center py-5">
+                                        <i class="fas fa-film fa-3x text-muted"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="position-absolute bottom-0 end-0 p-2 bg-primary text-white rounded-start">
+                                    <small>{{ video.duration|default('0') }} min</small>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ video.title }}</h5>
+                                <p class="card-text small text-muted">{{ video.description|truncate(100) }}</p>
+                            </div>
+                            <div class="card-footer bg-white border-0">
+                                <a href="{{ url_for('asl_support.view_video', video_id=video.id) }}" class="btn btn-sm btn-primary">Watch Video</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> No featured videos available at this time. Check back soon!
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+    
+    <!-- Video Categories Section -->
+    <section class="mb-5">
+        <h2 class="mb-4">Video Categories</h2>
+        
+        <div class="row">
+            {% if categories %}
+                {% for category in categories %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="rounded-circle bg-light p-3 me-3">
+                                        <i class="fas fa-{{ category.icon|default('folder') }} text-primary"></i>
+                                    </div>
+                                    <h5 class="card-title mb-0">{{ category.name }}</h5>
+                                </div>
+                                <p class="card-text">{{ category.description|default('') }}</p>
+                                <a href="{{ url_for('asl_support.videos', category=category.id) }}" class="btn btn-sm btn-outline-primary">Browse Videos</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> No categories available at this time. Check back soon!
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+    
+    <!-- Upcoming Sessions Section (if user is logged in) -->
+    {% if current_user.is_authenticated and upcoming_sessions %}
+        <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Your Upcoming ASL Sessions</h2>
+                <a href="{{ url_for('asl_support.schedule') }}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Type</th>
+                            <th>Topic</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for session in upcoming_sessions %}
+                            <tr>
+                                <td>{{ session.scheduled_date.strftime('%b %d, %Y at %I:%M %p') }}</td>
+                                <td>{{ session.session_type|title }}</td>
+                                <td>{{ session.topic }}</td>
+                                <td>
+                                    <span class="badge bg-success">{{ session.status|title }}</span>
+                                </td>
+                                <td>
+                                    {% if session.join_url %}
+                                        <a href="{{ session.join_url }}" target="_blank" class="btn btn-sm btn-primary">Join</a>
+                                    {% endif %}
+                                    
+                                    <form action="{{ url_for('asl_support.cancel_session', session_id=session.id) }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to cancel this session?')">Cancel</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endif %}
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-    // Set current date/time for template use
-    {% set now = datetime.utcnow() %}
-</script>
 {% endblock %}

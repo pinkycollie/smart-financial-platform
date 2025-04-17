@@ -1,347 +1,383 @@
 """
-ASL Support routes for the DEAF FIRST platform.
-Provides video-based technical support with ASL interpreters.
+Routes for ASL support features.
+This module handles ASL videos, live ASL support scheduling, and ASL interpreters.
 """
 
-from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, g, session, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 from flask_login import login_required, current_user
-from simple_app import db
-from models_asl_support import ASLSupportSession, ASLSupportResource, ASLSupportFAQ
-from services.deaf_first.asl_support import asl_support_service
 from datetime import datetime, timedelta
+import logging
 
-# Create blueprint
+from models_asl_support import (
+    ASLVideoCategory, ASLVideo, ASLFinancialTerm, 
+    ASLScheduledSession, ASLSupportProvider, ASLLiveSessionFeedback
+)
+from simple_app import db
+
+# Initialize blueprint
 asl_support_bp = Blueprint('asl_support', __name__, url_prefix='/asl-support')
 
+# Configure logging
+logger = logging.getLogger(__name__)
+
 @asl_support_bp.route('/')
-@login_required
 def index():
-    """ASL Support home page"""
-    # Get support categories
-    categories = asl_support_service.get_support_categories()
+    """ASL support home page"""
+    # Get featured videos
+    featured_videos = ASLVideo.query.filter_by(is_featured=True, is_published=True).limit(4).all()
     
-    # Get user's upcoming sessions
-    upcoming_sessions = ASLSupportSession.query.filter_by(
-        user_id=current_user.id, 
-        status='scheduled'
-    ).filter(
-        ASLSupportSession.scheduled_time >= datetime.utcnow()
-    ).order_by(
-        ASLSupportSession.scheduled_time
-    ).limit(3).all()
+    # Get video categories
+    categories = ASLVideoCategory.query.filter_by(parent_id=None).all()
     
-    # Get FAQ highlights
-    faqs = asl_support_service.get_faq()[:5]  # Top 5 FAQs
+    # Get upcoming sessions if user is logged in
+    upcoming_sessions = []
+    if current_user.is_authenticated:
+        upcoming_sessions = ASLScheduledSession.query.filter_by(
+            user_id=current_user.id,
+            status='scheduled'
+        ).filter(
+            ASLScheduledSession.scheduled_date > datetime.utcnow()
+        ).order_by(ASLScheduledSession.scheduled_date).limit(3).all()
     
     return render_template(
         'asl_support/index.html',
+        title='ASL Support - DEAF FIRST',
+        featured_videos=featured_videos,
         categories=categories,
-        upcoming_sessions=upcoming_sessions,
-        faqs=faqs,
-        page_title="ASL Technical Support"
+        upcoming_sessions=upcoming_sessions
     )
 
-@asl_support_bp.route('/schedule', methods=['GET', 'POST'])
+@asl_support_bp.route('/videos')
+def videos():
+    """ASL videos library page"""
+    # Get query parameters
+    category_id = request.args.get('category', type=int)
+    search_query = request.args.get('q', '')
+    page = request.args.get('page', 1, type=int)
+    per_page = 12
+    
+    # Build query
+    query = ASLVideo.query.filter_by(is_published=True)
+    
+    # Apply filters
+    if category_id:
+        query = query.filter_by(category_id=category_id)
+    
+    if search_query:
+        query = query.filter(
+            (ASLVideo.title.ilike(f'%{search_query}%')) |
+            (ASLVideo.description.ilike(f'%{search_query}%')) |
+            (ASLVideo.keywords.ilike(f'%{search_query}%'))
+        )
+    
+    # Get categories for sidebar
+    categories = ASLVideoCategory.query.all()
+    
+    # Execute query with pagination
+    videos = query.order_by(ASLVideo.created_at.desc()).paginate(page=page, per_page=per_page)
+    
+    return render_template(
+        'asl_support/videos.html',
+        title='ASL Videos - DEAF FIRST',
+        videos=videos,
+        categories=categories,
+        current_category=category_id,
+        search_query=search_query
+    )
+
+@asl_support_bp.route('/videos/<int:video_id>')
+def view_video(video_id):
+    """ASL video detail page"""
+    video = ASLVideo.query.get_or_404(video_id)
+    
+    # Get related videos from same category
+    related_videos = ASLVideo.query.filter(
+        ASLVideo.category_id == video.category_id,
+        ASLVideo.id != video.id,
+        ASLVideo.is_published == True
+    ).limit(4).all()
+    
+    # Get financial terms explained in the video
+    terms = video.terms.all()
+    
+    return render_template(
+        'asl_support/video_detail.html',
+        title=f'{video.title} - ASL Videos',
+        video=video,
+        related_videos=related_videos,
+        terms=terms
+    )
+
+@asl_support_bp.route('/terms')
+def financial_terms():
+    """Financial terms with ASL explanations"""
+    # Get query parameters
+    search_query = request.args.get('q', '')
+    page = request.args.get('page', 1, type=int)
+    per_page = 20
+    
+    # Build query
+    query = ASLFinancialTerm.query
+    
+    # Apply search filter
+    if search_query:
+        query = query.filter(
+            (ASLFinancialTerm.term.ilike(f'%{search_query}%')) |
+            (ASLFinancialTerm.definition.ilike(f'%{search_query}%'))
+        )
+    
+    # Execute query with pagination
+    terms = query.order_by(ASLFinancialTerm.term).paginate(page=page, per_page=per_page)
+    
+    return render_template(
+        'asl_support/financial_terms.html',
+        title='Financial Terms with ASL - DEAF FIRST',
+        terms=terms,
+        search_query=search_query
+    )
+
+@asl_support_bp.route('/terms/<int:term_id>')
+def view_term(term_id):
+    """Financial term detail page"""
+    term = ASLFinancialTerm.query.get_or_404(term_id)
+    
+    # Get related terms (implement this based on your needs)
+    related_terms = ASLFinancialTerm.query.filter(
+        ASLFinancialTerm.id != term.id
+    ).order_by(db.func.random()).limit(5).all()
+    
+    return render_template(
+        'asl_support/term_detail.html',
+        title=f'{term.term} - Financial Terms',
+        term=term,
+        related_terms=related_terms
+    )
+
+@asl_support_bp.route('/schedule')
 @login_required
 def schedule():
-    """Schedule an ASL support session"""
-    if request.method == 'POST':
-        # Get form data
-        category = request.form.get('category')
-        notes = request.form.get('notes')
-        scheduled_date = request.form.get('scheduled_date')
-        scheduled_time = request.form.get('scheduled_time')
-        provider = request.form.get('provider')
+    """Schedule ASL support sessions page"""
+    # Get available ASL support providers
+    providers = ASLSupportProvider.query.filter_by(is_active=True).all()
+    
+    # Get user's upcoming sessions
+    upcoming_sessions = ASLScheduledSession.query.filter_by(
+        user_id=current_user.id,
+        status='scheduled'
+    ).filter(
+        ASLScheduledSession.scheduled_date > datetime.utcnow()
+    ).order_by(ASLScheduledSession.scheduled_date).all()
+    
+    # Get user's past sessions
+    past_sessions = ASLScheduledSession.query.filter_by(
+        user_id=current_user.id
+    ).filter(
+        (ASLScheduledSession.status == 'completed') |
+        (ASLScheduledSession.scheduled_date < datetime.utcnow())
+    ).order_by(ASLScheduledSession.scheduled_date.desc()).limit(5).all()
+    
+    # Get available time slots (next 14 days)
+    available_slots = []
+    today = datetime.utcnow().date()
+    
+    for day_offset in range(14):
+        day = today + timedelta(days=day_offset)
         
-        try:
-            # Parse date and time
-            scheduled_datetime = datetime.strptime(
-                f"{scheduled_date} {scheduled_time}", 
-                "%Y-%m-%d %H:%M"
-            )
-            
-            # Create support session
-            session_data = asl_support_service.create_support_session(
-                user_id=current_user.id,
-                category=category,
-                notes=notes,
-                scheduled_time=scheduled_datetime,
-                provider=provider
-            )
-            
-            flash(f"Your ASL support session has been scheduled for {scheduled_datetime.strftime('%B %d, %Y at %I:%M %p')}", "success")
-            return redirect(url_for('asl_support.session_confirmation', session_id=session_data['session_id']))
-            
-        except ValueError as e:
-            flash(str(e), "danger")
-    
-    # Get support categories
-    categories = asl_support_service.get_support_categories()
-    
-    # Get video providers
-    providers = asl_support_service.get_video_providers()
-    
-    # Default date/time (15 min from now, rounded to nearest 15 min)
-    now = datetime.utcnow()
-    minutes = (now.minute // 15 + 1) * 15
-    default_time = (now + timedelta(minutes=minutes - now.minute)).replace(second=0, microsecond=0)
+        # Skip weekends (implement your business logic here)
+        if day.weekday() >= 5:  # Saturday (5) and Sunday (6)
+            continue
+        
+        # Add slots for morning, afternoon, evening (example)
+        slots = [
+            {
+                'date': day,
+                'time': '09:00 AM',
+                'datetime': datetime.combine(day, datetime.strptime('09:00', '%H:%M').time()),
+                'available': True
+            },
+            {
+                'date': day,
+                'time': '01:00 PM',
+                'datetime': datetime.combine(day, datetime.strptime('13:00', '%H:%M').time()),
+                'available': True
+            },
+            {
+                'date': day,
+                'time': '05:00 PM',
+                'datetime': datetime.combine(day, datetime.strptime('17:00', '%H:%M').time()),
+                'available': True
+            }
+        ]
+        
+        # Filter out slots in the past
+        slots = [slot for slot in slots if slot['datetime'] > datetime.utcnow()]
+        
+        # Add to available slots
+        if slots:
+            available_slots.append({
+                'date': day,
+                'slots': slots
+            })
     
     return render_template(
         'asl_support/schedule.html',
-        categories=categories,
+        title='Schedule ASL Support - DEAF FIRST',
         providers=providers,
-        default_date=default_time.strftime('%Y-%m-%d'),
-        default_time=default_time.strftime('%H:%M'),
-        page_title="Schedule ASL Support"
+        upcoming_sessions=upcoming_sessions,
+        past_sessions=past_sessions,
+        available_slots=available_slots
     )
 
-@asl_support_bp.route('/session/<int:session_id>')
+@asl_support_bp.route('/schedule/create', methods=['POST'])
 @login_required
-def session_detail(session_id):
-    """View a support session"""
-    session = ASLSupportSession.query.get_or_404(session_id)
-    
-    # Check if user owns this session
-    if session.user_id != current_user.id:
-        flash("You do not have permission to view this session.", "danger")
-        return redirect(url_for('asl_support.index'))
-    
-    # Get category info
-    category_info = asl_support_service.get_support_categories().get(session.category, {})
-    
-    return render_template(
-        'asl_support/session_detail.html',
-        session=session,
-        category_info=category_info,
-        page_title="Support Session Details"
-    )
-
-@asl_support_bp.route('/session/<int:session_id>/confirmation')
-@login_required
-def session_confirmation(session_id):
-    """Confirmation page after scheduling a session"""
-    session = ASLSupportSession.query.get_or_404(session_id)
-    
-    # Check if user owns this session
-    if session.user_id != current_user.id:
-        flash("You do not have permission to view this session.", "danger")
-        return redirect(url_for('asl_support.index'))
-    
-    # Get category info
-    category_info = asl_support_service.get_support_categories().get(session.category, {})
-    
-    return render_template(
-        'asl_support/session_confirmation.html',
-        session=session,
-        category_info=category_info,
-        page_title="Session Scheduled"
-    )
-
-@asl_support_bp.route('/session/<int:session_id>/join')
-@login_required
-def join_session(session_id):
-    """Join a support session"""
-    session = ASLSupportSession.query.get_or_404(session_id)
-    
-    # Check if user owns this session
-    if session.user_id != current_user.id:
-        flash("You do not have permission to join this session.", "danger")
-        return redirect(url_for('asl_support.index'))
-    
-    # Check if session is scheduled and time is valid
-    now = datetime.utcnow()
-    session_time = session.scheduled_time
-    
-    # Only allow joining 5 minutes before scheduled time
-    if session.status != 'scheduled' or session_time - timedelta(minutes=5) > now:
-        flash(f"This session is scheduled for {session_time.strftime('%B %d, %Y at %I:%M %p')}. You can join 5 minutes before the scheduled time.", "warning")
-        return redirect(url_for('asl_support.session_detail', session_id=session_id))
-    
-    # Update session status to in_progress
-    if session.status == 'scheduled':
-        session.status = 'in_progress'
+def create_session():
+    """Create a new ASL support session"""
+    try:
+        # Get form data
+        date_str = request.form.get('date')
+        time_str = request.form.get('time')
+        session_type = request.form.get('session_type')
+        topic = request.form.get('topic')
+        notes = request.form.get('notes')
+        provider_id = request.form.get('provider_id')
+        
+        # Validate form data
+        if not all([date_str, time_str, session_type]):
+            flash('Please fill in all required fields.', 'danger')
+            return redirect(url_for('asl_support.schedule'))
+        
+        # Parse date and time
+        scheduled_datetime = datetime.strptime(f"{date_str} {time_str}", '%Y-%m-%d %H:%M')
+        
+        # Create new session
+        session = ASLScheduledSession(
+            user_id=current_user.id,
+            session_type=session_type,
+            topic=topic,
+            notes=notes,
+            scheduled_date=scheduled_datetime,
+            provider='asl_now',  # Default provider
+            status='scheduled'
+        )
+        
+        db.session.add(session)
         db.session.commit()
+        
+        # Generate video meeting link (placeholder)
+        session.meeting_id = f"asl-meeting-{session.id}"
+        session.join_url = f"https://meetings.example.com/{session.meeting_id}"
+        
+        db.session.commit()
+        
+        flash('Your ASL support session has been scheduled.', 'success')
+        return redirect(url_for('asl_support.schedule'))
     
-    # Generate meeting URL
-    if session.provider == 'demo':
-        return redirect(url_for('asl_support.demo_meeting', meeting_id=session.meeting_id))
-    else:
-        # Get provider info
-        provider = asl_support_service.meeting_providers.get(session.provider, {})
-        if provider and 'url_template' in provider:
-            meeting_url = provider['url_template'].format(meeting_id=session.meeting_id)
-            return redirect(meeting_url)
-    
-    flash("Unable to join session. Please contact support.", "danger")
-    return redirect(url_for('asl_support.session_detail', session_id=session_id))
+    except Exception as e:
+        logger.error(f"Error creating ASL session: {e}")
+        flash('An error occurred while scheduling your session. Please try again.', 'danger')
+        return redirect(url_for('asl_support.schedule'))
 
-@asl_support_bp.route('/session/<int:session_id>/cancel', methods=['POST'])
+@asl_support_bp.route('/schedule/<int:session_id>/cancel', methods=['POST'])
 @login_required
 def cancel_session(session_id):
-    """Cancel a support session"""
-    session = ASLSupportSession.query.get_or_404(session_id)
+    """Cancel a scheduled ASL support session"""
+    session = ASLScheduledSession.query.get_or_404(session_id)
     
-    # Check if user owns this session
+    # Check if user owns the session
     if session.user_id != current_user.id:
-        flash("You do not have permission to cancel this session.", "danger")
-        return redirect(url_for('asl_support.index'))
+        flash('You do not have permission to cancel this session.', 'danger')
+        return redirect(url_for('asl_support.schedule'))
     
-    # Check if session can be cancelled (not in progress or completed)
-    if session.status in ['in_progress', 'completed']:
-        flash("Cannot cancel a session that is in progress or completed.", "danger")
-        return redirect(url_for('asl_support.session_detail', session_id=session_id))
+    # Check if session can be cancelled
+    if session.status != 'scheduled':
+        flash('This session cannot be cancelled.', 'danger')
+        return redirect(url_for('asl_support.schedule'))
     
     # Update session status
     session.status = 'cancelled'
     db.session.commit()
     
-    flash("Your session has been cancelled.", "success")
-    return redirect(url_for('asl_support.index'))
+    flash('Your ASL support session has been cancelled.', 'success')
+    return redirect(url_for('asl_support.schedule'))
 
-@asl_support_bp.route('/session/<int:session_id>/feedback', methods=['POST'])
+@asl_support_bp.route('/schedule/<int:session_id>/feedback', methods=['POST'])
 @login_required
 def submit_feedback(session_id):
-    """Submit feedback for a support session"""
-    session = ASLSupportSession.query.get_or_404(session_id)
+    """Submit feedback for an ASL support session"""
+    session = ASLScheduledSession.query.get_or_404(session_id)
     
-    # Check if user owns this session
+    # Check if user owns the session
     if session.user_id != current_user.id:
-        flash("You do not have permission to submit feedback for this session.", "danger")
-        return redirect(url_for('asl_support.index'))
+        flash('You do not have permission to submit feedback for this session.', 'danger')
+        return redirect(url_for('asl_support.schedule'))
     
-    # Check if session is completed
-    if session.status != 'completed':
-        flash("Can only submit feedback for completed sessions.", "danger")
-        return redirect(url_for('asl_support.session_detail', session_id=session_id))
+    try:
+        # Get form data
+        rating = request.form.get('rating', type=int)
+        communication = request.form.get('communication_quality', type=int)
+        helpfulness = request.form.get('helpfulness', type=int)
+        technical = request.form.get('technical_quality', type=int)
+        comments = request.form.get('comments')
+        
+        # Validate rating
+        if not rating or not 1 <= rating <= 5:
+            flash('Please provide a valid rating (1-5).', 'danger')
+            return redirect(url_for('asl_support.schedule'))
+        
+        # Create feedback
+        feedback = ASLLiveSessionFeedback(
+            session_id=session_id,
+            user_id=current_user.id,
+            rating=rating,
+            communication_quality=communication,
+            helpfulness=helpfulness,
+            technical_quality=technical,
+            comments=comments
+        )
+        
+        db.session.add(feedback)
+        db.session.commit()
+        
+        flash('Thank you for your feedback!', 'success')
+        return redirect(url_for('asl_support.schedule'))
     
-    # Get form data
-    rating = request.form.get('rating')
-    feedback = request.form.get('feedback')
-    
-    # Update session with feedback
-    if rating:
-        session.rating = int(rating)
-    session.feedback = feedback
-    db.session.commit()
-    
-    flash("Thank you for your feedback!", "success")
-    return redirect(url_for('asl_support.session_detail', session_id=session_id))
+    except Exception as e:
+        logger.error(f"Error submitting feedback: {e}")
+        flash('An error occurred while submitting your feedback. Please try again.', 'danger')
+        return redirect(url_for('asl_support.schedule'))
 
-@asl_support_bp.route('/resources')
-def resources():
-    """Browse support resources"""
-    # Get category from query param
-    category = request.args.get('category')
+@asl_support_bp.route('/api/videos/<int:video_id>', methods=['GET'])
+def api_video(video_id):
+    """API endpoint for video information"""
+    video = ASLVideo.query.get_or_404(video_id)
     
-    # Get white-label ID if applicable
-    white_label_id = None
-    if hasattr(g, 'licensee') and g.licensee:
-        white_label_id = g.licensee.id
+    # Use video service switcher to get the playback URL
+    try:
+        from services.deaf_first.video_service_switcher import video_service
+        
+        # Get white label ID if applicable
+        white_label_id = None
+        if hasattr(current_user, 'licensee_id') and current_user.licensee_id:
+            white_label_id = current_user.licensee_id
+        
+        # Get playback URL with white label if needed
+        playback_url = video_service.get_white_label_video_url(
+            video.video_id, 
+            white_label_id=white_label_id, 
+            provider_type=video.provider
+        )
+    except (ImportError, Exception) as e:
+        logger.error(f"Error using video service: {e}")
+        # Fallback direct URL (just for demo)
+        playback_url = f"https://example.com/videos/{video.video_id}"
     
-    # Get resources
-    resources = asl_support_service.get_support_resources(category, white_label_id)
-    
-    # Get all categories
-    categories = asl_support_service.get_support_categories()
-    
-    return render_template(
-        'asl_support/resources.html',
-        resources=resources,
-        categories=categories,
-        selected_category=category,
-        page_title="ASL Support Resources"
-    )
-
-@asl_support_bp.route('/faq')
-def faq():
-    """Frequently asked questions"""
-    # Get category from query param
-    category = request.args.get('category')
-    
-    # Get white-label ID if applicable
-    white_label_id = None
-    if hasattr(g, 'licensee') and g.licensee:
-        white_label_id = g.licensee.id
-    
-    # Get FAQs
-    faqs = asl_support_service.get_faq(category, white_label_id)
-    
-    # Get all categories
-    categories = asl_support_service.get_support_categories()
-    
-    return render_template(
-        'asl_support/faq.html',
-        faqs=faqs,
-        categories=categories,
-        selected_category=category,
-        page_title="ASL Support FAQ"
-    )
-
-@asl_support_bp.route('/demo-meeting/<meeting_id>')
-@login_required
-def demo_meeting(meeting_id):
-    """Demo meeting page for testing"""
-    # Find session by meeting ID
-    session = ASLSupportSession.query.filter_by(meeting_id=meeting_id).first_or_404()
-    
-    # Check if user owns this session
-    if session.user_id != current_user.id:
-        flash("You do not have permission to join this meeting.", "danger")
-        return redirect(url_for('asl_support.index'))
-    
-    # Get category info
-    category_info = asl_support_service.get_support_categories().get(session.category, {})
-    
-    return render_template(
-        'asl_support/demo_meeting.html',
-        session=session,
-        category_info=category_info,
-        meeting_id=meeting_id,
-        page_title="ASL Support Meeting"
-    )
-
-@asl_support_bp.route('/api/sessions')
-@login_required
-def api_sessions():
-    """API: Get user's support sessions"""
-    # Get user's sessions
-    sessions = ASLSupportSession.query.filter_by(
-        user_id=current_user.id
-    ).order_by(
-        ASLSupportSession.scheduled_time.desc()
-    ).all()
-    
-    # Format response
-    response = []
-    categories = asl_support_service.get_support_categories()
-    
-    for session in sessions:
-        category_info = categories.get(session.category, {})
-        response.append({
-            'id': session.id,
-            'category': session.category,
-            'category_name': category_info.get('name', 'Unknown'),
-            'scheduled_time': session.scheduled_time.strftime('%Y-%m-%d %H:%M'),
-            'status': session.status,
-            'provider': session.provider,
-            'meeting_id': session.meeting_id
-        })
-    
-    return jsonify(response)
-
-# White-label integration
-@asl_support_bp.context_processor
-def inject_white_label():
-    """Inject white-label context for templates"""
-    context = {}
-    
-    # Check if white-label is active
-    if hasattr(g, 'licensee') and g.licensee and g.licensee.white_label_enabled and g.licensee.branding:
-        context['white_label'] = {
-            'company_name': g.licensee.company_name,
-            'logo_url': g.licensee.branding.logo_path,
-            'primary_color': g.licensee.branding.primary_color,
-            'secondary_color': g.licensee.branding.secondary_color
-        }
-    
-    return context
+    return jsonify({
+        'id': video.id,
+        'title': video.title,
+        'description': video.description,
+        'provider': video.provider,
+        'video_id': video.video_id,
+        'playback_url': playback_url,
+        'thumbnail_url': video.thumbnail_url,
+        'duration': video.duration
+    })
