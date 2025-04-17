@@ -1,0 +1,420 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    {% for key, value in meta_tags.items() %}
+        {% if key == 'title' %}
+            <meta name="title" content="{{ value }}">
+        {% elif key == 'description' %}
+            <meta name="description" content="{{ value }}">
+        {% elif key == 'keywords' %}
+            <meta name="keywords" content="{{ value }}">
+        {% elif key == 'canonical' %}
+            <link rel="canonical" href="{{ value }}">
+        {% elif key.startswith('og:') %}
+            <meta property="{{ key }}" content="{{ value }}">
+        {% elif key.startswith('twitter:') %}
+            <meta name="{{ key }}" content="{{ value }}">
+        {% else %}
+            <meta name="{{ key }}" content="{{ value }}">
+        {% endif %}
+    {% endfor %}
+    
+    <script type="application/ld+json">
+        {{ breadcrumb_ld|safe }}
+    </script>
+    
+    <style>
+        .form-range::-webkit-slider-thumb {
+            background: var(--bs-primary);
+        }
+        .form-range::-moz-range-thumb {
+            background: var(--bs-primary);
+        }
+        .form-range::-ms-thumb {
+            background: var(--bs-primary);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid bg-dark py-5 mb-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/" class="text-white-50">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/advisors" class="text-white-50">For Advisors</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">ROI Calculator</li>
+                    </ol>
+                </nav>
+                <h1 class="display-4 mb-4">Calculate Your ROI</h1>
+                <p class="lead mb-4">
+                    See the potential return on investment when licensing the DEAF FIRST platform for your practice.
+                    Calculate how expanding your client base to include deaf clients can benefit your bottom line.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h2 class="mb-4">Investing in Accessibility Pays Off</h2>
+            <p class="lead">
+                Use this calculator to estimate the financial impact of licensing the DEAF FIRST platform 
+                for your practice. Adjust the values to match your specific situation.
+            </p>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="h4 mb-0">ROI Calculator</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form id="roiCalculator">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">License Tier</label>
+                            <div class="btn-group w-100" role="group" aria-label="License tier selection">
+                                <input type="radio" class="btn-check" name="licenseTier" id="basic" value="basic" autocomplete="off" checked>
+                                <label class="btn btn-outline-primary" for="basic">Basic<br><small>$199/mo</small></label>
+                                
+                                <input type="radio" class="btn-check" name="licenseTier" id="professional" value="professional" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="professional">Professional<br><small>$499/mo</small></label>
+                                
+                                <input type="radio" class="btn-check" name="licenseTier" id="enterprise" value="enterprise" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="enterprise">Enterprise<br><small>$999/mo</small></label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="averageClientValue" class="form-label fw-bold">Average Annual Revenue per Client ($)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="averageClientValue" value="2500" min="500" max="50000">
+                            </div>
+                            <div class="mt-2">
+                                <label for="averageClientValueRange" class="form-label d-flex justify-content-between">
+                                    <small>$500</small>
+                                    <small>$50,000</small>
+                                </label>
+                                <input type="range" class="form-range" id="averageClientValueRange" min="500" max="50000" step="100" value="2500">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="newDeafClients" class="form-label fw-bold">Estimated New Deaf Clients (First Year)</label>
+                            <input type="number" class="form-control" id="newDeafClients" value="10" min="1" max="100">
+                            <div class="mt-2">
+                                <label for="newDeafClientsRange" class="form-label d-flex justify-content-between">
+                                    <small>1</small>
+                                    <small>100</small>
+                                </label>
+                                <input type="range" class="form-range" id="newDeafClientsRange" min="1" max="100" step="1" value="10">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="clientRetentionRate" class="form-label fw-bold">Client Retention Rate (%)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="clientRetentionRate" value="90" min="50" max="100">
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <div class="mt-2">
+                                <label for="clientRetentionRateRange" class="form-label d-flex justify-content-between">
+                                    <small>50%</small>
+                                    <small>100%</small>
+                                </label>
+                                <input type="range" class="form-range" id="clientRetentionRateRange" min="50" max="100" step="1" value="90">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="referralRate" class="form-label fw-bold">Expected Referral Rate from Deaf Clients (%)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="referralRate" value="25" min="0" max="100">
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <div class="mt-2">
+                                <label for="referralRateRange" class="form-label d-flex justify-content-between">
+                                    <small>0%</small>
+                                    <small>100%</small>
+                                </label>
+                                <input type="range" class="form-range" id="referralRateRange" min="0" max="100" step="1" value="25">
+                            </div>
+                            <small class="text-muted">Note: The average referral rate from deaf clients is significantly higher than from hearing clients due to strong community connections.</small>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="timeHorizon" class="form-label fw-bold">Time Horizon (Years)</label>
+                            <select class="form-select" id="timeHorizon">
+                                <option value="1">1 Year</option>
+                                <option value="2">2 Years</option>
+                                <option value="3" selected>3 Years</option>
+                                <option value="5">5 Years</option>
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-primary" id="calculateRoi">Calculate ROI</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="h4 mb-0">Your Results</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div id="results">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Adjust the values in the calculator and click "Calculate ROI" to see your results.
+                        </div>
+                        
+                        <div id="calculatedResults" class="d-none">
+                            <div class="mb-4">
+                                <h4 class="h5 mb-3">Investment Summary</h4>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                                        <span>License Tier</span>
+                                        <span id="resultLicenseTier" class="badge bg-primary">Professional</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                                        <span>Monthly License Cost</span>
+                                        <span id="resultMonthlyCost">$499</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                                        <span>Annual License Cost</span>
+                                        <span id="resultAnnualCost">$5,988</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                                        <span>Total <span id="resultYears">3</span>-Year Investment</span>
+                                        <span id="resultTotalInvestment">$17,964</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h4 class="h5 mb-3">Revenue Projection</h4>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                                        <span>Initial Deaf Clients</span>
+                                        <span id="resultInitialClients">10</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                                        <span>Total Deaf Clients (Year <span id="resultFinalYear">3</span>)</span>
+                                        <span id="resultTotalClients">22</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                                        <span>Year 1 Revenue</span>
+                                        <span id="resultYear1Revenue">$25,000</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
+                                        <span>Total <span id="resultYears2">3</span>-Year Revenue</span>
+                                        <span id="resultTotalRevenue">$120,000</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="card bg-dark text-white mb-4">
+                                <div class="card-body p-4 text-center">
+                                    <h4 class="h5 mb-3">Return on Investment</h4>
+                                    <div class="display-4 mb-2" id="resultRoi">568%</div>
+                                    <p class="mb-0" id="resultRoiText">For every $1 invested, you'll earn $5.68 in revenue</p>
+                                </div>
+                            </div>
+                            
+                            <div class="card bg-light">
+                                <div class="card-body p-3">
+                                    <h4 class="h5 mb-3">Net Profit Over <span id="resultYears3">3</span> Years</h4>
+                                    <div class="row text-center">
+                                        <div class="col-12">
+                                            <div class="h2 text-primary" id="resultNetProfit">$102,036</div>
+                                            <small class="text-muted">(After subtracting platform costs)</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Results are estimates based on entered values</small>
+                        <button class="btn btn-sm btn-outline-primary" id="printResults">Print Results</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body p-4">
+                    <h3 class="mb-4">ROI Calculator Methodology</h3>
+                    <p>
+                        This calculator provides a simplified estimate of the potential return on investment (ROI) 
+                        from licensing the DEAF FIRST platform. The calculation takes into account:
+                    </p>
+                    <ul class="mb-4">
+                        <li>The cost of licensing the platform at your selected tier</li>
+                        <li>Your average annual revenue per client</li>
+                        <li>The number of new deaf clients you expect to acquire</li>
+                        <li>Client retention rate</li>
+                        <li>Referral rates from deaf clients</li>
+                    </ul>
+                    <p>
+                        The calculator assumes that:
+                    </p>
+                    <ul class="mb-0">
+                        <li>New client acquisition is spread evenly throughout the year</li>
+                        <li>Referrals begin in the second year</li>
+                        <li>Average revenue per client remains constant</li>
+                        <li>The platform license fee remains constant</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body p-5 text-center">
+                    <h2 class="mb-4">Ready to start serving deaf clients?</h2>
+                    <p class="lead mb-4">
+                        The DEAF FIRST platform offers a strong return on investment while helping you 
+                        provide accessible financial services to an underserved community.
+                    </p>
+                    <div class="d-flex justify-content-center">
+                        <a href="/demo" class="btn btn-light me-3">Request Demo</a>
+                        <a href="/pricing" class="btn btn-outline-light">View Pricing</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Connect range sliders to input fields
+        connectRangeToInput('averageClientValueRange', 'averageClientValue');
+        connectRangeToInput('newDeafClientsRange', 'newDeafClients');
+        connectRangeToInput('clientRetentionRateRange', 'clientRetentionRate');
+        connectRangeToInput('referralRateRange', 'referralRate');
+        
+        // Calculate button click event
+        document.getElementById('calculateRoi').addEventListener('click', calculateRoi);
+        
+        // License tier costs
+        const licenseCosts = {
+            'basic': 199,
+            'professional': 499,
+            'enterprise': 999
+        };
+        
+        function connectRangeToInput(rangeId, inputId) {
+            const range = document.getElementById(rangeId);
+            const input = document.getElementById(inputId);
+            
+            range.addEventListener('input', function() {
+                input.value = this.value;
+            });
+            
+            input.addEventListener('input', function() {
+                range.value = this.value;
+            });
+        }
+        
+        function calculateRoi() {
+            // Get input values
+            const licenseTier = document.querySelector('input[name="licenseTier"]:checked').value;
+            const monthlyCost = licenseCosts[licenseTier];
+            const averageClientValue = parseFloat(document.getElementById('averageClientValue').value);
+            const initialClients = parseInt(document.getElementById('newDeafClients').value);
+            const retentionRate = parseFloat(document.getElementById('clientRetentionRate').value) / 100;
+            const referralRate = parseFloat(document.getElementById('referralRate').value) / 100;
+            const years = parseInt(document.getElementById('timeHorizon').value);
+            
+            // Calculate costs
+            const annualCost = monthlyCost * 12;
+            const totalCost = annualCost * years;
+            
+            // Calculate client growth and revenue
+            let totalClients = initialClients;
+            let totalRevenue = 0;
+            let yearlyClients = [];
+            let yearlyRevenue = [];
+            
+            for (let year = 1; year <= years; year++) {
+                let clientsThisYear = 0;
+                
+                if (year === 1) {
+                    clientsThisYear = initialClients;
+                } else {
+                    // Apply retention to previous year's clients
+                    clientsThisYear = Math.floor(yearlyClients[year - 2] * retentionRate);
+                    
+                    // Add referrals from previous year
+                    const referrals = Math.floor(yearlyClients[year - 2] * referralRate);
+                    clientsThisYear += referrals;
+                }
+                
+                yearlyClients.push(clientsThisYear);
+                const revenueThisYear = clientsThisYear * averageClientValue;
+                yearlyRevenue.push(revenueThisYear);
+                totalRevenue += revenueThisYear;
+            }
+            
+            // Calculate ROI and net profit
+            const roi = ((totalRevenue - totalCost) / totalCost) * 100;
+            const netProfit = totalRevenue - totalCost;
+            
+            // Update results
+            document.getElementById('resultLicenseTier').textContent = licenseTier.charAt(0).toUpperCase() + licenseTier.slice(1);
+            document.getElementById('resultMonthlyCost').textContent = '$' + monthlyCost.toLocaleString();
+            document.getElementById('resultAnnualCost').textContent = '$' + annualCost.toLocaleString();
+            document.getElementById('resultYears').textContent = years;
+            document.getElementById('resultTotalInvestment').textContent = '$' + totalCost.toLocaleString();
+            
+            document.getElementById('resultInitialClients').textContent = initialClients;
+            document.getElementById('resultTotalClients').textContent = yearlyClients.reduce((a, b) => a + b, 0);
+            document.getElementById('resultYear1Revenue').textContent = '$' + yearlyRevenue[0].toLocaleString();
+            document.getElementById('resultYears2').textContent = years;
+            document.getElementById('resultTotalRevenue').textContent = '$' + totalRevenue.toLocaleString();
+            
+            document.getElementById('resultRoi').textContent = Math.round(roi) + '%';
+            document.getElementById('resultRoiText').textContent = `For every $1 invested, you'll earn $${(roi / 100 + 1).toFixed(2)} in revenue`;
+            
+            document.getElementById('resultYears3').textContent = years;
+            document.getElementById('resultNetProfit').textContent = '$' + netProfit.toLocaleString();
+            
+            // Show results
+            document.getElementById('calculatedResults').classList.remove('d-none');
+        }
+        
+        // Handle print button
+        document.getElementById('printResults').addEventListener('click', function() {
+            window.print();
+        });
+        
+        // Initialize with a calculation
+        calculateRoi();
+    });
+</script>
+{% endblock %}

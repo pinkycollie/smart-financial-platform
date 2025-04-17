@@ -53,10 +53,29 @@ from routes.fintech.insurance import insurance_bp
 from routes.fintech.business import business_bp
 from routes.vsl_communication import vsl_bp
 
+try:
+    from routes.sitemap import sitemap_bp
+    from routes.advisors import advisors_bp
+except ImportError as e:
+    app.logger.warning(f"Could not import some blueprints: {e}")
+
 # Register blueprints
 app.register_blueprint(insurance_bp)
 app.register_blueprint(business_bp)
 app.register_blueprint(vsl_bp)
+
+# Register new blueprints
+try:
+    app.register_blueprint(sitemap_bp)
+    app.logger.info("Sitemap blueprint registered")
+except NameError:
+    app.logger.warning("Sitemap blueprint not available")
+
+try:
+    app.register_blueprint(advisors_bp)
+    app.logger.info("Advisors blueprint registered")
+except NameError:
+    app.logger.warning("Advisors blueprint not available")
 
 # Define routes
 @app.route('/')

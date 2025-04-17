@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    {% for key, value in meta_tags.items() %}
+        {% if key == 'title' %}
+            <meta name="title" content="{{ value }}">
+        {% elif key == 'description' %}
+            <meta name="description" content="{{ value }}">
+        {% elif key == 'keywords' %}
+            <meta name="keywords" content="{{ value }}">
+        {% elif key == 'canonical' %}
+            <link rel="canonical" href="{{ value }}">
+        {% elif key.startswith('og:') %}
+            <meta property="{{ key }}" content="{{ value }}">
+        {% elif key.startswith('twitter:') %}
+            <meta name="{{ key }}" content="{{ value }}">
+        {% else %}
+            <meta name="{{ key }}" content="{{ value }}">
+        {% endif %}
+    {% endfor %}
+    
+    <script type="application/ld+json">
+        {{ breadcrumb_ld|safe }}
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid bg-dark py-5 mb-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/" class="text-white-50">Home</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">For Advisors</li>
+                    </ol>
+                </nav>
+                <h1 class="display-4 mb-4">Resources for Financial Professionals</h1>
+                <p class="lead mb-4">
+                    Comprehensive tools and resources for financial advisors, agents, and educators
+                    serving deaf clients. Grow your practice by providing truly accessible financial services.
+                </p>
+                <div class="d-flex">
+                    <a href="/platform" class="btn btn-primary me-3">Explore Platform</a>
+                    <a href="/advisors/best-practices" class="btn btn-outline-light">Best Practices</a>
+                </div>
+            </div>
+            <div class="col-lg-6 mt-5 mt-lg-0">
+                <div class="card bg-dark">
+                    <div class="card-body p-4">
+                        <div class="ratio ratio-16x9">
+                            <div class="bg-secondary rounded d-flex align-items-center justify-content-center">
+                                <div class="text-center">
+                                    <i class="bi bi-play-circle" style="font-size: 3rem;"></i>
+                                    <p class="mt-2">Why Serve Deaf Clients?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="small text-light mt-2 text-center">
+                            <i class="bi bi-info-circle"></i> 
+                            ASL and captioned video for financial professionals
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h2 class="mb-4">Why Focus on Deaf Clients?</h2>
+            <p class="lead">
+                The deaf community represents an underserved market with unique financial needs.
+                By providing accessible services, you can grow your practice while making a meaningful difference.
+            </p>
+        </div>
+    </div>
+    
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-graph-up-arrow" style="font-size: 2.5rem;"></i>
+                    </div>
+                    <h3 class="h4 mb-3">Growing Market</h3>
+                    <p>
+                        There are approximately 48 million Americans with hearing loss and over 1 million who 
+                        are culturally Deaf. Yet fewer than 20% report having a financial advisor they trust.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-shield-check" style="font-size: 2.5rem;"></i>
+                    </div>
+                    <h3 class="h4 mb-3">Less Competition</h3>
+                    <p>
+                        Few financial professionals have the tools or resources to effectively serve 
+                        deaf clients. Those who do gain a significant competitive advantage.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-heart" style="font-size: 2.5rem;"></i>
+                    </div>
+                    <h3 class="h4 mb-3">Client Loyalty</h3>
+                    <p>
+                        Deaf clients who find accessible financial services tend to be highly loyal and 
+                        refer others, building a stable client base through word-of-mouth.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-5 mb-4 mb-lg-0">
+            <img src="https://placehold.co/600x400/212529/e9ecef?text=Statistics+Chart" alt="Financial Accessibility Statistics" class="img-fluid rounded">
+        </div>
+        <div class="col-lg-7">
+            <h3 class="mb-4">Financial Accessibility Gap</h3>
+            <p class="mb-4">
+                Studies show that deaf Americans face significant barriers to financial services, 
+                resulting in financial outcomes that lag behind their hearing peers:
+            </p>
+            <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item bg-transparent">
+                    <span class="badge bg-danger me-2">78%</span>
+                    <strong>of deaf adults</strong> report difficulty understanding financial concepts due to language barriers
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <span class="badge bg-danger me-2">63%</span>
+                    <strong>of deaf Americans</strong> feel uncomfortable or frustrated when meeting with financial professionals
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <span class="badge bg-warning text-dark me-2">55%</span>
+                    <strong>lower retirement savings</strong> on average compared to hearing counterparts with similar income
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <span class="badge bg-success me-2">91%</span>
+                    <strong>of deaf clients</strong> say they would prefer a financial advisor who provides ASL-accessible services
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <span class="badge bg-success me-2">4.8x</span>
+                    <strong>more likely</strong> to refer friends and family to a financial professional who offers deaf-accessible services
+                </li>
+            </ul>
+            <a href="/advisors/roi-calculator" class="btn btn-primary">Calculate Your ROI</a>
+        </div>
+    </div>
+    
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <h3 class="mb-3">DEAF FIRST Certification</h3>
+                            <p class="mb-lg-0">
+                                Get certified as a deaf-friendly financial professional. Our comprehensive 
+                                certification program teaches you how to effectively communicate with and serve 
+                                deaf clients in the financial industry.
+                            </p>
+                        </div>
+                        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                            <a href="/advisors/certifications" class="btn btn-light">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h2 class="mb-4">Resources for Financial Professionals</h2>
+            <p class="lead mb-5">
+                Everything you need to effectively serve deaf clients and grow your practice.
+            </p>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">
+                        <i class="bi bi-book me-2 text-primary"></i>
+                        Best Practices Guide
+                    </h3>
+                    <p>
+                        Comprehensive guide to serving deaf clients effectively, including communication tips, 
+                        accessibility best practices, and cultural considerations.
+                    </p>
+                    <a href="/advisors/best-practices" class="btn btn-sm btn-outline-primary mt-2">Learn More</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">
+                        <i class="bi bi-calculator me-2 text-primary"></i>
+                        ROI Calculator
+                    </h3>
+                    <p>
+                        Calculate your return on investment when expanding your practice to serve deaf clients. 
+                        See the potential business impact of licensing the DEAF FIRST platform.
+                    </p>
+                    <a href="/advisors/roi-calculator" class="btn btn-sm btn-outline-primary mt-2">Calculate ROI</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">
+                        <i class="bi bi-file-earmark-text me-2 text-primary"></i>
+                        Case Studies
+                    </h3>
+                    <p>
+                        Success stories from financial professionals who have effectively expanded their 
+                        practice to serve deaf clients using the DEAF FIRST platform.
+                    </p>
+                    <a href="/advisors/case-studies" class="btn btn-sm btn-outline-primary mt-2">View Case Studies</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">
+                        <i class="bi bi-chat-quote me-2 text-primary"></i>
+                        Testimonials
+                    </h3>
+                    <p>
+                        Hear from financial professionals who are successfully serving deaf clients 
+                        with the DEAF FIRST platform.
+                    </p>
+                    <a href="/advisors/testimonials" class="btn btn-sm btn-outline-primary mt-2">Read Testimonials</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">
+                        <i class="bi bi-award me-2 text-primary"></i>
+                        Certification Program
+                    </h3>
+                    <p>
+                        Get certified as a deaf-friendly financial professional. Stand out from 
+                        competitors and demonstrate your commitment to serving deaf clients.
+                    </p>
+                    <a href="/advisors/certifications" class="btn btn-sm btn-outline-primary mt-2">Get Certified</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">
+                        <i class="bi bi-laptop me-2 text-primary"></i>
+                        Platform Demo
+                    </h3>
+                    <p>
+                        See the DEAF FIRST platform in action. Request a personalized demo to learn 
+                        how it can help you serve deaf clients more effectively.
+                    </p>
+                    <a href="/demo" class="btn btn-sm btn-outline-primary mt-2">Request Demo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6 order-lg-2 mb-4 mb-lg-0">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="h5 mb-0">Featured Success Story</h3>
+                </div>
+                <div class="card-body">
+                    <blockquote class="blockquote mb-0">
+                        <p>"After licensing the DEAF FIRST platform, I've been able to grow my practice by 27% in just six months. The platform has opened up an entirely new client base for me, and my deaf clients appreciate having financial information in their native language."</p>
+                        <footer class="blockquote-footer mt-2">James R., Financial Advisor in Texas</footer>
+                    </blockquote>
+                    <a href="/advisors/case-studies" class="btn btn-sm btn-outline-primary mt-3">Read More Success Stories</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+            <h3 class="mb-4">The DEAF FIRST Difference</h3>
+            <p class="mb-4">
+                Our platform was built with a DEAF FIRST approach, meaning deaf accessibility was the primary 
+                consideration from the beginning—not an afterthought. This makes it uniquely effective for 
+                financial professionals serving deaf clients.
+            </p>
+            <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item bg-transparent">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <strong>Native ASL Support</strong> - Financial concepts explained in American Sign Language
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <strong>White-Label Platform</strong> - Customized with your branding for a seamless client experience
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <strong>Cultural Sensitivity</strong> - Designed with Deaf cultural considerations in mind
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <strong>Comprehensive Education</strong> - Financial modules specifically created for deaf learners
+                </li>
+                <li class="list-group-item bg-transparent">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                    <strong>Client Management</strong> - Tools to track client progress and preferences
+                </li>
+            </ul>
+            <a href="/platform" class="btn btn-primary">Explore the Platform</a>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-dark text-white">
+                <div class="card-body p-5 text-center">
+                    <h2 class="mb-4">Ready to grow your practice with deaf clients?</h2>
+                    <p class="lead mb-4">
+                        Join the growing network of financial professionals using the DEAF FIRST platform.
+                    </p>
+                    <div class="d-flex justify-content-center">
+                        <a href="/demo" class="btn btn-primary me-3">Request Demo</a>
+                        <a href="/pricing" class="btn btn-outline-light">View Pricing</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
