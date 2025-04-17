@@ -3,28 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}MBTQ GROUP Financial Platform{% endblock %}</title>
+    <title>{% block title %}MBTQ GROUP | DEAF FIRST Financial Platform{% endblock %}</title>
+    <!-- Meta tags for deaf accessibility -->
+    <meta name="description" content="MBTQ GROUP Financial Platform built with DEAF FIRST principles - prioritizing deaf accessibility in financial services.">
+    <meta name="keywords" content="deaf finance, financial accessibility, ASL finance, deaf-first, MBTQ GROUP">
     <!-- Bootstrap CSS (Replit-themed) -->
     <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS for MBTQ theme -->
+    <!-- Google Fonts - Optimized for readability -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Noto+Sans:wght@400;700&display=swap">
+    <!-- MBTQ GROUP theme -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- DEAF FIRST movement framework -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/deaf-first.css') }}">
     {% block styles %}{% endblock %}
     <style>
-        /* Base styles for MBTQ GROUP */
+        /* Base styles for MBTQ GROUP with deaf-friendly color scheme */
         :root {
-            --mbtq-primary: #D4AF37;  /* Gold for primary branding */
-            --mbtq-secondary: #343434; /* Dark gray for secondary elements */
-            --mbtq-accent: #8A2BE2;   /* Purple for accents and CTAs */
+            /* Primary Brand Colors - High contrast for accessibility */
+            --mbtq-primary: #0077CC;   /* Vibrant blue - primary brand color */
+            --mbtq-secondary: #222222; /* Nearly black - for text & backgrounds */
+            --mbtq-accent: #FF5500;    /* Bright orange - for attention & CTAs */
+            
+            /* Complementary palette - carefully selected for visual accessibility */
+            --mbtq-success: #00AA55;   /* Green - distinct from blue for colorblind users */
+            --mbtq-warning: #FFAA00;   /* Amber - high visibility for alerts */
+            --mbtq-danger: #CC0000;    /* Red - clear warning signal */
+            --mbtq-info: #55CCEE;      /* Light blue - softer information */
+            
+            /* Neutral tones */
+            --mbtq-light: #FFFFFF;     /* White for maximum contrast */
+            --mbtq-medium: #999999;    /* Mid gray for subtle elements */
+            --mbtq-dark: #111111;      /* Very dark for strong contrast */
+            
+            /* Layout measurements */
             --navbar-height: 60px;
             --sidebar-width: 280px;
+            
+            /* Shadows for depth perception - important for visual spatial cues */
+            --mbtq-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --mbtq-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
+            --mbtq-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.3);
         }
         
         /* ASL video button styles */
         .asl-video-btn {
-            background-color: var(--deaf-first-primary);
-            border-color: var(--deaf-first-primary);
+            background-color: var(--mbtq-primary);
+            border-color: var(--mbtq-primary);
             border-radius: 50px;
             padding: 0.25rem 0.75rem;
         }

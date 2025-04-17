@@ -1,111 +1,114 @@
-/* Custom styles for MbTQ Financial Platform */
+/* MBTQ GROUP Financial Platform Styles */
 
-/* ASL-related styles */
-.asl-video-button {
-    cursor: pointer;
-}
-
-.deaf-specialized-badge {
-    background-color: var(--bs-success);
-    color: white;
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.deaf-accessible {
+/* Infinity symbol styling for logo */
+.mbtq-logo {
     position: relative;
-}
-
-.deaf-accessible .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Insurance related styles */
-.premium-display {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.premium-amount {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: var(--bs-info);
-}
-
-.insurance-feature-list li {
-    margin-bottom: 0.5rem;
-    position: relative;
-    padding-left: 1.5rem;
-}
-
-.insurance-feature-list li:before {
-    content: "✓";
-    position: absolute;
-    left: 0;
-    color: var(--bs-info);
-    font-weight: bold;
-}
-
-/* Form styles */
-.required:after {
-    content: "*";
-    color: var(--bs-danger);
-    margin-left: 4px;
-}
-
-/* Hero sections */
-.hero-section {
-    padding: 5rem 0;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
     background-color: var(--bs-dark);
-    border-radius: 0.5rem;
-    margin-bottom: 3rem;
-}
-
-/* Animation for ASL video player */
-@keyframes asl-pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-.asl-video-active {
-    animation: asl-pulse 2s infinite;
-    border: 2px solid var(--bs-info);
-}
-
-/* Accessibility features */
-.high-contrast-text {
-    color: white;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
-}
-
-/* Custom card styles */
-.feature-card {
-    transition: transform 0.3s ease;
-}
-
-.feature-card:hover {
-    transform: translateY(-5px);
-}
-
-/* Testimonial styling */
-.testimonial-avatar {
-    width: 60px;
-    height: 60px;
     border-radius: 50%;
-    background-color: var(--bs-info-subtle);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
+}
+
+.mbtq-logo .triangle {
+    width: 28px;
+    height: 24px;
+    position: absolute;
+    top: 8px;
+    left: 6px;
+    background-color: transparent;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-bottom: 24px solid var(--mbtq-primary);
+}
+
+.mbtq-logo .infinity {
+    position: absolute;
+    top: 14px;
+    left: 12px;
+    width: 16px;
+    height: 10px;
+    font-size: 16px;
+    color: var(--bs-dark);
+    transform: rotate(90deg);
+}
+
+/* Gold accent color for key elements */
+.text-mbtq-primary {
+    color: var(--mbtq-primary) !important;
+}
+
+.bg-mbtq-primary {
+    background-color: var(--mbtq-primary) !important;
+}
+
+.border-mbtq-primary {
+    border-color: var(--mbtq-primary) !important;
+}
+
+/* Hover effects for navigation */
+.nav-link:hover {
+    color: var(--mbtq-primary) !important;
+}
+
+/* Card and accordion custom styling */
+.card-header.bg-mbtq {
+    background-color: var(--mbtq-secondary);
+    border-bottom: 2px solid var(--mbtq-primary);
+}
+
+/* Custom button styles */
+.btn-mbtq-primary {
+    background-color: var(--mbtq-primary);
+    border-color: var(--mbtq-primary);
+    color: var(--bs-dark);
+}
+
+.btn-mbtq-primary:hover {
+    background-color: #C09A2F;
+    border-color: #C09A2F;
+    color: var(--bs-dark);
+}
+
+.btn-outline-mbtq-primary {
+    background-color: transparent;
+    border-color: var(--mbtq-primary);
+    color: var(--mbtq-primary);
+}
+
+.btn-outline-mbtq-primary:hover {
+    background-color: var(--mbtq-primary);
+    color: var(--bs-dark);
+}
+
+/* Dashboard widget styling */
+.dashboard-widget {
+    border-radius: 8px;
+    border: 1px solid var(--bs-border-color);
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.dashboard-widget:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-widget .widget-header {
+    background-color: var(--mbtq-secondary);
+    border-bottom: 2px solid var(--mbtq-primary);
+    padding: 1rem;
+}
+
+/* Footer customization */
+footer a:hover {
+    color: var(--mbtq-primary) !important;
+    text-decoration: none;
+}
+
+/* Mobile sidebar styling */
+.mobile-sidebar .list-group-item:hover {
+    background-color: var(--mbtq-secondary);
+    color: var(--mbtq-primary);
 }
