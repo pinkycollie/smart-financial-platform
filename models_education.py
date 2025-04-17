@@ -1,5 +1,6 @@
 from datetime import datetime
 from simple_app import db
+from models import User  # Import User model needed for foreign key relationships
 
 class EducationCategory(db.Model):
     """Categories for financial education content"""

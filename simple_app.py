@@ -243,13 +243,100 @@ def investor_portal():
 # Import models (needed for creating tables)
 import models
 import models_additions
+import models_education
 from models_import import *
 
-# Create tables
+# Create tables and seed data
 with app.app_context():
     # Drop all tables if they exist and recreate
     db.drop_all()
     db.create_all()
+    
+    # Add seed data for education categories
+    from datetime import datetime
+    
+    # Check if categories already exist
+    if models_education.EducationCategory.query.count() == 0:
+        app.logger.info("Creating seed data for education categories")
+        categories = [
+            {
+                'name': 'Personal Finance Basics',
+                'description': 'Fundamental concepts of personal finance with ASL support',
+                'icon': 'wallet',
+                'display_order': 1
+            },
+            {
+                'name': 'Investing',
+                'description': 'Learn about investing principles and strategies with ASL support',
+                'icon': 'chart-line',
+                'display_order': 2
+            },
+            {
+                'name': 'Insurance',
+                'description': 'Understanding insurance concepts and products with ASL support',
+                'icon': 'shield-alt',
+                'display_order': 3
+            },
+            {
+                'name': 'Retirement Planning',
+                'description': 'Prepare for retirement with these ASL-supported modules',
+                'icon': 'umbrella-beach',
+                'display_order': 4
+            }
+        ]
+        
+        for category_data in categories:
+            category = models_education.EducationCategory(**category_data)
+            db.session.add(category)
+        
+        # Add a sample module
+        basic_category = models_education.EducationCategory.query.filter_by(name='Personal Finance Basics').first()
+        if basic_category:
+            module = models_education.EducationModule(
+                category_id=basic_category.id,
+                title='Budgeting 101',
+                slug='budgeting-101',
+                summary='Learn the basics of creating and maintaining a budget with ASL support',
+                difficulty_level='beginner',
+                estimated_time=30,
+                has_asl=True,
+                captions_available=True,
+                published=True,
+                published_at=datetime.utcnow()
+            )
+            db.session.add(module)
+            # Commit to get the module ID
+            db.session.commit()
+            
+            # Add some lessons to the module
+            lessons = [
+                {
+                    'module_id': module.id,
+                    'title': 'What is a Budget?',
+                    'content': '<p>A budget is a plan that helps you manage your money. It shows your income and expenses for a specific period of time.</p><p>Creating a budget helps you track where your money is going and make sure you have enough for your needs and goals.</p>',
+                    'order': 1
+                },
+                {
+                    'module_id': module.id,
+                    'title': 'Setting Financial Goals',
+                    'content': '<p>Financial goals give your budget purpose. Short-term goals might include saving for a vacation, while long-term goals might include saving for retirement.</p><p>SMART goals are Specific, Measurable, Achievable, Relevant, and Time-bound.</p>',
+                    'order': 2
+                },
+                {
+                    'module_id': module.id,
+                    'title': 'Tracking Income and Expenses',
+                    'content': '<p>To create an effective budget, you need to know how much money you have coming in and going out.</p><p>Track all sources of income and categorize your expenses to get a clear picture of your financial situation.</p>',
+                    'order': 3
+                }
+            ]
+            
+            for lesson_data in lessons:
+                lesson = models_education.EducationLesson(**lesson_data)
+                db.session.add(lesson)
+        
+        # Commit all the seed data
+        db.session.commit()
+        app.logger.info("Seed data created successfully")
 
 # Register blueprints
 try:
