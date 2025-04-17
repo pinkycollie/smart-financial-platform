@@ -1,0 +1,161 @@
+{% extends "layout.html" %}
+
+{% block title %}Business Dashboard - DEAF FIRST Financial Platform{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Business</li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <i class="fas fa-business-time me-2 text-info"></i> DEAF FIRST Business
+                    <button class="btn btn-outline-info btn-sm ms-2" data-asl-video="business_dashboard">
+                        <i class="fas fa-sign-language"></i> Watch in ASL
+                    </button>
+                </h1>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Business Dashboard Overview -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">DEAF FIRST Business Module</h2>
+                    <p class="lead">A revolutionary approach to financial inclusion for the deaf community.</p>
+                    <p>DEAF FIRST is a comprehensive financial platform designed specifically for the deaf and hard of hearing community, addressing unique financial challenges and access barriers.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Business Cards -->
+    <div class="row mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-info-subtle text-dark">
+                    <h3 class="h5 mb-0">Pitch Deck</h3>
+                </div>
+                <div class="card-body">
+                    <p>View our comprehensive pitch presentation for the DEAF FIRST financial platform, showcasing the business model, market opportunity, and social impact.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('business.pitch_deck') }}" class="btn btn-outline-info w-100">
+                        <i class="fas fa-presentation me-2"></i> View Pitch Deck
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-info-subtle text-dark">
+                    <h3 class="h5 mb-0">Impact Data</h3>
+                </div>
+                <div class="card-body">
+                    <p>Explore data-driven insights on financial disparities affecting the deaf community and how DEAF FIRST addresses these challenges.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('business.impact_data') }}" class="btn btn-outline-info w-100">
+                        <i class="fas fa-chart-pie me-2"></i> View Impact Data
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-info-subtle text-dark">
+                    <h3 class="h5 mb-0">Market Analysis</h3>
+                </div>
+                <div class="card-body">
+                    <p>Review detailed market analysis for deaf financial services, including competitive landscape and opportunities for innovation.</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('business.market_analysis') }}" class="btn btn-outline-info w-100">
+                        <i class="fas fa-search-dollar me-2"></i> View Market Analysis
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Strategic Partnerships -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <h2>Strategic Partnerships</h2>
+            <p>Our strategic partnerships enhance the DEAF FIRST platform's capabilities and reach.</p>
+        </div>
+        
+        <!-- Bloomberg Partnership -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-info">
+                <div class="card-header bg-info text-white">
+                    <h3 class="h5 mb-0">Bloomberg Integration</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <i class="fab fa-bloomberg fa-4x text-info"></i>
+                    </div>
+                    <p>Explore our strategic partnership opportunity with Bloomberg, combining world-class financial data with ASL accessibility.</p>
+                    <ul class="list-group list-group-flush mt-3">
+                        <li class="list-group-item bg-transparent">
+                            <i class="fas fa-check-circle text-info me-2"></i> Financial data integration
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <i class="fas fa-check-circle text-info me-2"></i> Tax automation with CPA partnerships
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <i class="fas fa-check-circle text-info me-2"></i> ASL-accessible financial terminology
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('business.bloomberg_partnership') }}" class="btn btn-info w-100">
+                        <i class="fas fa-handshake me-2"></i> View Bloomberg Partnership
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Other Partnerships -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h3 class="h5 mb-0">All Partnerships</h3>
+                </div>
+                <div class="card-body">
+                    <p>View our complete partnership ecosystem that supports the DEAF FIRST platform, including financial, technology, and accessibility partners.</p>
+                    <div class="row text-center mt-4">
+                        <div class="col-4">
+                            <i class="fas fa-university fa-2x mb-2 text-info"></i>
+                            <p class="small">Financial Partners</p>
+                        </div>
+                        <div class="col-4">
+                            <i class="fas fa-laptop-code fa-2x mb-2 text-info"></i>
+                            <p class="small">Tech Partners</p>
+                        </div>
+                        <div class="col-4">
+                            <i class="fas fa-hands-helping fa-2x mb-2 text-info"></i>
+                            <p class="small">Community Partners</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('business.partnerships') }}" class="btn btn-outline-info w-100">
+                        <i class="fas fa-people-arrows me-2"></i> View All Partnerships
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
