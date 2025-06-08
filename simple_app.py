@@ -259,6 +259,12 @@ def investor_portal():
                           shareholder_updates=shareholder_updates,
                           beta_features=beta_features)
 
+@app.route('/miniapps')
+def miniapps_dashboard():
+    """Mini Apps Dashboard showcasing command-driven interface"""
+    return render_template('miniapps_dashboard.html',
+                          title='Mini Apps Dashboard - DEAF FIRST Platform')
+
 # Import models (needed for creating tables)
 import models
 import models_additions

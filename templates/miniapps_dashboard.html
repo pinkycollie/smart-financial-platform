@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Apps Dashboard - DEAF FIRST Platform</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .command-card {
+            border: 2px solid var(--bs-border-color);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .command-card:hover {
+            border-color: var(--bs-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+        }
+        .asl-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--bs-success);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .platform-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .telegram { background: #0088cc; }
+        .whatsapp { background: #25d366; }
+        .discord { background: #5865f2; }
+        .sms { background: #007bff; }
+        .web { background: #6c757d; }
+        .command-demo {
+            background: var(--bs-dark);
+            border: 1px solid var(--bs-border-color);
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+        .visual-feedback {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+        .feedback-success { background: var(--bs-success); color: white; }
+        .feedback-info { background: var(--bs-info); color: white; }
+        .feedback-warning { background: var(--bs-warning); color: black; }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="display-4">
+                    <i class="fas fa-mobile-alt me-3"></i>
+                    Mini Apps Dashboard
+                </h1>
+                <p class="lead">Command-driven financial services accessible via SMS, Telegram, Discord, and WhatsApp</p>
+            </div>
+        </div>
+
+        <!-- Platform Overview -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-rocket me-2"></i>Supported Platforms</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="platform-icon telegram">
+                                        <i class="fab fa-telegram-plane"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">Telegram</h6>
+                                        <small class="text-muted">@DeafFirstBot</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="platform-icon whatsapp">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">WhatsApp</h6>
+                                        <small class="text-muted">+1 (555) 123-4567</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="platform-icon discord">
+                                        <i class="fab fa-discord"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">Discord</h6>
+                                        <small class="text-muted">DEAF FIRST Server</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="platform-icon sms">
+                                        <i class="fas fa-sms"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">SMS</h6>
+                                        <small class="text-muted">Text to 555-DEAF</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Core Commands -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2><i class="fas fa-terminal me-2"></i>Core Commands</h2>
+                <p class="text-muted">Essential commands available across all platforms with ASL support</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-3">
+                <div class="card command-card position-relative">
+                    <div class="asl-indicator">🤟 ASL</div>
+                    <div class="card-body">
+                        <h5><i class="fas fa-question-circle text-primary me-2"></i>/help</h5>
+                        <p class="card-text">Get complete command list and platform guidance</p>
+                        <div class="command-demo">
+                            <strong>Input:</strong> /help<br>
+                            <strong>Response:</strong> DEAF FIRST Platform Commands...
+                            <span class="visual-feedback feedback-info">
+                                <i class="fas fa-help-circle"></i> Help
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-3">
+                <div class="card command-card position-relative">
+                    <div class="asl-indicator">🤟 ASL</div>
+                    <div class="card-body">
+                        <h5><i class="fas fa-file-invoice-dollar text-success me-2"></i>/filemytaxes</h5>
+                        <p class="card-text">Start tax filing process with ASL guidance</p>
+                        <div class="command-demo">
+                            <strong>Input:</strong> /filemytaxes<br>
+                            <strong>Response:</strong> Starting tax filing process...
+                            <span class="visual-feedback feedback-success">
+                                <i class="fas fa-file-text"></i> Tax Filing
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-3">
+                <div class="card command-card position-relative">
+                    <div class="asl-indicator">🤟 ASL</div>
+                    <div class="card-body">
+                        <h5><i class="fas fa-dollar-sign text-warning me-2"></i>/wheremyrefund</h5>
+                        <p class="card-text">Check tax refund status</p>
+                        <div class="command-demo">
+                            <strong>Input:</strong> /wheremyrefund<br>
+                            <strong>Response:</strong> Checking your refund status...
+                            <span class="visual-feedback feedback-warning">
+                                <i class="fas fa-dollar-sign"></i> Refund
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-3">
+                <div class="card command-card position-relative">
+                    <div class="asl-indicator">🤟 ASL</div>
+                    <div class="card-body">
+                        <h5><i class="fas fa-users text-info me-2"></i>/assistance</h5>
+                        <p class="card-text">Connect with live ASL support</p>
+                        <div class="command-demo">
+                            <strong>Input:</strong> /assistance<br>
+                            <strong>Response:</strong> Connecting with ASL support...
+                            <span class="visual-feedback feedback-info">
+                                <i class="fas fa-users"></i> Support
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-3">
+                <div class="card command-card position-relative">
+                    <div class="asl-indicator">🤟 ASL</div>
+                    <div class="card-body">
+                        <h5><i class="fas fa-upload text-secondary me-2"></i>/uploadfile</h5>
+                        <p class="card-text">Upload tax documents and forms</p>
+                        <div class="command-demo">
+                            <strong>Input:</strong> /uploadfile<br>
+                            <strong>Response:</strong> Please upload your document...
+                            <span class="visual-feedback feedback-success">
+                                <i class="fas fa-upload"></i> Upload
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-3">
+                <div class="card command-card position-relative">
+                    <div class="asl-indicator">🤟 ASL</div>
+                    <div class="card-body">
+                        <h5><i class="fas fa-search text-primary me-2"></i>/search</h5>
+                        <p class="card-text">Search platform content and resources</p>
+                        <div class="command-demo">
+                            <strong>Input:</strong> /search tax deductions<br>
+                            <strong>Response:</strong> Searching for: tax deductions...
+                            <span class="visual-feedback feedback-info">
+                                <i class="fas fa-search"></i> Search
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Domain-Specific APIs -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2><i class="fas fa-cogs me-2"></i>Domain-Specific APIs</h2>
+                <p class="text-muted">Specialized endpoints for comprehensive financial services</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-primary">
+                        <h4><i class="fas fa-file-invoice me-2"></i>MBTQTax API</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><strong>/tax advice</strong> - Professional tax guidance</li>
+                            <li class="mb-2"><strong>/tax planning</strong> - Tax optimization strategies</li>
+                            <li class="mb-2"><strong>/tax deductions</strong> - Find eligible deductions</li>
+                            <li class="mb-2"><strong>/tax credits</strong> - Available tax credits</li>
+                            <li class="mb-2"><strong>/tax calculators</strong> - Tax estimation tools</li>
+                            <li class="mb-2"><strong>/tax forms</strong> - Download tax forms</li>
+                        </ul>
+                        <div class="mt-3">
+                            <span class="badge bg-success">ASL Videos Available</span>
+                            <span class="badge bg-info">April API Integration</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-success">
+                        <h4><i class="fas fa-chart-line me-2"></i>MBTQFinancial API</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><strong>/financial advice</strong> - Investment guidance</li>
+                            <li class="mb-2"><strong>/financial options</strong> - Investment products</li>
+                            <li class="mb-2"><strong>/financial planning</strong> - Financial strategy</li>
+                            <li class="mb-2"><strong>/financial retirement</strong> - Retirement planning</li>
+                            <li class="mb-2"><strong>/financial tools</strong> - Financial calculators</li>
+                            <li class="mb-2"><strong>/financial analysis</strong> - Market insights</li>
+                        </ul>
+                        <div class="mt-3">
+                            <span class="badge bg-success">ASL Support</span>
+                            <span class="badge bg-warning">Portfolio Integration</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-warning">
+                        <h4><i class="fas fa-shield-alt me-2"></i>MBTQInsurance API</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><strong>/insurance advice</strong> - Insurance guidance</li>
+                            <li class="mb-2"><strong>/insurance options</strong> - Coverage products</li>
+                            <li class="mb-2"><strong>/insurance claims</strong> - Claims assistance</li>
+                            <li class="mb-2"><strong>/insurance review</strong> - Policy optimization</li>
+                            <li class="mb-2"><strong>/insurance assessment</strong> - Coverage needs</li>
+                            <li class="mb-2"><strong>/insurance risk</strong> - Risk management</li>
+                        </ul>
+                        <div class="mt-3">
+                            <span class="badge bg-success">Deaf-Specific Products</span>
+                            <span class="badge bg-info">Open Insurance API</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-info">
+                        <h4><i class="fas fa-briefcase me-2"></i>Business API</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><strong>/business advice</strong> - Business guidance</li>
+                            <li class="mb-2"><strong>/business planning</strong> - Business development</li>
+                            <li class="mb-2"><strong>/business startup</strong> - Startup consulting</li>
+                            <li class="mb-2"><strong>/business legal</strong> - Legal advice</li>
+                            <li class="mb-2"><strong>/business analysis</strong> - Financial analysis</li>
+                            <li class="mb-2"><strong>/business marketing</strong> - Marketing strategies</li>
+                        </ul>
+                        <div class="mt-3">
+                            <span class="badge bg-success">ASL Consultations</span>
+                            <span class="badge bg-secondary">Partnership Network</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PinkSync Integration -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-gradient" style="background: linear-gradient(45deg, #ff6b9d, #c44569);">
+                        <h3><i class="fas fa-accessibility me-2"></i>PinkSync Ecosystem Integration</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <h5><i class="fas fa-user-shield me-2"></i>DeafAuth</h5>
+                                <p>Specialized authentication for deaf users with visual feedback and ASL support.</p>
+                                <ul class="list-unstyled small">
+                                    <li>• Visual authentication flows</li>
+                                    <li>• ASL-first onboarding</li>
+                                    <li>• Vibration feedback</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <h5><i class="fas fa-paint-brush me-2"></i>Interface Generation</h5>
+                                <p>AI-powered deaf-optimized interface components generation.</p>
+                                <ul class="list-unstyled small">
+                                    <li>• High contrast modes</li>
+                                    <li>• Visual alert systems</li>
+                                    <li>• ASL video integration</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <h5><i class="fas fa-certificate me-2"></i>FibonRose Trust</h5>
+                                <p>Trust verification and badge system for deaf creators and professionals.</p>
+                                <ul class="list-unstyled small">
+                                    <li>• Deaf creator verification</li>
+                                    <li>• Interpreter certification</li>
+                                    <li>• Organization badges</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Command Testing Interface -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-terminal me-2"></i>Test Commands</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="commandInput" class="form-label">Enter Command</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="commandInput" placeholder="Type a command (e.g., /help, /filemytaxes)" />
+                                <button class="btn btn-primary" type="button" onclick="testCommand()">
+                                    <i class="fas fa-paper-plane me-1"></i>Send
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="platformSelect" class="form-label">Platform</label>
+                            <select class="form-select" id="platformSelect">
+                                <option value="web">Web Interface</option>
+                                <option value="telegram">Telegram</option>
+                                <option value="whatsapp">WhatsApp</option>
+                                <option value="discord">Discord</option>
+                                <option value="sms">SMS</option>
+                            </select>
+                        </div>
+                        <div id="commandResponse" class="mt-3" style="display: none;">
+                            <h6>Response:</h6>
+                            <div class="command-demo" id="responseContent"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bolt me-2"></i>Quick Actions</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 col-6 mb-2">
+                                <button class="btn btn-outline-primary w-100" onclick="quickCommand('/help')">
+                                    <i class="fas fa-question-circle me-1"></i>Get Help
+                                </button>
+                            </div>
+                            <div class="col-md-3 col-6 mb-2">
+                                <button class="btn btn-outline-success w-100" onclick="quickCommand('/filemytaxes')">
+                                    <i class="fas fa-file-invoice-dollar me-1"></i>File Taxes
+                                </button>
+                            </div>
+                            <div class="col-md-3 col-6 mb-2">
+                                <button class="btn btn-outline-info w-100" onclick="quickCommand('/assistance')">
+                                    <i class="fas fa-users me-1"></i>Get Support
+                                </button>
+                            </div>
+                            <div class="col-md-3 col-6 mb-2">
+                                <button class="btn btn-outline-warning w-100" onclick="quickCommand('/wheremyrefund')">
+                                    <i class="fas fa-dollar-sign me-1"></i>Check Refund
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function testCommand() {
+            const command = document.getElementById('commandInput').value;
+            const platform = document.getElementById('platformSelect').value;
+            
+            if (!command.trim()) {
+                alert('Please enter a command');
+                return;
+            }
+            
+            // Show loading state
+            const responseDiv = document.getElementById('commandResponse');
+            const responseContent = document.getElementById('responseContent');
+            responseContent.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing command...';
+            responseDiv.style.display = 'block';
+            
+            // Simulate API call
+            fetch('/api/miniapps/command', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    command: command,
+                    user_id: 'demo_user',
+                    platform: platform,
+                    context: {}
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let responseHTML = `<strong>Status:</strong> ${data.status}<br>`;
+                responseHTML += `<strong>Response:</strong> ${data.response || data.message}<br>`;
+                
+                if (data.visual_feedback) {
+                    responseHTML += `<strong>Visual Feedback:</strong> <span class="visual-feedback feedback-${data.visual_feedback.color === 'green' ? 'success' : data.visual_feedback.color === 'blue' ? 'info' : 'warning'}">`;
+                    responseHTML += `<i class="fas fa-${data.visual_feedback.icon}"></i> ${data.visual_feedback.color}`;
+                    responseHTML += `</span><br>`;
+                }
+                
+                if (data.asl_support_available || data.asl_video_available) {
+                    responseHTML += `<strong>ASL Support:</strong> <span class="badge bg-success">Available</span><br>`;
+                }
+                
+                if (data.next_actions) {
+                    responseHTML += `<strong>Next Actions:</strong> ${data.next_actions.join(', ')}<br>`;
+                }
+                
+                responseContent.innerHTML = responseHTML;
+            })
+            .catch(error => {
+                responseContent.innerHTML = `<span class="text-danger">Error: ${error.message}</span>`;
+            });
+        }
+        
+        function quickCommand(command) {
+            document.getElementById('commandInput').value = command;
+            testCommand();
+        }
+        
+        // Allow Enter key to submit
+        document.getElementById('commandInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                testCommand();
+            }
+        });
+    </script>
+</body>
+</html>
