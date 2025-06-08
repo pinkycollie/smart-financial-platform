@@ -427,6 +427,13 @@ try:
 except Exception as e:
     app.logger.error(f"Failed to register ASL support blueprint: {e}")
 
+try:
+    from api.miniapps import miniapps_bp
+    app.register_blueprint(miniapps_bp)
+    app.logger.info("Mini apps API registered")
+except Exception as e:
+    app.logger.error(f"Failed to register mini apps API: {e}")
+
 # Routes already defined above
 # No need to redefine
 

@@ -1,0 +1,2407 @@
+openapi: 3.0.0
+info:
+  title: PinkSync Ecosystem API
+  version: 2.0.0
+  description: |
+    Comprehensive API specification for the PinkSync ecosystem, including:
+    - DeafAuth: Authentication and user management
+    - PinkSync: Accessibility and interface transformation
+    - FibonRose: Trust and verification
+  contact:
+    name: PinkSync Support
+    url: https://pinksync.io/support
+    email: support@pinksync.io
+
+servers:
+  - url: https://api.pinksync.io/v2
+    description: Production Environment
+  - url: https://deafauth.pinksync.io/v1
+    description: DeafAuth Service
+  - url: https://fibonrose.mbtquniverse.com/v1
+    description: FibonRose Service
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Users
+    description: User profile and preference management
+  - name: Accessibility
+    description: Accessibility features and preferences
+  - name: Trust
+    description: Trust verification and badge management
+  - name: Video
+    description: Video processing and management
+  - name: Notifications
+    description: Notification management and delivery
+  - name: Progress
+    description: Progress tracking and reporting
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from the authentication endpoints
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-PinkSync-Key
+      description: API key for service-to-service communication
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+        visual_feedback:
+          $ref: '#/components/schemas/VisualFeedback'
+      required:
+        - status
+        - message
+
+    VisualFeedback:
+      type: object
+      description: Visual feedback for deaf users
+      properties:
+        icon:
+          type: string
+          description: Icon name for visual feedback
+          example: success
+        color:
+          type: string
+          description: Color code for visual feedback
+          example: green
+        animation:
+          type: string
+          description: Animation type for visual feedback
+          example: fade
+        vibration:
+          type: boolean
+          description: Whether to trigger vibration feedback
+          example: false
+      required:
+        - icon
+        - color
+
+    UserPreferences:
+      type: object
+      properties:
+        high_contrast:
+          type: boolean
+          description: Enable high contrast mode
+          default: false
+        large_text:
+          type: boolean
+          description: Enable large text mode
+          default: false
+        animation_reduction:
+          type: boolean
+          description: Reduce animations
+          default: false
+        vibration_feedback:
+          type: boolean
+          description: Enable vibration feedback
+          default: true
+        sign_language:
+          type: string
+          enum: [asl, bsl, isl]
+          description: Preferred sign language
+          default: asl
+      required:
+        - sign_language
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        preferences:
+          $ref: '#/components/schemas/UserPreferences'
+        verified:
+          type: boolean
+        roles:
+          type: array
+          items:
+            type: string
+            enum: [user, creator, validator, admin]
+      required:
+        - id
+        - email
+        - created_at
+
+    Session:
+      type: object
+      properties:
+        token:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+        user:
+          $ref: '#/components/schemas/User'
+      required:
+        - token
+        - expires_at
+        - user
+
+    TrustBadge:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        image_url:
+          type: string
+          format: uri
+        criteria:
+          type: string
+        issuer:
+          type: string
+        issued_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+        verification_url:
+          type: string
+          format: uri
+      required:
+        - id
+        - name
+        - issuer
+        - issued_at
+
+    VerificationSubmission:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [deaf_creator, interpreter, organization, business]
+        status:
+          type: string
+          enum: [pending, under_review, needs_info, approved, rejected]
+        submitted_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              type:
+                type: string
+              url:
+                type: string
+                format: uri
+        notes:
+          type: string
+      required:
+        - id
+        - user_id
+        - type
+        - status
+        - submitted_at
+
+    Video:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [uploading, processing, ready, error]
+        duration:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        url:
+          type: string
+          format: uri
+        thumbnail_url:
+          type: string
+          format: uri
+        sign_language:
+          type: string
+          enum: [asl, bsl, isl, other, none]
+        metadata:
+          type: object
+      required:
+        - id
+        - user_id
+        - status
+        - created_at
+
+    VideoProcessingResult:
+      type: object
+      properties:
+        video_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [completed, failed]
+        error:
+          type: string
+        metadata:
+          type: object
+        versions:
+          type: array
+          items:
+            type: object
+            properties:
+              quality:
+                type: string
+              url:
+                type: string
+                format: uri
+      required:
+        - video_id
+        - status
+
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        title:
+          type: string
+        message:
+          type: string
+        data:
+          type: object
+        read:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        visual_feedback:
+          $ref: '#/components/schemas/VisualFeedback'
+      required:
+        - id
+        - user_id
+        - type
+        - title
+        - created_at
+
+    DeviceInterface:
+      type: object
+      properties:
+        platform:
+          type: string
+          enum: [web, ios, android, desktop]
+        accessibility_features:
+          type: array
+          items:
+            type: string
+        ui_components:
+          type: object
+        interaction_modes:
+          type: array
+          items:
+            type: string
+      required:
+        - platform
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [not_started, in_progress, review, completed]
+        percent_complete:
+          type: number
+          minimum: 0
+          maximum: 100
+        assigned_to:
+          type: string
+          format: uuid
+        due_date:
+          type: string
+          format: date
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - status
+        - created_at
+
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            status: error
+            code: unauthorized
+            message: Access token is missing or invalid
+            visual_feedback:
+              icon: lock
+              color: red
+              animation: shake
+              vibration: true
+
+    ForbiddenError:
+      description: User does not have permission to access the resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            status: error
+            code: forbidden
+            message: You do not have permission to access this resource
+            visual_feedback:
+              icon: shield
+              color: red
+              animation: pulse
+              vibration: true
+
+    NotFoundError:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            status: error
+            code: not_found
+            message: The requested resource was not found
+            visual_feedback:
+              icon: search
+              color: yellow
+              animation: fade
+              vibration: false
+
+    ValidationError:
+      description: The request parameters failed validation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            status: error
+            code: validation_error
+            message: The request parameters failed validation
+            details:
+              field: email
+              error: must be a valid email address
+            visual_feedback:
+              icon: alert-circle
+              color: orange
+              animation: pulse
+              vibration: true
+
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            status: error
+            code: server_error
+            message: An unexpected error occurred
+            visual_feedback:
+              icon: server-crash
+              color: red
+              animation: shake
+              vibration: true
+
+security:
+  - BearerAuth: []
+  - ApiKeyAuth: []
+
+paths:
+  #
+  # DeafAuth API Endpoints
+  #
+  /auth/signup:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: Create a new user account with email and password or OAuth
+      operationId: signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                name:
+                  type: string
+                preferences:
+                  $ref: '#/components/schemas/UserPreferences'
+              required:
+                - email
+                - password
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/Session'
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  expires_at: 2025-06-14T07:16:23Z
+                  user:
+                    id: 123e4567-e89b-12d3-a456-426614174000
+                    email: user@example.com
+                    name: John Doe
+                    created_at: 2025-05-14T07:16:23Z
+                    updated_at: 2025-05-14T07:16:23Z
+                    preferences:
+                      high_contrast: false
+                      large_text: false
+                      animation_reduction: false
+                      vibration_feedback: true
+                      sign_language: asl
+                    verified: false
+                    roles: [user]
+                visual_feedback:
+                  icon: user-plus
+                  color: green
+                  animation: fade
+                  vibration: false
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '409':
+          description: Email already in use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                status: error
+                code: email_in_use
+                message: This email is already registered
+                visual_feedback:
+                  icon: mail
+                  color: orange
+                  animation: pulse
+                  vibration: true
+        '500':
+          $ref: '#/components/responses/ServerError'
+      security: []
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticate user
+      description: Authenticate a user with email and password or OAuth
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/Session'
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  expires_at: 2025-06-14T07:16:23Z
+                  user:
+                    id: 123e4567-e89b-12d3-a456-426614174000
+                    email: user@example.com
+                    name: John Doe
+                    created_at: 2025-05-14T07:16:23Z
+                    updated_at: 2025-05-14T07:16:23Z
+                    preferences:
+                      high_contrast: false
+                      large_text: false
+                      animation_reduction: false
+                      vibration_feedback: true
+                      sign_language: asl
+                    verified: false
+                    roles: [user]
+                visual_feedback:
+                  icon: log-in
+                  color: green
+                  animation: fade
+                  vibration: false
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                status: error
+                code: invalid_credentials
+                message: Invalid email or password
+                visual_feedback:
+                  icon: x-circle
+                  color: red
+                  animation: shake
+                  vibration: true
+        '500':
+          $ref: '#/components/responses/ServerError'
+      security: []
+
+  /auth/verify-token:
+    post:
+      tags:
+        - Authentication
+      summary: Verify authentication token
+      description: Check if the provided authentication token is valid
+      operationId: verifyToken
+      responses:
+        '200':
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      valid:
+                        type: boolean
+                      user:
+                        $ref: '#/components/schemas/User'
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  valid: true
+                  user:
+                    id: 123e4567-e89b-12d3-a456-426614174000
+                    email: user@example.com
+                    name: John Doe
+                visual_feedback:
+                  icon: check-circle
+                  color: green
+                  animation: none
+                  vibration: false
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Log out user
+      description: Invalidate the current session token
+      operationId: logout
+      responses:
+        '200':
+          description: Successfully logged out
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                visual_feedback:
+                  icon: log-out
+                  color: blue
+                  animation: fade
+                  vibration: false
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /users/me:
+    get:
+      tags:
+        - Users
+      summary: Get current user profile
+      description: Retrieve the profile of the currently authenticated user
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/User'
+              example:
+                status: success
+                data:
+                  id: 123e4567-e89b-12d3-a456-426614174000
+                  email: user@example.com
+                  name: John Doe
+                  created_at: 2025-05-14T07:16:23Z
+                  updated_at: 2025-05-14T07:16:23Z
+                  preferences:
+                    high_contrast: false
+                    large_text: false
+                    animation_reduction: false
+                    vibration_feedback: true
+                    sign_language: asl
+                  verified: false
+                  roles: [user]
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    patch:
+      tags:
+        - Users
+      summary: Update current user profile
+      description: Update the profile of the currently authenticated user
+      operationId: updateCurrentUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                preferences:
+                  $ref: '#/components/schemas/UserPreferences'
+      responses:
+        '200':
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/User'
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  id: 123e4567-e89b-12d3-a456-426614174000
+                  email: user@example.com
+                  name: Updated Name
+                  preferences:
+                    high_contrast: true
+                    large_text: true
+                    animation_reduction: false
+                    vibration_feedback: true
+                    sign_language: asl
+                visual_feedback:
+                  icon: user-check
+                  color: green
+                  animation: pulse
+                  vibration: false
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  #
+  # PinkSync API Endpoints
+  #
+  /accessibility/preferences:
+    get:
+      tags:
+        - Accessibility
+      summary: Get user accessibility preferences
+      description: Retrieve the accessibility preferences for the current user
+      operationId: getAccessibilityPreferences
+      responses:
+        '200':
+          description: Accessibility preferences retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/UserPreferences'
+              example:
+                status: success
+                data:
+                  high_contrast: false
+                  large_text: true
+                  animation_reduction: false
+                  vibration_feedback: true
+                  sign_language: asl
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags:
+        - Accessibility
+      summary: Update user accessibility preferences
+      description: Update the accessibility preferences for the current user
+      operationId: updateAccessibilityPreferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPreferences'
+      responses:
+        '200':
+          description: Accessibility preferences updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/UserPreferences'
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  high_contrast: true
+                  large_text: true
+                  animation_reduction: false
+                  vibration_feedback: true
+                  sign_language: asl
+                visual_feedback:
+                  icon: settings
+                  color: green
+                  animation: pulse
+                  vibration: false
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /interface-generation:
+    post:
+      tags:
+        - Accessibility
+      summary: Generate deaf-optimized interface components
+      description: Generate interface components optimized for deaf users based on platform and preferences
+      operationId: generateInterface
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceInterface'
+      responses:
+        '201':
+          description: Interface components generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      components:
+                        type: object
+                      styles:
+                        type: object
+                      animations:
+                        type: object
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /onboarding:
+    post:
+      tags:
+        - Accessibility
+      summary: Process user onboarding
+      description: Handle ASL-first onboarding for new deaf users
+      operationId: processOnboarding
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                step:
+                  type: string
+                data:
+                  type: object
+                preferences:
+                  $ref: '#/components/schemas/UserPreferences'
+      responses:
+        '200':
+          description: Onboarding step processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      next_step:
+                        type: string
+                      completed:
+                        type: boolean
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /sync:
+    post:
+      tags:
+        - Accessibility
+      summary: Sync user preferences
+      description: Synchronize user preferences across devices
+      operationId: syncPreferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                device_id:
+                  type: string
+                preferences:
+                  $ref: '#/components/schemas/UserPreferences'
+                timestamp:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Preferences synchronized successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      synced:
+                        type: boolean
+                      timestamp:
+                        type: string
+                        format: date-time
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  #
+  # Video Processing API Endpoints
+  #
+  /videos:
+    post:
+      tags:
+        - Video
+      summary: Upload a new video
+      description: Upload a new video for processing
+      operationId: uploadVideo
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                sign_language:
+                  type: string
+                  enum: [asl, bsl, isl, other, none]
+                file:
+                  type: string
+                  format: binary
+              required:
+                - title
+                - file
+      responses:
+        '201':
+          description: Video uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/Video'
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  id: 123e4567-e89b-12d3-a456-426614174000
+                  user_id: 123e4567-e89b-12d3-a456-426614174000
+                  title: My ASL Video
+                  description: A demonstration of ASL signs
+                  status: uploading
+                  created_at: 2025-05-14T07:16:23Z
+                  updated_at: 2025-05-14T07:16:23Z
+                  sign_language: asl
+                visual_feedback:
+                  icon: upload-cloud
+                  color: blue
+                  animation: pulse
+                  vibration: false
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '413':
+          description: File too large
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                status: error
+                code: file_too_large
+                message: The uploaded file exceeds the maximum allowed size
+                visual_feedback:
+                  icon: file
+                  color: red
+                  animation: shake
+                  vibration: true
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Video
+      summary: List user videos
+      description: Retrieve a list of videos uploaded by the current user
+      operationId: listVideos
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+          description: Number of items per page
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [uploading, processing, ready, error]
+          description: Filter by video status
+      responses:
+        '200':
+          description: Videos retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      videos:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Video'
+                      total:
+                        type: integer
+                      page:
+                        type: integer
+                      pages:
+                        type: integer
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /videos/{videoId}:
+    get:
+      tags:
+        - Video
+      summary: Get video details
+      description: Retrieve details for a specific video
+      operationId: getVideo
+      parameters:
+        - name: videoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the video to retrieve
+      responses:
+        '200':
+          description: Video details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/Video'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    patch:
+      tags:
+        - Video
+      summary: Update video details
+      description: Update details for a specific video
+      operationId: updateVideo
+      parameters:
+        - name: videoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the video to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                sign_language:
+                  type: string
+                  enum: [asl, bsl, isl, other, none]
+      responses:
+        '200':
+          description: Video updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/Video'
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  id: 123e4567-e89b-12d3-a456-426614174000
+                  title: Updated Video Title
+                  description: Updated description
+                visual_feedback:
+                  icon: edit
+                  color: green
+                  animation: pulse
+                  vibration: false
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags:
+        - Video
+      summary: Delete a video
+      description: Delete a specific video
+      operationId: deleteVideo
+      parameters:
+        - name: videoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the video to delete
+      responses:
+        '200':
+          description: Video deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                visual_feedback:
+                  icon: trash
+                  color: red
+                  animation: fade
+                  vibration: true
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /videos/{videoId}/process:
+    post:
+      tags:
+        - Video
+      summary: Process a video
+      description: Trigger processing for a specific video
+      operationId: processVideo
+      parameters:
+        - name: videoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the video to process
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                options:
+                  type: object
+                  properties:
+                    detect_sign_language:
+                      type: boolean
+                      default: true
+                    generate_captions:
+                      type: boolean
+                      default: true
+                    quality:
+                      type: string
+                      enum: [low, medium, high]
+                      default: medium
+      responses:
+        '202':
+          description: Video processing started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      job_id:
+                        type: string
+                      estimated_time:
+                        type: integer
+                        description: Estimated processing time in seconds
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  job_id: job-123456
+                  estimated_time: 120
+                visual_feedback:
+                  icon: loader
+                  color: blue
+                  animation: spin
+                  vibration: false
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /videos/{videoId}/status:
+    get:
+      tags:
+        - Video
+      summary: Get video processing status
+      description: Check the processing status of a specific video
+      operationId: getVideoStatus
+      parameters:
+        - name: videoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the video to check
+      responses:
+        '200':
+          description: Video status retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      video_id:
+                        type: string
+                        format: uuid
+                      status:
+                        type: string
+                        enum: [uploading, processing, ready, error]
+                      progress:
+                        type: number
+                        minimum: 0
+                        maximum: 100
+                      error:
+                        type: string
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  video_id: 123e4567-e89b-12d3-a456-426614174000
+                  status: processing
+                  progress: 65
+                visual_feedback:
+                  icon: loader
+                  color: blue
+                  animation: spin
+                  vibration: false
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  #
+  # FibonRose API Endpoints
+  #
+  /verify-profile:
+    post:
+      tags:
+        - Trust
+      summary: Submit profile for verification
+      description: Submit user profile for trust verification
+      operationId: submitVerification
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [deaf_creator, interpreter, organization, business]
+                description:
+                  type: string
+                documents:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - type
+      responses:
+        '201':
+          description: Verification submission created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/VerificationSubmission'
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  id: 123e4567-e89b-12d3-a456-426614174000
+                  user_id: 123e4567-e89b-12d3-a456-426614174000
+                  type: deaf_creator
+                  status: pending
+                  submitted_at: 2025-05-14T07:16:23Z
+                  updated_at: 2025-05-14T07:16:23Z
+                  documents:
+                    - id: doc-1
+                      type: id_card
+                      url: https://example.com/documents/doc-1
+                visual_feedback:
+                  icon: check-circle
+                  color: green
+                  animation: pulse
+                  vibration: false
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /verify-profile/{submissionId}:
+    get:
+      tags:
+        - Trust
+      summary: Get verification submission
+      description: Retrieve details of a verification submission
+      operationId: getVerificationSubmission
+      parameters:
+        - name: submissionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the verification submission
+      responses:
+        '200':
+          description: Verification submission retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/VerificationSubmission'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /verify-profile/{submissionId}/update:
+    post:
+      tags:
+        - Trust
+      summary: Update verification submission
+      description: Update a verification submission with additional information
+      operationId: updateVerificationSubmission
+      parameters:
+        - name: submissionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the verification submission
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                notes:
+                  type: string
+                documents:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: Verification submission updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/VerificationSubmission'
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  id: 123e4567-e89b-12d3-a456-426614174000
+                  status: under_review
+                  updated_at: 2025-05-14T08:30:45Z
+                visual_feedback:
+                  icon: refresh-cw
+                  color: blue
+                  animation: pulse
+                  vibration: false
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /get-credibility-score:
+    get:
+      tags:
+        - Trust
+      summary: Get user credibility score
+      description: Retrieve the credibility score for a user
+      operationId: getCredibilityScore
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: string
+            format: uuid
+          description: ID of the user to check (defaults to current user if not provided)
+      responses:
+        '200':
+          description: Credibility score retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      user_id:
+                        type: string
+                        format: uuid
+                      score:
+                        type: number
+                        minimum: 0
+                        maximum: 100
+                      badges:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/TrustBadge'
+                      verified:
+                        type: boolean
+              example:
+                status: success
+                data:
+                  user_id: 123e4567-e89b-12d3-a456-426614174000
+                  score: 85
+                  badges:
+                    - id: badge-1
+                      name: Verified Deaf Creator
+                      description: This user is a verified deaf content creator
+                      image_url: https://example.com/badges/deaf-creator.png
+                      issuer: FibonRose
+                      issued_at: 2025-04-10T15:30:00Z
+                  verified: true
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /upload-proof:
+    post:
+      tags:
+        - Trust
+      summary: Upload verification proof
+      description: Upload documents or other proof for verification
+      operationId: uploadProof
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [id_card, certificate, license, video_proof, other]
+                description:
+                  type: string
+                file:
+                  type: string
+                  format: binary
+              required:
+                - type
+                - file
+      responses:
+        '201':
+          description: Proof uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                      url:
+                        type: string
+                        format: uri
+                      uploaded_at:
+                        type: string
+                        format: date-time
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  id: proof-123
+                  type: certificate
+                  url: https://example.com/proofs/proof-123
+                  uploaded_at: 2025-05-14T07:16:23Z
+                visual_feedback:
+                  icon: upload
+                  color: green
+                  animation: pulse
+                  vibration: false
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '413':
+          description: File too large
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /generate-badge:
+    get:
+      tags:
+        - Trust
+      summary: Generate trust badge
+      description: Generate a trust badge for a verified user
+      operationId: generateBadge
+      parameters:
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [deaf_creator, interpreter, organization, business]
+          description: Type of badge to generate
+      responses:
+        '200':
+          description: Badge generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/TrustBadge'
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  id: badge-123
+                  name: Verified Deaf Creator
+                  description: This user is a verified deaf content creator
+                  image_url: https://example.com/badges/deaf-creator.png
+                  criteria: Verified identity and deaf status
+                  issuer: FibonRose
+                  issued_at: 2025-05-14T07:16:23Z
+                  verification_url: https://verify.fibonrose.com/badge-123
+                visual_feedback:
+                  icon: award
+                  color: gold
+                  animation: shine
+                  vibration: true
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          description: User not eligible for badge
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                status: error
+                code: not_eligible
+                message: User is not eligible for this badge type
+                visual_feedback:
+                  icon: shield-off
+                  color: red
+                  animation: shake
+                  vibration: true
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  #
+  # Notification API Endpoints
+  #
+  /notifications:
+    get:
+      tags:
+        - Notifications
+      summary: Get user notifications
+      description: Retrieve notifications for the current user
+      operationId: getNotifications
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+          description: Number of items per page
+        - name: unread_only
+          in: query
+          schema:
+            type: boolean
+            default: false
+          description: Only return unread notifications
+      responses:
+        '200':
+          description: Notifications retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      notifications:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Notification'
+                      total:
+                        type: integer
+                      unread:
+                        type: integer
+                      page:
+                        type: integer
+                      pages:
+                        type: integer
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /notifications/{notificationId}/read:
+    post:
+      tags:
+        - Notifications
+      summary: Mark notification as read
+      description: Mark a specific notification as read
+      operationId: markNotificationRead
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the notification to mark as read
+      responses:
+        '200':
+          description: Notification marked as read successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/Notification'
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  id: 123e4567-e89b-12d3-a456-426614174000
+                  read: true
+                visual_feedback:
+                  icon: check
+                  color: green
+                  animation: none
+                  vibration: false
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /notifications/read-all:
+    post:
+      tags:
+        - Notifications
+      summary: Mark all notifications as read
+      description: Mark all notifications for the current user as read
+      operationId: markAllNotificationsRead
+      responses:
+        '200':
+          description: All notifications marked as read successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      count:
+                        type: integer
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  count: 15
+                visual_feedback:
+                  icon: check-all
+                  color: green
+                  animation: fade
+                  vibration: false
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /notifications/preferences:
+    get:
+      tags:
+        - Notifications
+      summary: Get notification preferences
+      description: Retrieve notification preferences for the current user
+      operationId: getNotificationPreferences
+      responses:
+        '200':
+          description: Notification preferences retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      email:
+                        type: boolean
+                      push:
+                        type: boolean
+                      in_app:
+                        type: boolean
+                      sms:
+                        type: boolean
+                      categories:
+                        type: object
+                        additionalProperties:
+                          type: boolean
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags:
+        - Notifications
+      summary: Update notification preferences
+      description: Update notification preferences for the current user
+      operationId: updateNotificationPreferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: boolean
+                push:
+                  type: boolean
+                in_app:
+                  type: boolean
+                sms:
+                  type: boolean
+                categories:
+                  type: object
+                  additionalProperties:
+                    type: boolean
+      responses:
+        '200':
+          description: Notification preferences updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      email:
+                        type: boolean
+                      push:
+                        type: boolean
+                      in_app:
+                        type: boolean
+                      sms:
+                        type: boolean
+                      categories:
+                        type: object
+                        additionalProperties:
+                          type: boolean
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  email: true
+                  push: true
+                  in_app: true
+                  sms: false
+                  categories:
+                    verification: true
+                    system: true
+                    content: false
+                visual_feedback:
+                  icon: bell
+                  color: green
+                  animation: pulse
+                  vibration: false
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  #
+  # Progress Tracking API Endpoints
+  #
+  /tasks:
+    post:
+      tags:
+        - Progress
+      summary: Create a new task
+      description: Create a new task in the progress tracking system
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                assigned_to:
+                  type: string
+                  format: uuid
+                due_date:
+                  type: string
+                  format: date
+              required:
+                - title
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/Task'
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  id: task-123
+                  title: Implement video processing
+                  description: Create the video processing pipeline
+                  status: not_started
+                  percent_complete: 0
+                  assigned_to: 123e4567-e89b-12d3-a456-426614174000
+                  due_date: 2025-06-01
+                  created_at: 2025-05-14T07:16:23Z
+                  updated_at: 2025-05-14T07:16:23Z
+                visual_feedback:
+                  icon: plus-circle
+                  color: green
+                  animation: pulse
+                  vibration: false
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags:
+        - Progress
+      summary: List tasks
+      description: Retrieve a list of tasks
+      operationId: listTasks
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [not_started, in_progress, review, completed]
+          description: Filter by task status
+        - name: assigned_to
+          in: query
+          schema:
+            type: string
+            format: uuid
+          description: Filter by assigned user
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+          description: Number of items per page
+      responses:
+        '200':
+          description: Tasks retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      tasks:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Task'
+                      total:
+                        type: integer
+                      page:
+                        type: integer
+                      pages:
+                        type: integer
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /tasks/{taskId}:
+    get:
+      tags:
+        - Progress
+      summary: Get task details
+      description: Retrieve details for a specific task
+      operationId: getTask
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the task to retrieve
+      responses:
+        '200':
+          description: Task details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    patch:
+      tags:
+        - Progress
+      summary: Update task status
+      description: Update the status and progress of a task
+      operationId: updateTask
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the task to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [not_started, in_progress, review, completed]
+                percent_complete:
+                  type: number
+                  minimum: 0
+                  maximum: 100
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    $ref: '#/components/schemas/Task'
+                  visual_feedback:
+                    $ref: '#/components/schemas/VisualFeedback'
+              example:
+                status: success
+                data:
+                  id: task-123
+                  status: in_progress
+                  percent_complete: 50
+                  updated_at: 2025-05-15T10:30:00Z
+                visual_feedback:
+                  icon: activity
+                  color: blue
+                  animation: pulse
+                  vibration: false
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /progress/summary:
+    get:
+      tags:
+        - Progress
+      summary: Get progress summary
+      description: Retrieve a summary of progress across all tasks
+      operationId: getProgressSummary
+      responses:
+        '200':
+          description: Progress summary retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  data:
+                    type: object
+                    properties:
+                      overall_progress:
+                        type: number
+                        minimum: 0
+                        maximum: 100
+                      tasks_total:
+                        type: integer
+                      tasks_completed:
+                        type: integer
+                      tasks_in_progress:
+                        type: integer
+                      tasks_not_started:
+                        type: integer
+                      tasks_overdue:
+                        type: integer
+                      recent_activity:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            task_id:
+                              type: string
+                            title:
+                              type: string
+                            action:
+                              type: string
+                            timestamp:
+                              type: string
+                              format: date-time
+              example:
+                status: success
+                data:
+                  overall_progress: 65
+                  tasks_total: 50
+                  tasks_completed: 30
+                  tasks_in_progress: 15
+                  tasks_not_started: 5
+                  tasks_overdue: 2
+                  recent_activity:
+                    - task_id: task-123
+                      title: Implement video processing
+                      action: status_updated
+                      timestamp: 2025-05-15T10:30:00Z
+        '401':
+          $ref: '#/components/responses/Unauthorize
