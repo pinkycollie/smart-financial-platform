@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Restructuring - DEAF FIRST Platform</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .process-step {
+            border: 2px solid var(--bs-border-color);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .process-step.active {
+            border-color: var(--bs-success);
+            background: rgba(25, 135, 84, 0.1);
+        }
+        .process-step.completed {
+            border-color: var(--bs-success);
+            background: rgba(25, 135, 84, 0.2);
+        }
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: var(--bs-primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .step-number.completed {
+            background: var(--bs-success);
+        }
+        .financial-metric {
+            background: var(--bs-dark);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--bs-border-color);
+        }
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--bs-primary);
+        }
+        .metric-improvement {
+            color: var(--bs-success);
+            font-size: 0.9rem;
+        }
+        .metric-warning {
+            color: var(--bs-warning);
+        }
+        .metric-danger {
+            color: var(--bs-danger);
+        }
+        .asl-support {
+            background: linear-gradient(45deg, #198754, #20c997);
+            border-radius: 8px;
+            padding: 15px;
+            color: white;
+            margin: 15px 0;
+        }
+        .progress-visual {
+            height: 8px;
+            background: var(--bs-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--bs-success), var(--bs-info));
+            transition: width 0.5s ease;
+        }
+        .debt-card {
+            border-left: 4px solid var(--bs-warning);
+            background: var(--bs-dark);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .debt-card.priority-high {
+            border-left-color: var(--bs-danger);
+        }
+        .debt-card.priority-low {
+            border-left-color: var(--bs-success);
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 20px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            background: var(--bs-primary);
+            border-radius: 50%;
+        }
+        .timeline-item.completed::before {
+            background: var(--bs-success);
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 15px;
+            width: 2px;
+            height: calc(100% + 5px);
+            background: var(--bs-border-color);
+        }
+        .timeline-item:last-child::after {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="display-4">
+                    <i class="fas fa-chart-line me-3"></i>
+                    Financial Restructuring
+                </h1>
+                <p class="lead">Clear process for debt restructuring, credit repair, and financial recovery with ASL support</p>
+            </div>
+        </div>
+
+        <!-- ASL Support Banner -->
+        <div class="asl-support">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h5><i class="fas fa-hands me-2"></i>ASL Support Available</h5>
+                    <p class="mb-0">Every step of the restructuring process includes ASL video explanations and live interpreter support</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button class="btn btn-light" onclick="requestASLSupport()">
+                        <i class="fas fa-video me-1"></i>Request ASL Support
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Health Overview -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-heartbeat me-2"></i>Financial Health Assessment</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <div class="financial-metric">
+                                    <div class="metric-value metric-warning">68%</div>
+                                    <div class="small">Debt-to-Income Ratio</div>
+                                    <div class="metric-improvement">Target: Below 36%</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="financial-metric">
+                                    <div class="metric-value metric-danger">580</div>
+                                    <div class="small">Credit Score</div>
+                                    <div class="metric-improvement">+50 points possible</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="financial-metric">
+                                    <div class="metric-value metric-danger">-$450</div>
+                                    <div class="small">Monthly Cash Flow</div>
+                                    <div class="metric-improvement">+$800 target</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="financial-metric">
+                                    <div class="metric-value metric-warning">35</div>
+                                    <div class="small">Financial Health Score</div>
+                                    <div class="metric-improvement">Target: 70+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Restructuring Process Steps -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2><i class="fas fa-route me-2"></i>Restructuring Process</h2>
+                <p class="text-muted">Step-by-step process with visual progress tracking and ASL support</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Step 1: Assessment -->
+                <div class="card process-step completed mb-3">
+                    <div class="step-number completed">1</div>
+                    <div class="card-body">
+                        <h5><i class="fas fa-clipboard-check me-2"></i>Financial Assessment</h5>
+                        <p>Comprehensive analysis of your financial situation</p>
+                        <div class="progress-visual mb-2">
+                            <div class="progress-fill" style="width: 100%"></div>
+                        </div>
+                        <small class="text-success">Completed - December 8, 2024</small>
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-outline-info me-2">
+                                <i class="fas fa-video me-1"></i>View ASL Summary
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-download me-1"></i>Download Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Planning -->
+                <div class="card process-step active mb-3">
+                    <div class="step-number">2</div>
+                    <div class="card-body">
+                        <h5><i class="fas fa-drafting-compass me-2"></i>Restructuring Plan Development</h5>
+                        <p>Creating your personalized debt restructuring strategy</p>
+                        <div class="progress-visual mb-2">
+                            <div class="progress-fill" style="width: 60%"></div>
+                        </div>
+                        <small class="text-info">In Progress - 60% Complete</small>
+                        <div class="mt-3">
+                            <h6>Current Tasks:</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Debt consolidation analysis</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Creditor contact information gathered</li>
+                                <li><i class="fas fa-spinner fa-spin text-primary me-2"></i>Negotiation strategies development</li>
+                                <li><i class="fas fa-clock text-muted me-2"></i>Payment plan optimization</li>
+                            </ul>
+                        </div>
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-primary me-2">
+                                <i class="fas fa-video me-1"></i>Watch ASL Explanation
+                            </button>
+                            <button class="btn btn-sm btn-outline-success">
+                                <i class="fas fa-calendar me-1"></i>Schedule Consultation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Negotiation -->
+                <div class="card process-step mb-3">
+                    <div class="step-number">3</div>
+                    <div class="card-body">
+                        <h5><i class="fas fa-handshake me-2"></i>Creditor Negotiations</h5>
+                        <p>Negotiating with creditors for better terms and payment plans</p>
+                        <div class="progress-visual mb-2">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <small class="text-muted">Scheduled to start - December 20, 2024</small>
+                        <div class="mt-3">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                ASL interpreter will be provided for all creditor calls
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Implementation -->
+                <div class="card process-step mb-3">
+                    <div class="step-number">4</div>
+                    <div class="card-body">
+                        <h5><i class="fas fa-rocket me-2"></i>Plan Implementation</h5>
+                        <p>Executing the restructuring plan and new payment arrangements</p>
+                        <div class="progress-visual mb-2">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <small class="text-muted">Estimated start - January 2025</small>
+                    </div>
+                </div>
+
+                <!-- Step 5: Monitoring -->
+                <div class="card process-step">
+                    <div class="step-number">5</div>
+                    <div class="card-body">
+                        <h5><i class="fas fa-chart-area me-2"></i>Progress Monitoring</h5>
+                        <p>Ongoing monitoring and adjustments to ensure success</p>
+                        <div class="progress-visual mb-2">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <small class="text-muted">Ongoing - 12 months</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Current Debts -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-list me-2"></i>Current Debts</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="debt-card priority-high">
+                            <div class="d-flex justify-content-between">
+                                <strong>Credit Card #1</strong>
+                                <span class="text-danger">High Priority</span>
+                            </div>
+                            <div class="small text-muted">Balance: $8,450 | APR: 24.99%</div>
+                            <div class="small">Min Payment: $285/month</div>
+                        </div>
+                        
+                        <div class="debt-card priority-high">
+                            <div class="d-flex justify-content-between">
+                                <strong>Personal Loan</strong>
+                                <span class="text-danger">High Priority</span>
+                            </div>
+                            <div class="small text-muted">Balance: $12,300 | APR: 18.5%</div>
+                            <div class="small">Min Payment: $410/month</div>
+                        </div>
+                        
+                        <div class="debt-card priority-low">
+                            <div class="d-flex justify-content-between">
+                                <strong>Auto Loan</strong>
+                                <span class="text-success">Low Priority</span>
+                            </div>
+                            <div class="small text-muted">Balance: $15,680 | APR: 4.9%</div>
+                            <div class="small">Payment: $298/month</div>
+                        </div>
+                        
+                        <div class="mt-3 text-center">
+                            <strong>Total Debt: $36,430</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-clock me-2"></i>Timeline</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline-item completed">
+                            <strong>Dec 8</strong> - Financial assessment completed
+                            <div class="small text-muted">All financial data collected and analyzed</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <strong>Dec 15</strong> - Plan finalization
+                            <div class="small text-muted">Complete restructuring strategy</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <strong>Dec 20</strong> - Begin negotiations
+                            <div class="small text-muted">Start creditor discussions</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <strong>Jan 5</strong> - Implementation start
+                            <div class="small text-muted">Begin new payment plans</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <strong>Ongoing</strong> - Monitor progress
+                            <div class="small text-muted">Track improvements monthly</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success Projections -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-trophy me-2"></i>Projected Outcomes</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Monthly Payment Reduction</span>
+                                <strong class="text-success">$320</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Interest Savings (Annual)</span>
+                                <strong class="text-success">$2,800</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Credit Score Improvement</span>
+                                <strong class="text-success">+75 points</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Debt-Free Timeline</span>
+                                <strong class="text-info">18 months</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-success mt-3">
+                            <small>
+                                <i class="fas fa-chart-line me-1"></i>
+                                Projected to save $12,000+ over restructuring period
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Quick Actions</h5>
+                        <div class="row">
+                            <div class="col-md-3 mb-2">
+                                <button class="btn btn-primary w-100" onclick="startASLConsultation()">
+                                    <i class="fas fa-video me-1"></i>ASL Consultation
+                                </button>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <button class="btn btn-success w-100" onclick="scheduleNegotiation()">
+                                    <i class="fas fa-handshake me-1"></i>Schedule Negotiation
+                                </button>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <button class="btn btn-info w-100" onclick="updateFinancials()">
+                                    <i class="fas fa-edit me-1"></i>Update Financials
+                                </button>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <button class="btn btn-secondary w-100" onclick="downloadProgress()">
+                                    <i class="fas fa-download me-1"></i>Download Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mini App Integration -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-mobile-alt me-2"></i>Mini App Commands</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Access your restructuring process via SMS, Telegram, Discord, or WhatsApp:</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li><code>/restructure status</code> - Check progress</li>
+                                    <li><code>/restructure next</code> - Next steps</li>
+                                    <li><code>/restructure help</code> - ASL support</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li><code>/debt summary</code> - Current debt status</li>
+                                    <li><code>/credit score</code> - Credit monitoring</li>
+                                    <li><code>/schedule call</code> - Book consultation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function requestASLSupport() {
+            // Simulate ASL support request
+            alert('ASL interpreter request submitted. You will be contacted within 15 minutes via your preferred communication method.');
+        }
+        
+        function startASLConsultation() {
+            // Simulate ASL consultation booking
+            window.open('/asl/consultation-booking', '_blank');
+        }
+        
+        function scheduleNegotiation() {
+            // Simulate negotiation scheduling
+            alert('Negotiation scheduling form opened. ASL interpreter will be automatically included.');
+        }
+        
+        function updateFinancials() {
+            // Simulate financial update
+            alert('Financial update form opened. Upload new documents or update income/expense information.');
+        }
+        
+        function downloadProgress() {
+            // Simulate progress report download
+            alert('Progress report generated and downloaded. ASL summary video link included.');
+        }
+        
+        // Simulate real-time updates
+        function updateProgress() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const currentWidth = parseInt(bar.style.width);
+                if (currentWidth < 100 && Math.random() > 0.8) {
+                    bar.style.width = (currentWidth + 1) + '%';
+                }
+            });
+        }
+        
+        // Update progress every 30 seconds (simulation)
+        setInterval(updateProgress, 30000);
+        
+        // Add visual feedback for interactions
+        document.querySelectorAll('.process-step').forEach(step => {
+            step.addEventListener('click', function() {
+                this.style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -265,6 +265,12 @@ def miniapps_dashboard():
     return render_template('miniapps_dashboard.html',
                           title='Mini Apps Dashboard - DEAF FIRST Platform')
 
+@app.route('/financial/restructuring')
+def financial_restructuring():
+    """Financial Restructuring Dashboard with ASL support"""
+    return render_template('financial_restructuring.html',
+                          title='Financial Restructuring - DEAF FIRST Platform')
+
 # Import models (needed for creating tables)
 import models
 import models_additions

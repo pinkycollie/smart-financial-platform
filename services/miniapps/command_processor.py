@@ -23,7 +23,10 @@ class MiniAppCommandProcessor:
             '/assistance': self._handle_assistance,
             '/question': self._handle_question,
             '/search': self._handle_search,
-            '/filemytaxes': self._handle_file_taxes
+            '/filemytaxes': self._handle_file_taxes,
+            '/restructure': self._handle_restructure,
+            '/debt': self._handle_debt,
+            '/credit': self._handle_credit
         }
         
         # Domain-specific command handlers
@@ -353,6 +356,175 @@ ASL video explanations available for all features.
             'commands': list(business_commands.keys()),
             'descriptions': business_commands
         }
+    
+    def _handle_restructuring_commands(self, sub_command: str, user_id: str, platform: str, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle financial restructuring commands"""
+        restructuring_commands = {
+            'status': 'Check current restructuring progress',
+            'start': 'Begin financial restructuring assessment',
+            'plan': 'View your restructuring plan',
+            'next': 'Get next steps in process',
+            'help': 'Connect with ASL restructuring support',
+            'timeline': 'View restructuring timeline',
+            'savings': 'See projected savings',
+            'negotiate': 'Schedule creditor negotiations'
+        }
+        
+        if sub_command == 'status':
+            return {
+                'status': 'success',
+                'response': 'Your restructuring is 60% complete. Currently in Phase 2: Plan Development.',
+                'current_phase': 'Plan Development',
+                'completion_percentage': 60,
+                'next_milestone': 'Creditor negotiations start Dec 20',
+                'visual_feedback': {
+                    'icon': 'chart-line',
+                    'color': 'blue',
+                    'animation': 'pulse',
+                    'vibration': False
+                },
+                'asl_summary_available': True
+            }
+        elif sub_command == 'start':
+            return {
+                'status': 'success',
+                'response': 'Starting financial assessment for restructuring. Please provide your financial information.',
+                'assessment_fields': [
+                    'Monthly income',
+                    'Monthly expenses', 
+                    'Total debt amount',
+                    'Current credit score',
+                    'Asset value'
+                ],
+                'asl_guidance_available': True,
+                'estimated_time': '15-20 minutes'
+            }
+        elif sub_command == 'plan':
+            return {
+                'status': 'success',
+                'response': 'Your restructuring plan includes debt consolidation and credit repair over 18 months.',
+                'plan_summary': {
+                    'type': 'Debt Consolidation + Credit Repair',
+                    'duration': '18 months',
+                    'projected_savings': '$12,000',
+                    'monthly_reduction': '$320'
+                },
+                'view_full_plan': '/financial/restructuring'
+            }
+        elif sub_command == 'next':
+            return {
+                'status': 'success',
+                'response': 'Next step: Complete negotiation strategy for Credit Card #1. ASL consultation available.',
+                'immediate_actions': [
+                    'Review creditor negotiation scripts',
+                    'Schedule ASL interpreter for calls',
+                    'Prepare financial hardship documentation'
+                ],
+                'deadline': 'December 15, 2024'
+            }
+        elif sub_command == 'savings':
+            return {
+                'status': 'success',
+                'response': 'Projected savings: $320/month payment reduction, $2,800 annual interest savings.',
+                'savings_breakdown': {
+                    'monthly_payment_reduction': '$320',
+                    'annual_interest_savings': '$2,800', 
+                    'total_projected_savings': '$12,000',
+                    'debt_free_timeline': '18 months'
+                }
+            }
+        else:
+            return {
+                'status': 'success',
+                'response': 'Available restructuring commands:',
+                'commands': list(restructuring_commands.keys()),
+                'descriptions': restructuring_commands
+            }
+    
+    def _handle_debt_commands(self, sub_command: str, user_id: str, platform: str, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle debt management commands"""
+        debt_commands = {
+            'summary': 'View all current debts',
+            'priority': 'See debt priority ranking',
+            'consolidation': 'Explore debt consolidation options',
+            'payment': 'Calculate minimum payments',
+            'snowball': 'Debt snowball strategy',
+            'avalanche': 'Debt avalanche strategy'
+        }
+        
+        if sub_command == 'summary':
+            return {
+                'status': 'success',
+                'response': 'Total debt: $36,430 across 3 accounts. Highest priority: Credit Card #1.',
+                'debt_accounts': [
+                    {'name': 'Credit Card #1', 'balance': '$8,450', 'rate': '24.99%', 'priority': 'High'},
+                    {'name': 'Personal Loan', 'balance': '$12,300', 'rate': '18.5%', 'priority': 'High'}, 
+                    {'name': 'Auto Loan', 'balance': '$15,680', 'rate': '4.9%', 'priority': 'Low'}
+                ],
+                'total_monthly_payments': '$993'
+            }
+        elif sub_command == 'priority':
+            return {
+                'status': 'success',
+                'response': 'Debt priority: 1. Credit Card #1 (24.99% APR), 2. Personal Loan (18.5% APR), 3. Auto Loan (4.9% APR)',
+                'priority_explanation': 'Ordered by interest rate (avalanche method)',
+                'asl_explanation_available': True
+            }
+        else:
+            return {
+                'status': 'success', 
+                'response': 'Available debt commands:',
+                'commands': list(debt_commands.keys()),
+                'descriptions': debt_commands
+            }
+    
+    def _handle_credit_commands(self, sub_command: str, user_id: str, platform: str, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle credit score and repair commands"""
+        credit_commands = {
+            'score': 'Check current credit score',
+            'report': 'Get credit report summary',
+            'repair': 'Start credit repair process',
+            'monitoring': 'Set up credit monitoring',
+            'improvement': 'Credit improvement strategies',
+            'disputes': 'File credit report disputes'
+        }
+        
+        if sub_command == 'score':
+            return {
+                'status': 'success',
+                'response': 'Current credit score: 580 (Fair). Improvement plan can increase by 50-100 points.',
+                'score_details': {
+                    'current_score': 580,
+                    'category': 'Fair',
+                    'improvement_potential': '50-100 points',
+                    'target_timeline': '6-12 months'
+                },
+                'factors_affecting': [
+                    'High credit utilization (68%)',
+                    'Recent missed payments',
+                    'High debt-to-income ratio'
+                ]
+            }
+        elif sub_command == 'repair':
+            return {
+                'status': 'success',
+                'response': 'Credit repair process includes dispute filing, payment optimization, and utilization reduction.',
+                'repair_steps': [
+                    'Order credit reports from all 3 bureaus',
+                    'Identify and dispute errors',
+                    'Optimize payment timing',
+                    'Reduce credit utilization below 30%'
+                ],
+                'estimated_timeline': '6-12 months',
+                'asl_support_available': True
+            }
+        else:
+            return {
+                'status': 'success',
+                'response': 'Available credit commands:',
+                'commands': list(credit_commands.keys()),
+                'descriptions': credit_commands
+            }
     
     def _handle_natural_language(self, query: str, user_id: str, platform: str, context: Dict[str, Any]) -> Dict[str, Any]:
         """Handle natural language queries"""
