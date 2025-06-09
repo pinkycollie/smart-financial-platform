@@ -271,6 +271,18 @@ def financial_restructuring():
     return render_template('financial_restructuring.html',
                           title='Financial Restructuring - DEAF FIRST Platform')
 
+@app.route('/webhooks/dashboard')
+def webhooks_dashboard():
+    """Webhook Management Dashboard"""
+    return render_template('webhooks_dashboard.html',
+                          title='Webhook Management - DEAF FIRST Platform')
+
+@app.route('/asl/video-player')
+def asl_video_player():
+    """ASL Video Player with Video.js integration"""
+    return render_template('asl_support/video_player.html',
+                          title='ASL Video Player - DEAF FIRST Platform')
+
 # Import models (needed for creating tables)
 import models
 import models_additions
