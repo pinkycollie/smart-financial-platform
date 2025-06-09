@@ -249,6 +249,79 @@ ASL video explanations available for all features.
             'asl_support': 'Available throughout process'
         }
     
+    def _handle_restructure(self, user_id: str, platform: str, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle financial restructuring main command"""
+        return {
+            'status': 'success',
+            'response': 'Financial restructuring status: 60% complete. Currently in Phase 2: Plan Development.',
+            'current_phase': 'Plan Development',
+            'completion_percentage': 60,
+            'next_milestone': 'Creditor negotiations start Dec 20',
+            'quick_commands': [
+                '/restructure status - Check progress',
+                '/debt summary - View all debts',
+                '/credit score - Check credit score'
+            ],
+            'visual_feedback': {
+                'icon': 'chart-line',
+                'color': 'blue',
+                'animation': 'pulse',
+                'vibration': False
+            },
+            'view_full_dashboard': '/financial/restructuring',
+            'asl_summary_available': True
+        }
+    
+    def _handle_debt(self, user_id: str, platform: str, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle debt management command"""
+        return {
+            'status': 'success',
+            'response': 'Total debt: $36,430 across 3 accounts. Highest priority: Credit Card #1 (24.99% APR).',
+            'debt_summary': {
+                'total_debt': '$36,430',
+                'accounts': 3,
+                'highest_rate': '24.99%',
+                'monthly_payments': '$993'
+            },
+            'priority_accounts': [
+                'Credit Card #1 - $8,450 @ 24.99%',
+                'Personal Loan - $12,300 @ 18.5%',
+                'Auto Loan - $15,680 @ 4.9%'
+            ],
+            'recommendations': [
+                'Consider debt consolidation',
+                'Focus on highest interest rate first',
+                'Explore payment reduction options'
+            ],
+            'asl_explanation_available': True
+        }
+    
+    def _handle_credit(self, user_id: str, platform: str, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle credit score command"""
+        return {
+            'status': 'success',
+            'response': 'Current credit score: 580 (Fair). Improvement plan can increase by 50-100 points in 6-12 months.',
+            'score_details': {
+                'current_score': 580,
+                'category': 'Fair',
+                'improvement_potential': '50-100 points',
+                'target_timeline': '6-12 months'
+            },
+            'improvement_factors': [
+                'Reduce credit utilization below 30%',
+                'Make all payments on time',
+                'Dispute errors on credit report',
+                'Consider credit building accounts'
+            ],
+            'visual_feedback': {
+                'icon': 'trending-up',
+                'color': 'orange',
+                'animation': 'fade',
+                'vibration': False
+            },
+            'asl_credit_education_available': True
+        }
+    
     def _handle_tax_commands(self, sub_command: str, user_id: str, platform: str, context: Dict[str, Any]) -> Dict[str, Any]:
         """Handle tax-specific commands"""
         tax_commands = {
