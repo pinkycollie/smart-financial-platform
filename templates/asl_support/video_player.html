@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASL Video Player - DEAF FIRST Platform</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* DEAF FIRST Video.js Theme */
+        .vjs-deaf-first-theme {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .vjs-deaf-first-theme .vjs-control-bar {
+            background: rgba(0, 0, 0, 0.9);
+            height: 60px;
+            border-top: 3px solid var(--bs-primary);
+        }
+        
+        .vjs-deaf-first-theme .vjs-big-play-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--bs-primary);
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .vjs-deaf-first-theme .vjs-big-play-button:hover {
+            background: var(--bs-primary);
+            transform: scale(1.1);
+            transition: all 0.3s ease;
+        }
+        
+        /* Visual Indicators */
+        .visual-indicators {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .play-indicator, .pause-indicator, .buffer-indicator {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            margin-bottom: 10px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .play-indicator {
+            background: var(--bs-success);
+        }
+        
+        .pause-indicator {
+            background: var(--bs-warning);
+        }
+        
+        .buffer-indicator {
+            background: var(--bs-info);
+        }
+        
+        .play-indicator.active,
+        .pause-indicator.active,
+        .buffer-indicator.active {
+            display: flex;
+        }
+        
+        .play-indicator::before {
+            content: "\f04b";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+        }
+        
+        .pause-indicator::before {
+            content: "\f04c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+        }
+        
+        .buffer-indicator::before {
+            content: "\f110";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            animation: spin 1s linear infinite;
+        }
+        
+        /* ASL Controls Panel */
+        .asl-controls-panel {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--bs-dark);
+            border-radius: 8px;
+            border: 1px solid var(--bs-border-color);
+            flex-wrap: wrap;
+        }
+        
+        .asl-controls-panel button {
+            background: var(--bs-secondary);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .asl-controls-panel button:hover {
+            background: var(--bs-primary);
+            transform: translateY(-2px);
+        }
+        
+        .asl-controls-panel button:focus {
+            outline: 3px solid var(--bs-info);
+            outline-offset: 2px;
+        }
+        
+        .asl-controls-panel button.active {
+            background: var(--bs-success);
+        }
+        
+        /* Speed Control */
+        .speed-display {
+            background: var(--bs-primary);
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        
+        /* High Contrast Mode */
+        .vjs-deaf-first-theme.high-contrast {
+            filter: contrast(150%) brightness(120%);
+        }
+        
+        .vjs-deaf-first-theme.high-contrast .vjs-control-bar {
+            background: black;
+            border-top: 5px solid yellow;
+        }
+        
+        .vjs-deaf-first-theme.high-contrast .vjs-big-play-button {
+            background: yellow;
+            color: black;
+            border-color: black;
+        }
+        
+        /* Transcript Overlay */
+        .vjs-transcript-overlay {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 16px;
+            line-height: 1.6;
+            border: 2px solid var(--bs-primary);
+        }
+        
+        .vjs-transcript-overlay.hidden {
+            display: none;
+        }
+        
+        .transcript-text {
+            margin: 0;
+        }
+        
+        .transcript-timestamp {
+            color: var(--bs-primary);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        /* Video Container */
+        .asl-video-container {
+            position: relative;
+            background: var(--bs-dark);
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid var(--bs-border-color);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .asl-controls-panel {
+                justify-content: center;
+            }
+            
+            .asl-controls-panel button {
+                flex: 1;
+                min-width: 120px;
+            }
+            
+            .vjs-deaf-first-theme .vjs-control-bar {
+                height: 50px;
+            }
+            
+            .visual-indicators {
+                top: 10px;
+                right: 10px;
+            }
+            
+            .vjs-transcript-overlay {
+                left: 10px;
+                right: 10px;
+                bottom: 70px;
+            }
+        }
+        
+        /* Keyboard Focus Indicators */
+        .vjs-deaf-first-theme .vjs-control:focus {
+            outline: 3px solid var(--bs-info);
+            outline-offset: 2px;
+        }
+        
+        /* Animation Keyframes */
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Video Quality Selector */
+        .quality-selector {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        .quality-btn {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--bs-primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        /* Loading Spinner */
+        .video-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 999;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--bs-primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col">
+                <h1><i class="fas fa-video me-2"></i>ASL Video Player</h1>
+                <p class="text-muted">Enhanced video player with full accessibility support for deaf and hard-of-hearing users</p>
+            </div>
+        </div>
+
+        <!-- Video Player Container -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="asl-video-container">
+                    <!-- Video Player -->
+                    <div class="video-container">
+                        <video
+                            id="asl-video-player"
+                            class="video-js vjs-default-skin vjs-deaf-first-theme"
+                            controls
+                            preload="auto"
+                            width="100%"
+                            height="400"
+                            poster="https://via.placeholder.com/800x450/1a1a1a/ffffff?text=ASL+Video+Player"
+                            data-setup='{}'>
+                            
+                            <!-- Video Sources -->
+                            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+                            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.webm" type="video/webm" />
+                            
+                            <!-- Captions -->
+                            <track kind="captions" src="/static/captions/sample-en.vtt" srclang="en" label="English" default />
+                            <track kind="descriptions" src="/static/captions/sample-asl.vtt" srclang="asl" label="ASL Description" />
+                            
+                            <!-- Fallback message -->
+                            <p class="vjs-no-js">
+                                To view this ASL video, please enable JavaScript or update your browser.
+                                <a href="https://videojs.com/html5-video-support/" target="_blank">
+                                    Learn more about video support
+                                </a>
+                            </p>
+                        </video>
+                        
+                        <!-- Quality Selector -->
+                        <div class="quality-selector">
+                            <button class="quality-btn" onclick="toggleQuality()">HD</button>
+                        </div>
+                        
+                        <!-- Visual Indicators -->
+                        <div class="visual-indicators" aria-live="polite">
+                            <div class="play-indicator" role="status" aria-label="Video playing"></div>
+                            <div class="pause-indicator" role="status" aria-label="Video paused"></div>
+                            <div class="buffer-indicator" role="status" aria-label="Video buffering"></div>
+                        </div>
+                        
+                        <!-- Loading Spinner -->
+                        <div class="video-loading" style="display: none;">
+                            <div class="loading-spinner"></div>
+                        </div>
+                        
+                        <!-- Transcript Overlay -->
+                        <div class="vjs-transcript-overlay hidden">
+                            <h6>Video Transcript</h6>
+                            <div class="transcript-content">
+                                <p class="transcript-text">
+                                    <span class="transcript-timestamp">00:00</span>
+                                    Welcome to the DEAF FIRST financial restructuring process.
+                                </p>
+                                <p class="transcript-text">
+                                    <span class="transcript-timestamp">00:05</span>
+                                    This video will guide you through debt consolidation strategies.
+                                </p>
+                                <p class="transcript-text">
+                                    <span class="transcript-timestamp">00:10</span>
+                                    Our ASL interpreters are available throughout the process.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ASL Controls Panel -->
+                    <div class="asl-controls-panel" aria-label="ASL Video Controls">
+                        <button class="btn-asl-speed" aria-label="Adjust ASL playback speed">
+                            <i class="fas fa-tachometer-alt"></i> Speed
+                            <span class="speed-display">1x</span>
+                        </button>
+                        <button class="btn-asl-captions" aria-label="Toggle captions">
+                            <i class="fas fa-closed-captioning"></i> Captions
+                        </button>
+                        <button class="btn-asl-transcript" aria-label="Show transcript">
+                            <i class="fas fa-file-text"></i> Transcript
+                        </button>
+                        <button class="btn-asl-fullscreen" aria-label="Enter fullscreen">
+                            <i class="fas fa-expand"></i> Full Screen
+                        </button>
+                        <button class="btn-asl-contrast" aria-label="Toggle high contrast">
+                            <i class="fas fa-adjust"></i> Contrast
+                        </button>
+                        <button class="btn-asl-loop" aria-label="Toggle video loop">
+                            <i class="fas fa-redo"></i> Loop
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar Controls -->
+            <div class="col-lg-4">
+                <!-- Video Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-info-circle me-2"></i>Video Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Financial Restructuring: Debt Consolidation Basics</h6>
+                        <p class="small text-muted">Learn the fundamentals of debt consolidation with ASL interpretation</p>
+                        <div class="mb-2">
+                            <strong>Duration:</strong> 8:45
+                        </div>
+                        <div class="mb-2">
+                            <strong>Language:</strong> ASL with English captions
+                        </div>
+                        <div class="mb-2">
+                            <strong>Quality:</strong> 1080p HD
+                        </div>
+                        <div class="mb-2">
+                            <strong>Interpreter:</strong> Certified ASL Professional
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Accessibility Features -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-universal-access me-2"></i>Accessibility Features</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="enableCaptions" checked>
+                            <label class="form-check-label" for="enableCaptions">
+                                Closed Captions
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="enableTranscript">
+                            <label class="form-check-label" for="enableTranscript">
+                                Show Transcript
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="enableVisualAlerts" checked>
+                            <label class="form-check-label" for="enableVisualAlerts">
+                                Visual Play/Pause Alerts
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="enableHighContrast">
+                            <label class="form-check-label" for="enableHighContrast">
+                                High Contrast Mode
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="enableLoop">
+                            <label class="form-check-label" for="enableLoop">
+                                Auto Loop Video
+                            </label>
+                        </div>
+                        
+                        <label class="form-label">Preferred Playback Speed:</label>
+                        <select class="form-select" id="speedSelector">
+                            <option value="0.25">0.25x (Very Slow)</option>
+                            <option value="0.5">0.5x (Slow)</option>
+                            <option value="0.75">0.75x (Slightly Slow)</option>
+                            <option value="1" selected>1x (Normal)</option>
+                            <option value="1.25">1.25x (Slightly Fast)</option>
+                            <option value="1.5">1.5x (Fast)</option>
+                            <option value="2">2x (Very Fast)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Keyboard Shortcuts -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-keyboard me-2"></i>Keyboard Shortcuts</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="small">
+                            <div class="mb-1"><kbd>Space</kbd> Play/Pause</div>
+                            <div class="mb-1"><kbd>←</kbd> Seek backward 10s</div>
+                            <div class="mb-1"><kbd>→</kbd> Seek forward 10s</div>
+                            <div class="mb-1"><kbd>↑</kbd> Increase speed</div>
+                            <div class="mb-1"><kbd>↓</kbd> Decrease speed</div>
+                            <div class="mb-1"><kbd>C</kbd> Toggle captions</div>
+                            <div class="mb-1"><kbd>T</kbd> Toggle transcript</div>
+                            <div class="mb-1"><kbd>F</kbd> Toggle fullscreen</div>
+                            <div class="mb-1"><kbd>M</kbd> Mute/unmute</div>
+                            <div class="mb-1"><kbd>Esc</kbd> Exit fullscreen</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Initialize Video.js with DEAF FIRST accessibility features
+        document.addEventListener('DOMContentLoaded', function() {
+            const player = videojs('asl-video-player', {
+                playbackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2],
+                fluid: true,
+                responsive: true,
+                controls: true,
+                preload: 'metadata',
+                language: 'en',
+                textTrackDisplay: true,
+                textTrackSettings: true
+            });
+            
+            // Add deaf-specific event handlers
+            player.ready(function() {
+                console.log('ASL Video Player ready');
+                
+                // Visual indicators for play/pause
+                player.on('play', function() {
+                    if (document.getElementById('enableVisualAlerts').checked) {
+                        showVisualIndicator('play');
+                    }
+                    announceToScreenReader('Video playing');
+                });
+                
+                player.on('pause', function() {
+                    if (document.getElementById('enableVisualAlerts').checked) {
+                        showVisualIndicator('pause');
+                    }
+                    announceToScreenReader('Video paused');
+                });
+                
+                player.on('waiting', function() {
+                    showVisualIndicator('buffer');
+                    document.querySelector('.video-loading').style.display = 'block';
+                });
+                
+                player.on('canplay', function() {
+                    hideVisualIndicators();
+                    document.querySelector('.video-loading').style.display = 'none';
+                });
+                
+                // Speed change indicator
+                player.on('ratechange', function() {
+                    const speed = player.playbackRate();
+                    document.querySelector('.speed-display').textContent = speed + 'x';
+                    announceToScreenReader(`Speed changed to ${speed}x`);
+                });
+                
+                // Enhanced keyboard controls
+                player.on('keydown', function(event) {
+                    switch(event.which) {
+                        case 67: // 'C' key for captions
+                            toggleCaptions();
+                            event.preventDefault();
+                            break;
+                        case 84: // 'T' key for transcript
+                            toggleTranscript();
+                            event.preventDefault();
+                            break;
+                        case 38: // Up arrow - increase speed
+                            increasePlaybackSpeed();
+                            event.preventDefault();
+                            break;
+                        case 40: // Down arrow - decrease speed
+                            decreasePlaybackSpeed();
+                            event.preventDefault();
+                            break;
+                    }
+                });
+            });
+            
+            // Visual indicator functions
+            function showVisualIndicator(type) {
+                const indicators = document.querySelectorAll('.visual-indicators > div');
+                indicators.forEach(indicator => indicator.classList.remove('active'));
+                
+                const targetIndicator = document.querySelector(`.${type}-indicator`);
+                if (targetIndicator) {
+                    targetIndicator.classList.add('active');
+                    setTimeout(() => {
+                        targetIndicator.classList.remove('active');
+                    }, 2000);
+                }
+            }
+            
+            function hideVisualIndicators() {
+                const indicators = document.querySelectorAll('.visual-indicators > div');
+                indicators.forEach(indicator => indicator.classList.remove('active'));
+            }
+            
+            function announceToScreenReader(message) {
+                const announcement = document.createElement('div');
+                announcement.setAttribute('aria-live', 'polite');
+                announcement.setAttribute('aria-atomic', 'true');
+                announcement.className = 'visually-hidden';
+                announcement.textContent = message;
+                document.body.appendChild(announcement);
+                
+                setTimeout(() => {
+                    document.body.removeChild(announcement);
+                }, 1000);
+            }
+            
+            function toggleCaptions() {
+                const tracks = player.textTracks();
+                for (let i = 0; i < tracks.length; i++) {
+                    const track = tracks[i];
+                    if (track.kind === 'captions') {
+                        track.mode = track.mode === 'showing' ? 'hidden' : 'showing';
+                        document.querySelector('.btn-asl-captions').classList.toggle('active');
+                        announceToScreenReader(track.mode === 'showing' ? 'Captions enabled' : 'Captions disabled');
+                        break;
+                    }
+                }
+            }
+            
+            function toggleTranscript() {
+                const transcript = document.querySelector('.vjs-transcript-overlay');
+                transcript.classList.toggle('hidden');
+                document.querySelector('.btn-asl-transcript').classList.toggle('active');
+                announceToScreenReader(transcript.classList.contains('hidden') ? 'Transcript hidden' : 'Transcript visible');
+            }
+            
+            function increasePlaybackSpeed() {
+                const currentRate = player.playbackRate();
+                const rates = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
+                const currentIndex = rates.indexOf(currentRate);
+                if (currentIndex < rates.length - 1) {
+                    player.playbackRate(rates[currentIndex + 1]);
+                }
+            }
+            
+            function decreasePlaybackSpeed() {
+                const currentRate = player.playbackRate();
+                const rates = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
+                const currentIndex = rates.indexOf(currentRate);
+                if (currentIndex > 0) {
+                    player.playbackRate(rates[currentIndex - 1]);
+                }
+            }
+            
+            // ASL Controls Panel Event Handlers
+            document.querySelector('.btn-asl-speed').addEventListener('click', function() {
+                increasePlaybackSpeed();
+            });
+            
+            document.querySelector('.btn-asl-captions').addEventListener('click', toggleCaptions);
+            
+            document.querySelector('.btn-asl-transcript').addEventListener('click', toggleTranscript);
+            
+            document.querySelector('.btn-asl-fullscreen').addEventListener('click', function() {
+                if (player.isFullscreen()) {
+                    player.exitFullscreen();
+                } else {
+                    player.requestFullscreen();
+                }
+            });
+            
+            document.querySelector('.btn-asl-contrast').addEventListener('click', function() {
+                document.querySelector('#asl-video-player').classList.toggle('high-contrast');
+                this.classList.toggle('active');
+            });
+            
+            document.querySelector('.btn-asl-loop').addEventListener('click', function() {
+                player.loop(!player.loop());
+                this.classList.toggle('active');
+                announceToScreenReader(player.loop() ? 'Loop enabled' : 'Loop disabled');
+            });
+            
+            // Sidebar controls
+            document.getElementById('speedSelector').addEventListener('change', function() {
+                player.playbackRate(parseFloat(this.value));
+            });
+            
+            document.getElementById('enableCaptions').addEventListener('change', function() {
+                if (this.checked) {
+                    toggleCaptions();
+                }
+            });
+            
+            document.getElementById('enableTranscript').addEventListener('change', function() {
+                const transcript = document.querySelector('.vjs-transcript-overlay');
+                if (this.checked && transcript.classList.contains('hidden')) {
+                    toggleTranscript();
+                } else if (!this.checked && !transcript.classList.contains('hidden')) {
+                    toggleTranscript();
+                }
+            });
+            
+            document.getElementById('enableHighContrast').addEventListener('change', function() {
+                document.querySelector('#asl-video-player').classList.toggle('high-contrast', this.checked);
+            });
+            
+            document.getElementById('enableLoop').addEventListener('change', function() {
+                player.loop(this.checked);
+            });
+            
+            // Save user preferences
+            player.on('ratechange', function() {
+                localStorage.setItem('asl_preferred_speed', player.playbackRate());
+            });
+            
+            // Load saved preferences
+            const savedSpeed = localStorage.getItem('asl_preferred_speed');
+            if (savedSpeed) {
+                player.ready(() => {
+                    player.playbackRate(parseFloat(savedSpeed));
+                    document.getElementById('speedSelector').value = savedSpeed;
+                });
+            }
+        });
+        
+        function toggleQuality() {
+            // Quality toggle functionality
+            const btn = document.querySelector('.quality-btn');
+            btn.textContent = btn.textContent === 'HD' ? 'SD' : 'HD';
+        }
+    </script>
+</body>
+</html>

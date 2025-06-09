@@ -446,6 +446,14 @@ try:
 except Exception as e:
     app.logger.error(f"Failed to register mini apps API: {e}")
 
+# Register webhooks API
+try:
+    from api.webhooks import webhooks_bp
+    app.register_blueprint(webhooks_bp)
+    app.logger.info("Webhooks API registered")
+except Exception as e:
+    app.logger.error(f"Failed to register webhooks API: {e}")
+
 # Routes already defined above
 # No need to redefine
 

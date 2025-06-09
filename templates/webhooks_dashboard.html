@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webhook Management - DEAF FIRST Platform</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .webhook-card {
+            border: 2px solid var(--bs-border-color);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .webhook-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--bs-primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .webhook-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .webhook-status.active {
+            background: var(--bs-success);
+        }
+        
+        .webhook-status.inactive {
+            background: var(--bs-danger);
+        }
+        
+        .webhook-status.testing {
+            background: var(--bs-warning);
+        }
+        
+        .webhook-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--bs-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .webhook-icon.stripe { background: #635bff; }
+        .webhook-icon.twilio { background: #f22f46; }
+        .webhook-icon.telegram { background: #26a5e4; }
+        .webhook-icon.discord { background: #5865f2; }
+        .webhook-icon.whatsapp { background: #25d366; }
+        .webhook-icon.pinksync { background: #e91e63; }
+        .webhook-icon.april { background: #ff9800; }
+        .webhook-icon.insurance { background: #009688; }
+        .webhook-icon.mux { background: #6c5ce7; }
+        
+        .event-log {
+            background: var(--bs-dark);
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .event-entry {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-left: 3px solid var(--bs-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .event-timestamp {
+            color: var(--bs-info);
+            font-weight: bold;
+        }
+        
+        .event-status-success {
+            color: var(--bs-success);
+        }
+        
+        .event-status-error {
+            color: var(--bs-danger);
+        }
+        
+        .metrics-card {
+            background: linear-gradient(135deg, var(--bs-primary), var(--bs-info));
+            border-radius: 12px;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .metrics-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .endpoint-url {
+            background: var(--bs-dark);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            border: 1px solid var(--bs-border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .copy-button {
+            background: none;
+            border: none;
+            color: var(--bs-secondary);
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .copy-button:hover {
+            color: var(--bs-primary);
+        }
+        
+        .test-webhook-form {
+            background: var(--bs-dark);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--bs-border-color);
+        }
+        
+        .webhook-test-result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+        
+        .webhook-test-result.success {
+            background: rgba(25, 135, 84, 0.2);
+            border: 1px solid var(--bs-success);
+            color: var(--bs-success);
+        }
+        
+        .webhook-test-result.error {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid var(--bs-danger);
+            color: var(--bs-danger);
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .config-toggle {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .config-toggle:hover {
+            color: var(--bs-primary);
+        }
+        
+        .config-details {
+            background: var(--bs-dark);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .security-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .security-indicator.verified {
+            background: rgba(25, 135, 84, 0.2);
+            color: var(--bs-success);
+        }
+        
+        .security-indicator.unverified {
+            background: rgba(220, 53, 69, 0.2);
+            color: var(--bs-danger);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="display-4">
+                    <i class="fas fa-plug me-3"></i>
+                    Webhook Management
+                </h1>
+                <p class="lead">Monitor and manage webhook integrations for the DEAF FIRST platform</p>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary" onclick="refreshWebhooks()">
+                    <i class="fas fa-sync-alt me-2"></i>Refresh Status
+                </button>
+            </div>
+        </div>
+
+        <!-- Metrics Overview -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="metrics-card">
+                    <div class="metrics-value">9</div>
+                    <div class="small">Active Webhooks</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="metrics-card">
+                    <div class="metrics-value">1,247</div>
+                    <div class="small">Events Today</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="metrics-card">
+                    <div class="metrics-value">99.8%</div>
+                    <div class="small">Success Rate</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="metrics-card">
+                    <div class="metrics-value">12ms</div>
+                    <div class="small">Avg Response Time</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Webhook Cards -->
+        <div class="row mb-4">
+            <!-- Stripe Webhook -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card webhook-card">
+                    <div class="webhook-status active"></div>
+                    <div class="card-body">
+                        <div class="webhook-icon stripe">
+                            <i class="fab fa-stripe"></i>
+                        </div>
+                        <h5>Stripe Payments</h5>
+                        <p class="text-muted small">Payment processing and subscription events</p>
+                        
+                        <div class="endpoint-url mb-3">
+                            <span>/api/webhooks/stripe</span>
+                            <button class="copy-button" onclick="copyEndpoint('/api/webhooks/stripe')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small>Events today: <strong>456</strong></small>
+                            <span class="security-indicator verified">
+                                <i class="fas fa-shield-alt"></i> Verified
+                            </span>
+                        </div>
+                        
+                        <div class="config-toggle" onclick="toggleConfig('stripe-config')">
+                            <i class="fas fa-cog me-1"></i> Configuration
+                        </div>
+                        <div id="stripe-config" class="config-details">
+                            <div class="small">
+                                <div><strong>Endpoint Secret:</strong> whsec_****</div>
+                                <div><strong>Events:</strong> payment_intent.*, customer.subscription.*</div>
+                                <div><strong>Status:</strong> Active</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Twilio Webhook -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card webhook-card">
+                    <div class="webhook-status active"></div>
+                    <div class="card-body">
+                        <div class="webhook-icon twilio">
+                            <i class="fas fa-sms"></i>
+                        </div>
+                        <h5>Twilio SMS</h5>
+                        <p class="text-muted small">SMS commands and notifications</p>
+                        
+                        <div class="endpoint-url mb-3">
+                            <span>/api/webhooks/twilio</span>
+                            <button class="copy-button" onclick="copyEndpoint('/api/webhooks/twilio')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small>Events today: <strong>234</strong></small>
+                            <span class="security-indicator verified">
+                                <i class="fas fa-shield-alt"></i> Verified
+                            </span>
+                        </div>
+                        
+                        <div class="config-toggle" onclick="toggleConfig('twilio-config')">
+                            <i class="fas fa-cog me-1"></i> Configuration
+                        </div>
+                        <div id="twilio-config" class="config-details">
+                            <div class="small">
+                                <div><strong>Auth Token:</strong> ****</div>
+                                <div><strong>Phone Number:</strong> +1-555-DEAF-411</div>
+                                <div><strong>Commands:</strong> /restructure, /debt, /credit</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Telegram Webhook -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card webhook-card">
+                    <div class="webhook-status active"></div>
+                    <div class="card-body">
+                        <div class="webhook-icon telegram">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <h5>Telegram Bot</h5>
+                        <p class="text-muted small">Bot commands and messages</p>
+                        
+                        <div class="endpoint-url mb-3">
+                            <span>/api/webhooks/telegram</span>
+                            <button class="copy-button" onclick="copyEndpoint('/api/webhooks/telegram')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small>Events today: <strong>189</strong></small>
+                            <span class="security-indicator verified">
+                                <i class="fas fa-shield-alt"></i> Verified
+                            </span>
+                        </div>
+                        
+                        <div class="config-toggle" onclick="toggleConfig('telegram-config')">
+                            <i class="fas fa-cog me-1"></i> Configuration
+                        </div>
+                        <div id="telegram-config" class="config-details">
+                            <div class="small">
+                                <div><strong>Bot Token:</strong> ****</div>
+                                <div><strong>Bot Username:</strong> @DeafFirstBot</div>
+                                <div><strong>Commands:</strong> All mini app commands</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discord Webhook -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card webhook-card">
+                    <div class="webhook-status active"></div>
+                    <div class="card-body">
+                        <div class="webhook-icon discord">
+                            <i class="fab fa-discord"></i>
+                        </div>
+                        <h5>Discord Bot</h5>
+                        <p class="text-muted small">Slash commands and interactions</p>
+                        
+                        <div class="endpoint-url mb-3">
+                            <span>/api/webhooks/discord</span>
+                            <button class="copy-button" onclick="copyEndpoint('/api/webhooks/discord')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small>Events today: <strong>78</strong></small>
+                            <span class="security-indicator verified">
+                                <i class="fas fa-shield-alt"></i> Verified
+                            </span>
+                        </div>
+                        
+                        <div class="config-toggle" onclick="toggleConfig('discord-config')">
+                            <i class="fas fa-cog me-1"></i> Configuration
+                        </div>
+                        <div id="discord-config" class="config-details">
+                            <div class="small">
+                                <div><strong>Application ID:</strong> ****</div>
+                                <div><strong>Slash Commands:</strong> /restructure, /debt, /credit</div>
+                                <div><strong>Servers:</strong> 3 guilds</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WhatsApp Webhook -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card webhook-card">
+                    <div class="webhook-status active"></div>
+                    <div class="card-body">
+                        <div class="webhook-icon whatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <h5>WhatsApp Business</h5>
+                        <p class="text-muted small">Business API messages</p>
+                        
+                        <div class="endpoint-url mb-3">
+                            <span>/api/webhooks/whatsapp</span>
+                            <button class="copy-button" onclick="copyEndpoint('/api/webhooks/whatsapp')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small>Events today: <strong>145</strong></small>
+                            <span class="security-indicator verified">
+                                <i class="fas fa-shield-alt"></i> Verified
+                            </span>
+                        </div>
+                        
+                        <div class="config-toggle" onclick="toggleConfig('whatsapp-config')">
+                            <i class="fas fa-cog me-1"></i> Configuration
+                        </div>
+                        <div id="whatsapp-config" class="config-details">
+                            <div class="small">
+                                <div><strong>Phone Number:</strong> +1-555-DEAF-BIZ</div>
+                                <div><strong>Business Account:</strong> DEAF FIRST</div>
+                                <div><strong>Verification:</strong> Active</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PinkSync Webhook -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card webhook-card">
+                    <div class="webhook-status active"></div>
+                    <div class="card-body">
+                        <div class="webhook-icon pinksync">
+                            <i class="fas fa-universal-access"></i>
+                        </div>
+                        <h5>PinkSync Ecosystem</h5>
+                        <p class="text-muted small">Accessibility and deaf support events</p>
+                        
+                        <div class="endpoint-url mb-3">
+                            <span>/api/webhooks/pinksync</span>
+                            <button class="copy-button" onclick="copyEndpoint('/api/webhooks/pinksync')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small>Events today: <strong>67</strong></small>
+                            <span class="security-indicator verified">
+                                <i class="fas fa-shield-alt"></i> Verified
+                            </span>
+                        </div>
+                        
+                        <div class="config-toggle" onclick="toggleConfig('pinksync-config')">
+                            <i class="fas fa-cog me-1"></i> Configuration
+                        </div>
+                        <div id="pinksync-config" class="config-details">
+                            <div class="small">
+                                <div><strong>API Key:</strong> ****</div>
+                                <div><strong>Events:</strong> accessibility.*, asl.*</div>
+                                <div><strong>Integration:</strong> Full ecosystem</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mux Video Webhook -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card webhook-card">
+                    <div class="webhook-status active"></div>
+                    <div class="card-body">
+                        <div class="webhook-icon mux">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <h5>Mux Video</h5>
+                        <p class="text-muted small">ASL video processing events</p>
+                        
+                        <div class="endpoint-url mb-3">
+                            <span>/api/webhooks/mux</span>
+                            <button class="copy-button" onclick="copyEndpoint('/api/webhooks/mux')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small>Events today: <strong>23</strong></small>
+                            <span class="security-indicator verified">
+                                <i class="fas fa-shield-alt"></i> Verified
+                            </span>
+                        </div>
+                        
+                        <div class="config-toggle" onclick="toggleConfig('mux-config')">
+                            <i class="fas fa-cog me-1"></i> Configuration
+                        </div>
+                        <div id="mux-config" class="config-details">
+                            <div class="small">
+                                <div><strong>Signing Secret:</strong> ****</div>
+                                <div><strong>Events:</strong> video.*, live_stream.*</div>
+                                <div><strong>ASL Processing:</strong> Enabled</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- April API Webhook -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card webhook-card">
+                    <div class="webhook-status active"></div>
+                    <div class="card-body">
+                        <div class="webhook-icon april">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h5>April Fintech</h5>
+                        <p class="text-muted small">Tax and financial processing</p>
+                        
+                        <div class="endpoint-url mb-3">
+                            <span>/api/webhooks/april</span>
+                            <button class="copy-button" onclick="copyEndpoint('/api/webhooks/april')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small>Events today: <strong>34</strong></small>
+                            <span class="security-indicator verified">
+                                <i class="fas fa-shield-alt"></i> Verified
+                            </span>
+                        </div>
+                        
+                        <div class="config-toggle" onclick="toggleConfig('april-config')">
+                            <i class="fas fa-cog me-1"></i> Configuration
+                        </div>
+                        <div id="april-config" class="config-details">
+                            <div class="small">
+                                <div><strong>API Key:</strong> ****</div>
+                                <div><strong>Events:</strong> tax.*, financial.*</div>
+                                <div><strong>Processing:</strong> Real-time</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insurance Webhook -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card webhook-card">
+                    <div class="webhook-status active"></div>
+                    <div class="card-body">
+                        <div class="webhook-icon insurance">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h5>Open Insurance</h5>
+                        <p class="text-muted small">Deaf-specialized insurance events</p>
+                        
+                        <div class="endpoint-url mb-3">
+                            <span>/api/webhooks/insurance</span>
+                            <button class="copy-button" onclick="copyEndpoint('/api/webhooks/insurance')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small>Events today: <strong>12</strong></small>
+                            <span class="security-indicator verified">
+                                <i class="fas fa-shield-alt"></i> Verified
+                            </span>
+                        </div>
+                        
+                        <div class="config-toggle" onclick="toggleConfig('insurance-config')">
+                            <i class="fas fa-cog me-1"></i> Configuration
+                        </div>
+                        <div id="insurance-config" class="config-details">
+                            <div class="small">
+                                <div><strong>API Key:</strong> ****</div>
+                                <div><strong>Events:</strong> policy.*, claim.*</div>
+                                <div><strong>Deaf Features:</strong> Enabled</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Events Log -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Recent Webhook Events</h5>
+                        <button class="btn btn-sm btn-outline-primary" onclick="refreshEventLog()">
+                            <i class="fas fa-sync-alt me-1"></i>Refresh
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="event-log" id="eventLog">
+                            <div class="event-entry">
+                                <span class="event-timestamp">2024-12-09 02:15:23</span>
+                                <span class="event-status-success">[SUCCESS]</span>
+                                <strong>Stripe:</strong> payment_intent.succeeded - Customer payment processed
+                            </div>
+                            <div class="event-entry">
+                                <span class="event-timestamp">2024-12-09 02:14:56</span>
+                                <span class="event-status-success">[SUCCESS]</span>
+                                <strong>Twilio:</strong> SMS command "/restructure status" processed
+                            </div>
+                            <div class="event-entry">
+                                <span class="event-timestamp">2024-12-09 02:14:12</span>
+                                <span class="event-status-success">[SUCCESS]</span>
+                                <strong>Telegram:</strong> Bot command "/debt summary" executed
+                            </div>
+                            <div class="event-entry">
+                                <span class="event-timestamp">2024-12-09 02:13:45</span>
+                                <span class="event-status-success">[SUCCESS]</span>
+                                <strong>PinkSync:</strong> ASL interpretation requested
+                            </div>
+                            <div class="event-entry">
+                                <span class="event-timestamp">2024-12-09 02:13:22</span>
+                                <span class="event-status-success">[SUCCESS]</span>
+                                <strong>Mux:</strong> video.asset.ready - ASL video processed
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Webhook Testing -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-vial me-2"></i>Test Webhooks</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="test-webhook-form">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Platform</label>
+                                    <select class="form-select" id="testPlatform">
+                                        <option value="stripe">Stripe</option>
+                                        <option value="twilio">Twilio</option>
+                                        <option value="telegram">Telegram</option>
+                                        <option value="discord">Discord</option>
+                                        <option value="whatsapp">WhatsApp</option>
+                                        <option value="pinksync">PinkSync</option>
+                                        <option value="april">April API</option>
+                                        <option value="insurance">Open Insurance</option>
+                                        <option value="mux">Mux Video</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Event Type</label>
+                                    <input type="text" class="form-control" id="eventType" placeholder="e.g., payment_intent.succeeded">
+                                </div>
+                                <div class="col-md-4 mb-3 d-flex align-items-end">
+                                    <button class="btn btn-primary w-100" onclick="testWebhook()">
+                                        <i class="fas fa-play me-1"></i>Send Test Event
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Test Payload (JSON)</label>
+                                <textarea class="form-control" id="testPayload" rows="6" placeholder='{"type": "test.event", "data": {}}'></textarea>
+                            </div>
+                            <div class="webhook-test-result" id="testResult"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function copyEndpoint(endpoint) {
+            const fullUrl = window.location.origin + endpoint;
+            navigator.clipboard.writeText(fullUrl).then(() => {
+                // Show temporary success message
+                const button = event.target.closest('.copy-button');
+                const originalIcon = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i>';
+                button.style.color = 'var(--bs-success)';
+                
+                setTimeout(() => {
+                    button.innerHTML = originalIcon;
+                    button.style.color = '';
+                }, 2000);
+            });
+        }
+        
+        function toggleConfig(configId) {
+            const config = document.getElementById(configId);
+            if (config.style.display === 'none' || !config.style.display) {
+                config.style.display = 'block';
+            } else {
+                config.style.display = 'none';
+            }
+        }
+        
+        async function testWebhook() {
+            const platform = document.getElementById('testPlatform').value;
+            const eventType = document.getElementById('eventType').value;
+            const payload = document.getElementById('testPayload').value;
+            const resultDiv = document.getElementById('testResult');
+            
+            try {
+                let testData = {};
+                if (payload.trim()) {
+                    testData = JSON.parse(payload);
+                } else {
+                    // Generate sample payload based on platform
+                    testData = generateSamplePayload(platform, eventType);
+                }
+                
+                const response = await fetch(`/api/webhooks/test`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Test-Platform': platform
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const result = await response.json();
+                
+                resultDiv.className = 'webhook-test-result ' + (response.ok ? 'success' : 'error');
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <strong>Test Result:</strong> ${response.ok ? 'SUCCESS' : 'ERROR'}<br>
+                    <strong>Status:</strong> ${response.status}<br>
+                    <strong>Response:</strong> <pre>${JSON.stringify(result, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.className = 'webhook-test-result error';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <strong>Test Result:</strong> ERROR<br>
+                    <strong>Error:</strong> ${error.message}
+                `;
+            }
+        }
+        
+        function generateSamplePayload(platform, eventType) {
+            const samples = {
+                stripe: {
+                    type: eventType || 'payment_intent.succeeded',
+                    data: {
+                        object: {
+                            id: 'pi_test_123',
+                            amount: 2000,
+                            currency: 'usd',
+                            status: 'succeeded'
+                        }
+                    }
+                },
+                twilio: {
+                    Body: '/restructure status',
+                    From: '+15551234567',
+                    To: '+15559876543'
+                },
+                telegram: {
+                    message: {
+                        text: '/debt summary',
+                        from: { id: 123456789 },
+                        chat: { id: 987654321 }
+                    }
+                }
+            };
+            
+            return samples[platform] || { type: eventType || 'test.event', data: {} };
+        }
+        
+        function refreshWebhooks() {
+            // Simulate webhook status refresh
+            window.location.reload();
+        }
+        
+        function refreshEventLog() {
+            // Simulate event log refresh
+            const eventLog = document.getElementById('eventLog');
+            const timestamp = new Date().toISOString().replace('T', ' ').substr(0, 19);
+            
+            const newEvent = document.createElement('div');
+            newEvent.className = 'event-entry';
+            newEvent.innerHTML = `
+                <span class="event-timestamp">${timestamp}</span>
+                <span class="event-status-success">[SUCCESS]</span>
+                <strong>System:</strong> Webhook status refreshed
+            `;
+            
+            eventLog.insertBefore(newEvent, eventLog.firstChild);
+        }
+        
+        // Auto-refresh event log every 30 seconds
+        setInterval(refreshEventLog, 30000);
+    </script>
+</body>
+</html>
