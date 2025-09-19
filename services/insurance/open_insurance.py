@@ -1,5 +1,5 @@
 """
-Open Insurance API Integration for DEAF FIRST Platform
+Open Insurance API Integration for MBTQ Group LLC Platform
 Provides standardized insurance data access and policy management
 """
 
@@ -278,9 +278,9 @@ class OpenInsuranceClient:
             logger.error(f"Update customer failed: {e}")
             return {'status': 'error', 'message': 'Customer update failed'}
     
-    # DEAF FIRST Specialized Methods
-    def get_deaf_specialized_products(self) -> Dict[str, Any]:
-        """Get insurance products specialized for deaf community"""
+    # MBTQ Group LLC Specialized Methods
+    def get_mbtq_specialized_products(self) -> Dict[str, Any]:
+        """Get insurance products specialized for deaf and hard-of-hearing community through MBTQ Group LLC"""
         try:
             # Filter products for deaf-specific features
             products_response = self.get_products()
@@ -306,11 +306,11 @@ class OpenInsuranceClient:
                 ]
             }
         except Exception as e:
-            logger.error(f"Get deaf specialized products failed: {e}")
-            return {'status': 'error', 'message': 'Specialized products retrieval failed'}
+            logger.error(f"Get MBTQ specialized products failed: {e}")
+            return {'status': 'error', 'message': 'MBTQ specialized products retrieval failed'}
     
-    def create_deaf_customer_profile(self, customer_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Create customer profile with deaf-specific accessibility needs"""
+    def create_mbtq_customer_profile(self, customer_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Create customer profile with accessibility needs through MBTQ Group LLC services"""
         try:
             # Enhance customer data with deaf-specific fields
             enhanced_data = {
@@ -331,8 +331,8 @@ class OpenInsuranceClient:
             
             return self.create_customer(enhanced_data)
         except Exception as e:
-            logger.error(f"Create deaf customer profile failed: {e}")
-            return {'status': 'error', 'message': 'Deaf customer profile creation failed'}
+            logger.error(f"Create MBTQ customer profile failed: {e}")
+            return {'status': 'error', 'message': 'MBTQ customer profile creation failed'}
     
     def get_accessibility_coverage_options(self, customer_id: str) -> Dict[str, Any]:
         """Get coverage options for accessibility needs"""
@@ -375,21 +375,21 @@ class OpenInsuranceClient:
             logger.error(f"Get accessibility coverage options failed: {e}")
             return {'status': 'error', 'message': 'Accessibility coverage options retrieval failed'}
     
-    def calculate_deaf_premium_discount(self, base_premium: float, deaf_specific_features: List[str]) -> Dict[str, Any]:
-        """Calculate premium discounts for deaf-specific safety features"""
+    def calculate_accessibility_premium_discount(self, base_premium: float, accessibility_features: List[str]) -> Dict[str, Any]:
+        """Calculate premium discounts for accessibility and safety features through MBTQ Group LLC"""
         try:
             discount_factors = {
                 'visual_smoke_detectors': 0.05,  # 5% discount
                 'vibrating_alarm_systems': 0.03,  # 3% discount
                 'security_monitoring_with_visual_alerts': 0.07,  # 7% discount
                 'emergency_text_alert_system': 0.02,  # 2% discount
-                'deaf_friendly_neighborhood': 0.04  # 4% discount
+                'accessibility_friendly_neighborhood': 0.04  # 4% discount
             }
             
             total_discount = 0
             applied_discounts = []
             
-            for feature in deaf_specific_features:
+            for feature in accessibility_features:
                 if feature in discount_factors:
                     discount = discount_factors[feature]
                     total_discount += discount
@@ -413,8 +413,8 @@ class OpenInsuranceClient:
                 'savings_annual': (base_premium * total_discount) * 12
             }
         except Exception as e:
-            logger.error(f"Calculate deaf premium discount failed: {e}")
-            return {'status': 'error', 'message': 'Premium discount calculation failed'}
+            logger.error(f"Calculate MBTQ premium discount failed: {e}")
+            return {'status': 'error', 'message': 'MBTQ premium discount calculation failed'}
 
 
 # Global client instance

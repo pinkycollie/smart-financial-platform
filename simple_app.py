@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 
 # Configure app
-app.secret_key = os.environ.get("SESSION_SECRET", "mbtq-development-key")
+app.secret_key = os.environ.get("SESSION_SECRET")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
@@ -80,8 +80,8 @@ except NameError:
 # Define routes
 @app.route('/')
 def index():
-    """Home page of the DEAF FIRST Platform"""
-    return render_template('index.html', title='DEAF FIRST Platform')
+    """Home page of the MBTQ Group LLC Platform"""
+    return render_template('index.html', title='MBTQ Group LLC Platform')
 
 @app.route('/dashboard')
 def dashboard():
@@ -134,8 +134,8 @@ def investor_demo():
     # Competitive advantage
     advantages = [
         {
-            'title': 'Deaf First Design',
-            'description': 'Built from the ground up for the deaf community rather than as an afterthought.',
+            'title': 'Accessibility-First Design',
+            'description': 'Built from the ground up for the deaf and hard-of-hearing community with comprehensive accessibility features.',
             'icon': 'fas fa-universal-access'
         },
         {
@@ -181,7 +181,7 @@ def investor_demo():
     ]
     
     return render_template('investor_demo.html',
-                          title='Investor Demo - DEAF FIRST Platform',
+                          title='Investor Demo - MBTQ Group LLC Platform',
                           market_data=market_data,
                           impact_metrics=impact_metrics,
                           advantages=advantages,
@@ -253,7 +253,7 @@ def investor_portal():
     ]
     
     return render_template('investor_portal.html',
-                          title='Investor Portal - DEAF FIRST',
+                          title='Investor Portal - MBTQ Group LLC',
                           investments=investments,
                           platform_metrics=platform_metrics,
                           shareholder_updates=shareholder_updates,
@@ -263,25 +263,25 @@ def investor_portal():
 def miniapps_dashboard():
     """Mini Apps Dashboard showcasing command-driven interface"""
     return render_template('miniapps_dashboard.html',
-                          title='Mini Apps Dashboard - DEAF FIRST Platform')
+                          title='Mini Apps Dashboard - MBTQ Group LLC Platform')
 
 @app.route('/financial/restructuring')
 def financial_restructuring():
     """Financial Restructuring Dashboard with ASL support"""
     return render_template('financial_restructuring.html',
-                          title='Financial Restructuring - DEAF FIRST Platform')
+                          title='Financial Restructuring - MBTQ Group LLC Platform')
 
 @app.route('/webhooks/dashboard')
 def webhooks_dashboard():
     """Webhook Management Dashboard"""
     return render_template('webhooks_dashboard.html',
-                          title='Webhook Management - DEAF FIRST Platform')
+                          title='Webhook Management - MBTQ Group LLC Platform')
 
 @app.route('/asl/video-player')
 def asl_video_player():
     """ASL Video Player with Video.js integration"""
     return render_template('asl_support/video_player.html',
-                          title='ASL Video Player - DEAF FIRST Platform')
+                          title='ASL Video Player - MBTQ Group LLC Platform')
 
 # Import models (needed for creating tables)
 import models

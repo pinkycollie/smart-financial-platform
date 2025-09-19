@@ -26,7 +26,7 @@ def create_app():
     app.config.from_object('app.config.Config')
     
     # Set secret key
-    app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
+    app.secret_key = os.environ.get("SESSION_SECRET")
     
     # Configure database
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
