@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" class="deaf-ui">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - MBTQ Group LLC</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/deaf-ui.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="deaf-ui bg-secondary">
+    <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
+        <div class="row w-100">
+            <div class="col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h2 class="mb-0">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </h2>
+                        <p class="mb-0 small">MBTQ Group LLC - Accessible Financial Services</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Flash messages -->
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="visual-alert visual-alert-{{ 'danger' if category == 'error' else category }} mb-3">
+                                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'info-circle' if category == 'info' else 'check-circle' }}"></i>
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+
+                        <form method="POST" class="needs-validation" novalidate>
+                            <div class="deaf-form-group">
+                                <label for="email_or_username" class="deaf-form-label">
+                                    <i class="fas fa-user me-2"></i>Email or Username
+                                </label>
+                                <input type="text" 
+                                       class="form-control deaf-form-control" 
+                                       id="email_or_username" 
+                                       name="email_or_username" 
+                                       required 
+                                       autocomplete="username"
+                                       placeholder="Enter your email or username">
+                                <div class="validation-feedback invalid">
+                                    Please provide your email or username.
+                                </div>
+                            </div>
+
+                            <div class="deaf-form-group">
+                                <label for="password" class="deaf-form-label">
+                                    <i class="fas fa-lock me-2"></i>Password
+                                </label>
+                                <div class="input-group">
+                                    <input type="password" 
+                                           class="form-control deaf-form-control" 
+                                           id="password" 
+                                           name="password" 
+                                           required 
+                                           autocomplete="current-password"
+                                           placeholder="Enter your password">
+                                    <button class="btn btn-outline-secondary" 
+                                            type="button" 
+                                            onclick="togglePassword()"
+                                            aria-label="Show/Hide Password">
+                                        <i class="fas fa-eye" id="password-toggle-icon"></i>
+                                    </button>
+                                </div>
+                                <div class="validation-feedback invalid">
+                                    Please provide your password.
+                                </div>
+                            </div>
+
+                            <div class="deaf-form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" 
+                                           type="checkbox" 
+                                           id="remember_me" 
+                                           name="remember_me">
+                                    <label class="form-check-label" for="remember_me">
+                                        Remember me for 30 days
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 mb-3">
+                                <button type="submit" class="btn btn-deaf-primary btn-lg">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="text-center">
+                            <p class="mb-2">
+                                <a href="#" class="text-decoration-none">
+                                    <i class="fas fa-question-circle me-1"></i>Forgot your password?
+                                </a>
+                            </p>
+                            <p class="mb-0">
+                                Don't have an account? 
+                                <a href="{{ url_for('auth.register') }}" class="text-decoration-none fw-bold">
+                                    <i class="fas fa-user-plus me-1"></i>Create Account
+                                </a>
+                            </p>
+                        </div>
+
+                        <!-- Accessibility Information -->
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <h6 class="text-primary mb-2">
+                                <i class="fas fa-universal-access me-2"></i>Accessibility Features
+                            </h6>
+                            <ul class="list-unstyled small mb-0">
+                                <li><i class="fas fa-video me-2 text-success"></i>ASL video support</li>
+                                <li><i class="fas fa-text-height me-2 text-success"></i>Adjustable text size</li>
+                                <li><i class="fas fa-adjust me-2 text-success"></i>High contrast mode</li>
+                                <li><i class="fas fa-closed-captioning me-2 text-success"></i>Visual notifications</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('password-toggle-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Form validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                const forms = document.getElementsByClassName('needs-validation');
+                const validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+</body>
+</html>

@@ -12,8 +12,8 @@ from flask import session, request, flash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
 from sqlalchemy.exc import IntegrityError
 
-from app import db
-from models.appointment import User, UserPreference, CommunicationPreference
+from simple_app import db
+from models import User
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ class AuthService:
         """
         try:
             # Validate required fields
-            required_fields = ['email', 'username', 'password', 'first_name', 'last_name']
+            required_fields = ['email', 'username', 'password']
             for field in required_fields:
                 if not form_data.get(field):
                     return False, f"Please provide your {field.replace('_', ' ')}", None
@@ -61,30 +61,18 @@ class AuthService:
             if existing_username:
                 return False, "This username is already taken", None
             
-            # Create new user
-            user = User(
-                email=form_data['email'].lower().strip(),
-                username=form_data['username'].lower().strip(),
-                password_hash=generate_password_hash(form_data['password']),
-                first_name=form_data['first_name'].strip(),
-                last_name=form_data['last_name'].strip(),
-                phone=form_data.get('phone', '').strip(),
-                emergency_contact=form_data.get('emergency_contact', '').strip(),
-                emergency_phone=form_data.get('emergency_phone', '').strip(),
-                communication_preference=CommunicationPreference(form_data.get('communication_preference', 'asl_video')),
-                needs_interpreter=form_data.get('needs_interpreter', True),
-                preferred_interpreter_gender=form_data.get('preferred_interpreter_gender', ''),
-                hearing_level=form_data.get('hearing_level', 'deaf'),
-                assistive_devices=form_data.get('assistive_devices', ''),
-                is_active=True,
-                created_at=datetime.utcnow()
-            )
+            # Create new user with existing model structure
+            user = User()
+            user.email = form_data['email'].lower().strip()
+            user.username = form_data['username'].lower().strip()
+            user.set_password(form_data['password'])
+            user.first_name = form_data.get('first_name', '').strip()
+            user.last_name = form_data.get('last_name', '').strip()
+            user.account_type = 'deaf_user'
+            user.preferred_communication_method = form_data.get('communication_preference', 'ASL_video')
             
             db.session.add(user)
             db.session.commit()
-            
-            # Create default user preferences
-            self._create_default_preferences(user.id, form_data)
             
             logger.info(f"New user registered: {user.username} ({user.email})")
             
@@ -101,25 +89,18 @@ class AuthService:
             return False, "An unexpected error occurred. Please try again later.", None
     
     def _create_default_preferences(self, user_id: int, form_data: Dict[str, Any]):
-        """Create default user preferences"""
+        """Create default user preferences using accessibility_settings JSON field"""
         try:
-            preferences = UserPreference(
-                user_id=user_id,
-                high_contrast_mode=form_data.get('high_contrast_mode', False),
-                large_text=form_data.get('large_text', False),
-                reduced_motion=form_data.get('reduced_motion', False),
-                color_scheme=form_data.get('color_scheme', 'light'),
-                notification_methods='["email", "visual"]',  # Default to email and visual notifications
-                language_preference=form_data.get('language_preference', 'en'),
-                allow_video_recording=form_data.get('allow_video_recording', False),
-                allow_session_notes=form_data.get('allow_session_notes', True),
-                allow_follow_up_contact=form_data.get('allow_follow_up_contact', True),
-                allow_marketing_communications=form_data.get('allow_marketing_communications', False),
-                created_at=datetime.utcnow()
-            )
-            
-            db.session.add(preferences)
-            db.session.commit()
+            user = User.query.get(user_id)
+            if user:
+                user.accessibility_settings = {
+                    'high_contrast_mode': form_data.get('high_contrast_mode', False),
+                    'large_text': form_data.get('large_text', False),
+                    'reduced_motion': form_data.get('reduced_motion', False),
+                    'color_scheme': form_data.get('color_scheme', 'light'),
+                    'language_preference': form_data.get('language_preference', 'en')
+                }
+                db.session.commit()
             
         except Exception as e:
             logger.error(f"Error creating default preferences for user {user_id}: {e}")
@@ -144,10 +125,10 @@ class AuthService:
             if not user:
                 return False, "No account found with that email or username", None
             
-            if not user.is_active:
+            if user.account_status != 'active':
                 return False, "Your account has been deactivated. Please contact support.", None
             
-            if not check_password_hash(user.password_hash, password):
+            if not user.check_password(password):
                 return False, "Incorrect password", None
             
             # Log successful login

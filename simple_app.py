@@ -53,6 +53,9 @@ from routes.fintech.insurance import insurance_bp
 from routes.fintech.business import business_bp
 from routes.vsl_communication import vsl_bp
 
+# Import ASL AI routes
+from routes.asl_ai import asl_ai_bp, auth_bp, appointments_bp, register_asl_dashboard_route
+
 try:
     from routes.sitemap import sitemap_bp
     from routes.advisors import advisors_bp
@@ -63,6 +66,14 @@ except ImportError as e:
 app.register_blueprint(insurance_bp)
 app.register_blueprint(business_bp)
 app.register_blueprint(vsl_bp)
+
+# Register ASL AI blueprints
+app.register_blueprint(asl_ai_bp)
+app.register_blueprint(auth_bp)
+app.register_blueprint(appointments_bp)
+
+# Register ASL dashboard route
+register_asl_dashboard_route(app)
 
 # Register new blueprints
 try:
@@ -291,6 +302,13 @@ import models_licensing
 import models_reseller
 import models_asl_support
 from models_import import *
+
+# Import ASL AI service
+try:
+    from services.ai.asl_ai_service import asl_ai_service
+    app.logger.info("ASL AI service loaded successfully")
+except Exception as e:
+    app.logger.warning(f"ASL AI service not available: {e}")
 
 # Create tables and seed data
 with app.app_context():

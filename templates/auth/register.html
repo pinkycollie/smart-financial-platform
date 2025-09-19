@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" class="deaf-ui">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - MBTQ Group LLC</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/deaf-ui.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="deaf-ui bg-secondary">
+    <div class="container-fluid py-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h2 class="mb-0">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </h2>
+                        <p class="mb-0 small">Join MBTQ Group LLC - Accessible Financial Services</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Flash messages -->
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="visual-alert visual-alert-{{ 'danger' if category == 'error' else category }} mb-3">
+                                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'info-circle' if category == 'info' else 'check-circle' }}"></i>
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+
+                        <form method="POST" class="needs-validation" novalidate>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="deaf-form-group">
+                                        <label for="first_name" class="deaf-form-label">
+                                            <i class="fas fa-user me-2"></i>First Name (Optional)
+                                        </label>
+                                        <input type="text" 
+                                               class="form-control deaf-form-control" 
+                                               id="first_name" 
+                                               name="first_name"
+                                               autocomplete="given-name"
+                                               placeholder="Your first name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="deaf-form-group">
+                                        <label for="last_name" class="deaf-form-label">
+                                            <i class="fas fa-user me-2"></i>Last Name (Optional)
+                                        </label>
+                                        <input type="text" 
+                                               class="form-control deaf-form-control" 
+                                               id="last_name" 
+                                               name="last_name"
+                                               autocomplete="family-name"
+                                               placeholder="Your last name">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="deaf-form-group">
+                                <label for="username" class="deaf-form-label">
+                                    <i class="fas fa-at me-2"></i>Username *
+                                </label>
+                                <input type="text" 
+                                       class="form-control deaf-form-control" 
+                                       id="username" 
+                                       name="username" 
+                                       required 
+                                       autocomplete="username"
+                                       placeholder="Choose a unique username">
+                                <div class="validation-feedback invalid">
+                                    Please choose a username.
+                                </div>
+                            </div>
+
+                            <div class="deaf-form-group">
+                                <label for="email" class="deaf-form-label">
+                                    <i class="fas fa-envelope me-2"></i>Email Address *
+                                </label>
+                                <input type="email" 
+                                       class="form-control deaf-form-control" 
+                                       id="email" 
+                                       name="email" 
+                                       required 
+                                       autocomplete="email"
+                                       placeholder="your@email.com">
+                                <div class="validation-feedback invalid">
+                                    Please provide a valid email address.
+                                </div>
+                            </div>
+
+                            <div class="deaf-form-group">
+                                <label for="password" class="deaf-form-label">
+                                    <i class="fas fa-lock me-2"></i>Password *
+                                </label>
+                                <div class="input-group">
+                                    <input type="password" 
+                                           class="form-control deaf-form-control" 
+                                           id="password" 
+                                           name="password" 
+                                           required 
+                                           minlength="8"
+                                           autocomplete="new-password"
+                                           placeholder="Create a strong password">
+                                    <button class="btn btn-outline-secondary" 
+                                            type="button" 
+                                            onclick="togglePassword()"
+                                            aria-label="Show/Hide Password">
+                                        <i class="fas fa-eye" id="password-toggle-icon"></i>
+                                    </button>
+                                </div>
+                                <div class="validation-feedback invalid">
+                                    Password must be at least 8 characters long.
+                                </div>
+                                <small class="text-muted">Use at least 8 characters with a mix of letters and numbers.</small>
+                            </div>
+
+                            <div class="deaf-form-group">
+                                <label for="communication_preference" class="deaf-form-label">
+                                    <i class="fas fa-comments me-2"></i>Preferred Communication Method
+                                </label>
+                                <select class="form-select deaf-form-control" 
+                                        id="communication_preference" 
+                                        name="communication_preference">
+                                    <option value="ASL_video">ASL Video (Recommended)</option>
+                                    <option value="text">Written Text</option>
+                                    <option value="captions">Text with Captions</option>
+                                </select>
+                            </div>
+
+                            <!-- Accessibility Preferences -->
+                            <div class="card mt-4 mb-4">
+                                <div class="card-header">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-universal-access me-2"></i>Accessibility Preferences
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" 
+                                                       type="checkbox" 
+                                                       id="high_contrast_mode" 
+                                                       name="high_contrast_mode">
+                                                <label class="form-check-label" for="high_contrast_mode">
+                                                    High contrast colors
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" 
+                                                       type="checkbox" 
+                                                       id="large_text" 
+                                                       name="large_text">
+                                                <label class="form-check-label" for="large_text">
+                                                    Larger text size
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" 
+                                                       type="checkbox" 
+                                                       id="reduced_motion" 
+                                                       name="reduced_motion">
+                                                <label class="form-check-label" for="reduced_motion">
+                                                    Reduce animations
+                                                </label>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="color_scheme" class="form-label small">Color Scheme</label>
+                                                <select class="form-select form-select-sm" 
+                                                        id="color_scheme" 
+                                                        name="color_scheme">
+                                                    <option value="light">Light</option>
+                                                    <option value="dark">Dark</option>
+                                                    <option value="auto">Auto</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" 
+                                       type="checkbox" 
+                                       id="terms_accepted" 
+                                       name="terms_accepted" 
+                                       required>
+                                <label class="form-check-label" for="terms_accepted">
+                                    I agree to the <a href="#" target="_blank">Terms of Service</a> and 
+                                    <a href="#" target="_blank">Privacy Policy</a> *
+                                </label>
+                                <div class="validation-feedback invalid">
+                                    You must agree to the terms and privacy policy.
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 mb-3">
+                                <button type="submit" class="btn btn-deaf-primary btn-lg">
+                                    <i class="fas fa-user-plus me-2"></i>Create My Account
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="text-center">
+                            <p class="mb-0">
+                                Already have an account? 
+                                <a href="{{ url_for('auth.login') }}" class="text-decoration-none fw-bold">
+                                    <i class="fas fa-sign-in-alt me-1"></i>Sign In
+                                </a>
+                            </p>
+                        </div>
+
+                        <!-- Why MBTQ Group LLC -->
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <h6 class="text-primary mb-2">
+                                <i class="fas fa-heart me-2"></i>Why Choose MBTQ Group LLC?
+                            </h6>
+                            <ul class="list-unstyled small mb-0">
+                                <li><i class="fas fa-hands me-2 text-success"></i>Built by and for the deaf community</li>
+                                <li><i class="fas fa-shield-alt me-2 text-success"></i>Specialized insurance products</li>
+                                <li><i class="fas fa-calculator me-2 text-success"></i>ASL-supported tax services</li>
+                                <li><i class="fas fa-graduation-cap me-2 text-success"></i>Financial education in ASL</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('password-toggle-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Form validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                const forms = document.getElementsByClassName('needs-validation');
+                const validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+        // Live accessibility preview
+        document.addEventListener('DOMContentLoaded', function() {
+            const highContrastCheck = document.getElementById('high_contrast_mode');
+            const largeTextCheck = document.getElementById('large_text');
+            const reducedMotionCheck = document.getElementById('reduced_motion');
+            const colorSchemeSelect = document.getElementById('color_scheme');
+
+            highContrastCheck.addEventListener('change', function() {
+                if (this.checked) {
+                    document.documentElement.style.setProperty('--primary-blue', '#0033AA');
+                    document.documentElement.style.setProperty('--text-primary', '#000000');
+                } else {
+                    document.documentElement.style.removeProperty('--primary-blue');
+                    document.documentElement.style.removeProperty('--text-primary');
+                }
+            });
+
+            largeTextCheck.addEventListener('change', function() {
+                if (this.checked) {
+                    document.documentElement.style.setProperty('--font-size-base', '1.2rem');
+                } else {
+                    document.documentElement.style.removeProperty('--font-size-base');
+                }
+            });
+
+            reducedMotionCheck.addEventListener('change', function() {
+                if (this.checked) {
+                    document.documentElement.style.setProperty('--transition-base', '0.01ms');
+                } else {
+                    document.documentElement.style.removeProperty('--transition-base');
+                }
+            });
+
+            colorSchemeSelect.addEventListener('change', function() {
+                if (this.value === 'dark') {
+                    document.documentElement.classList.add('dark-mode');
+                } else {
+                    document.documentElement.classList.remove('dark-mode');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
