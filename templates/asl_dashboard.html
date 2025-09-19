@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en" class="deaf-ui">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page_title %}{{ page_title }} - {% endif %}MBTQ Group LLC - ASL Financial Services</title>
+    
+    <!-- Accessibility Meta Tags -->
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#0066CC">
+    
+    <!-- Enhanced CSS for deaf accessibility -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/deaf-ui.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Accessibility JavaScript -->
+    <script>
+        // Apply user accessibility preferences immediately
+        document.documentElement.classList.add('deaf-ui');
+        
+        // Check for user preferences in localStorage
+        const preferences = JSON.parse(localStorage.getItem('accessibility_preferences') || '{}');
+        
+        if (preferences.high_contrast) {
+            document.documentElement.style.setProperty('--primary-blue', '#0033AA');
+            document.documentElement.style.setProperty('--text-primary', '#000000');
+        }
+        
+        if (preferences.large_text) {
+            document.documentElement.style.setProperty('--font-size-base', '1.2rem');
+        }
+        
+        if (preferences.reduced_motion) {
+            document.documentElement.style.setProperty('--transition-base', '0.01ms');
+        }
+        
+        if (preferences.color_scheme === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</head>
+<body class="deaf-ui">
+    <!-- Skip to Content Link for Screen Readers -->
+    <a href="#main-content" class="sr-only sr-only-focusable btn-deaf-primary">Skip to main content</a>
+    
+    <!-- Visual Notification Area -->
+    <div id="visual-notifications" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="visual-alert visual-alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'info-circle' if category == 'info' else 'check-circle' if category == 'success' else 'exclamation-triangle' }}"></i>
+                        <strong>{{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close notification"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    <!-- Main Dashboard Layout -->
+    <div class="deaf-sidebar-layout">
+        <!-- Video Panel -->
+        <div class="deaf-video-panel">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="text-primary mb-0">
+                    <i class="fas fa-video me-2"></i>ASL Support
+                </h2>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-deaf-secondary btn-sm" id="fullscreen-video">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                    <button type="button" class="btn btn-deaf-secondary btn-sm" id="toggle-captions">
+                        <i class="fas fa-closed-captioning"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- ASL Video Player -->
+            <div class="asl-video-player" id="asl-video-container">
+                <video id="asl-video-player" class="w-100 h-100" controls playsinline>
+                    <source src="#" type="video/mp4">
+                    <track kind="captions" src="#" srclang="en" label="English Captions" default>
+                    Your browser does not support the video tag.
+                </video>
+                
+                <!-- Video Controls Overlay -->
+                <div class="asl-video-controls">
+                    <button class="asl-control-button" id="play-pause" aria-label="Play/Pause">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="asl-control-button" id="rewind" aria-label="Rewind 10 seconds">
+                        <i class="fas fa-backward"></i>
+                    </button>
+                    <button class="asl-control-button" id="forward" aria-label="Forward 10 seconds">
+                        <i class="fas fa-forward"></i>
+                    </button>
+                    <button class="asl-control-button" id="interpreter-request" aria-label="Request Live Interpreter">
+                        <i class="fas fa-user-plus"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Quick ASL Actions -->
+            <div class="mt-3">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <button class="btn btn-deaf-primary w-100" onclick="startLiveInterpreter()">
+                            <i class="fas fa-video me-2"></i>Live Interpreter
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-deaf-secondary w-100" onclick="openASLGlossary()">
+                            <i class="fas fa-book me-2"></i>ASL Terms
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Emergency ASL Phrases -->
+            <div class="mt-3">
+                <h6 class="text-muted mb-2">Emergency Phrases</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-outline-danger btn-sm" onclick="showEmergencyPhrase('help')">Help</button>
+                    <button class="btn btn-outline-warning btn-sm" onclick="showEmergencyPhrase('interpreter')">Need Interpreter</button>
+                    <button class="btn btn-outline-info btn-sm" onclick="showEmergencyPhrase('write')">Write Down</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Context Panel -->
+        <div class="deaf-context-panel">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="text-primary mb-0">
+                    <i class="fas fa-info-circle me-2"></i>{{ context_title or "Information" }}
+                </h2>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-deaf-secondary btn-sm" onclick="adjustTextSize()">
+                        <i class="fas fa-text-height"></i>
+                    </button>
+                    <button type="button" class="btn btn-deaf-secondary btn-sm" onclick="toggleHighContrast()">
+                        <i class="fas fa-adjust"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Context Content -->
+            <div class="context-content" id="context-content">
+                {% if context_content %}
+                    {{ context_content | safe }}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-hand-paper fa-3x text-primary mb-3"></i>
+                        <h4>Welcome to MBTQ Group LLC</h4>
+                        <p class="lead">Your accessible financial services platform designed for the deaf and hard-of-hearing community.</p>
+                        
+                        <div class="row g-3 mt-4">
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-shield-alt fa-2x text-primary mb-2"></i>
+                                        <h6>Insurance Services</h6>
+                                        <p class="small text-muted">Specialized insurance products for the deaf community</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-file-invoice-dollar fa-2x text-secondary mb-2"></i>
+                                        <h6>Tax Preparation</h6>
+                                        <p class="small text-muted">Professional tax services with ASL support</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- ASL Terms Glossary -->
+            <div class="mt-4" id="asl-glossary" style="display: none;">
+                <h6 class="text-primary mb-3">
+                    <i class="fas fa-book-open me-2"></i>Financial Terms in ASL
+                </h6>
+                <div class="asl-terms-container">
+                    <div class="asl-term" onclick="explainTerm('premium')">
+                        <div class="asl-term-title">Premium</div>
+                        <div class="asl-term-description">Money you pay for insurance protection</div>
+                    </div>
+                    <div class="asl-term" onclick="explainTerm('deductible')">
+                        <div class="asl-term-title">Deductible</div>
+                        <div class="asl-term-description">Amount you pay before insurance helps</div>
+                    </div>
+                    <div class="asl-term" onclick="explainTerm('coverage')">
+                        <div class="asl-term-title">Coverage</div>
+                        <div class="asl-term-description">Protection your insurance provides</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Bar -->
+        <div class="deaf-action-bar">
+            <!-- Navigation Links -->
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-deaf-primary">
+                    <i class="fas fa-home me-2"></i>Dashboard
+                </a>
+                <a href="{{ url_for('appointments.book') }}" class="btn btn-deaf-secondary">
+                    <i class="fas fa-calendar-plus me-2"></i>Book Appointment
+                </a>
+                <a href="{{ url_for('insurance.browse') }}" class="btn btn-deaf-secondary">
+                    <i class="fas fa-shield-alt me-2"></i>Insurance
+                </a>
+            </div>
+            
+            <!-- Document and Notary Links -->
+            <div class="document-links">
+                {% if document_links %}
+                    {% for doc in document_links %}
+                        <a href="{{ doc.url }}" class="document-link" target="_blank" rel="noopener">
+                            <i class="fas fa-file-{{ doc.type }} me-2"></i>{{ doc.title }}
+                        </a>
+                    {% endfor %}
+                {% endif %}
+                
+                {% if notary_required %}
+                    <a href="{{ url_for('services.notary') }}" class="notary-link">
+                        <i class="fas fa-stamp me-2"></i>Notary Services
+                    </a>
+                {% endif %}
+                
+                <!-- Default Document Links -->
+                <a href="{{ url_for('resources.forms') }}" class="document-link">
+                    <i class="fas fa-file-pdf me-2"></i>Forms & Documents
+                </a>
+                <a href="{{ url_for('resources.guides') }}" class="document-link">
+                    <i class="fas fa-book me-2"></i>Guides
+                </a>
+                <a href="{{ url_for('services.notary') }}" class="notary-link">
+                    <i class="fas fa-stamp me-2"></i>Notary Services
+                </a>
+            </div>
+            
+            <!-- User Actions -->
+            <div class="d-flex align-items-center gap-2">
+                {% if current_user.is_authenticated %}
+                    <div class="dropdown">
+                        <button class="btn btn-deaf-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-2"></i>{{ current_user.get_full_name() }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}">
+                                <i class="fas fa-user-edit me-2"></i>Profile
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.preferences') }}">
+                                <i class="fas fa-cog me-2"></i>Accessibility Settings
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('appointments.my_appointments') }}">
+                                <i class="fas fa-calendar me-2"></i>My Appointments
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                <i class="fas fa-sign-out-alt me-2"></i>Sign Out
+                            </a></li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-deaf-primary">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-deaf-secondary">
+                        <i class="fas fa-user-plus me-2"></i>Register
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- ASL AI Assistant Modal -->
+    <div class="modal fade" id="aslAssistantModal" tabindex="-1" aria-labelledby="aslAssistantModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="aslAssistantModalLabel">
+                        <i class="fas fa-robot me-2"></i>ASL AI Assistant
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="asl-chat-container" style="height: 400px; overflow-y: auto;">
+                        <!-- Chat messages will be populated here -->
+                    </div>
+                    <div class="mt-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control deaf-form-control" id="asl-chat-input" placeholder="Type your question here...">
+                            <button class="btn btn-primary" type="button" onclick="sendASLMessage()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom ASL Dashboard JavaScript -->
+    <script>
+        // Video player controls
+        const video = document.getElementById('asl-video-player');
+        const playPauseBtn = document.getElementById('play-pause');
+        
+        playPauseBtn?.addEventListener('click', function() {
+            if (video.paused) {
+                video.play();
+                this.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                video.pause();
+                this.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        });
+        
+        // Rewind and forward controls
+        document.getElementById('rewind')?.addEventListener('click', function() {
+            video.currentTime = Math.max(0, video.currentTime - 10);
+        });
+        
+        document.getElementById('forward')?.addEventListener('click', function() {
+            video.currentTime = Math.min(video.duration, video.currentTime + 10);
+        });
+        
+        // Accessibility functions
+        function adjustTextSize() {
+            const currentSize = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--font-size-base'));
+            const newSize = currentSize === 1 ? 1.2 : currentSize === 1.2 ? 1.4 : 1;
+            document.documentElement.style.setProperty('--font-size-base', newSize + 'rem');
+            
+            // Save preference
+            const prefs = JSON.parse(localStorage.getItem('accessibility_preferences') || '{}');
+            prefs.large_text = newSize > 1;
+            localStorage.setItem('accessibility_preferences', JSON.stringify(prefs));
+        }
+        
+        function toggleHighContrast() {
+            const isHighContrast = document.documentElement.style.getPropertyValue('--primary-blue') === '#0033AA';
+            
+            if (isHighContrast) {
+                document.documentElement.style.removeProperty('--primary-blue');
+                document.documentElement.style.removeProperty('--text-primary');
+            } else {
+                document.documentElement.style.setProperty('--primary-blue', '#0033AA');
+                document.documentElement.style.setProperty('--text-primary', '#000000');
+            }
+            
+            // Save preference
+            const prefs = JSON.parse(localStorage.getItem('accessibility_preferences') || '{}');
+            prefs.high_contrast = !isHighContrast;
+            localStorage.setItem('accessibility_preferences', JSON.stringify(prefs));
+        }
+        
+        // ASL functions
+        function startLiveInterpreter() {
+            alert('Live interpreter feature will be available soon. Please book an appointment for now.');
+        }
+        
+        function openASLGlossary() {
+            const glossary = document.getElementById('asl-glossary');
+            glossary.style.display = glossary.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function showEmergencyPhrase(phrase) {
+            const phrases = {
+                'help': 'Place right hand on left palm, lift both hands up urgently',
+                'interpreter': 'Point to self, then make interpretation gesture (rotating hands)',
+                'write': 'Mime writing motion, point to paper/phone'
+            };
+            
+            alert(`Emergency ASL: ${phrase.toUpperCase()}\n\nHow to sign: ${phrases[phrase]}`);
+        }
+        
+        function explainTerm(term) {
+            // This would integrate with the ASL AI service
+            const contextContent = document.getElementById('context-content');
+            contextContent.innerHTML = `
+                <div class="visual-alert visual-alert-info">
+                    <h5><i class="fas fa-hand-paper me-2"></i>ASL Term: ${term.charAt(0).toUpperCase() + term.slice(1)}</h5>
+                    <p>Loading ASL explanation...</p>
+                </div>
+            `;
+            
+            // Call ASL AI service to get explanation
+            fetch('/api/asl/explain-term', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({term: term})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const interpretation = data.asl_interpretation;
+                    contextContent.innerHTML = `
+                        <div class="visual-alert visual-alert-success">
+                            <h5><i class="fas fa-hand-paper me-2"></i>ASL Term: ${term.charAt(0).toUpperCase() + term.slice(1)}</h5>
+                            <p><strong>Simple explanation:</strong> ${interpretation.simplified_text}</p>
+                            <p><strong>How to sign:</strong> ${interpretation.signing_description}</p>
+                            <p><strong>ASL grammar:</strong> ${interpretation.asl_grammar}</p>
+                            ${interpretation.facial_expressions ? `<p><strong>Facial expressions:</strong> ${interpretation.facial_expressions}</p>` : ''}
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error getting ASL explanation:', error);
+            });
+        }
+        
+        // ASL AI Chat
+        function sendASLMessage() {
+            const input = document.getElementById('asl-chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            const chatContainer = document.getElementById('asl-chat-container');
+            
+            // Add user message
+            chatContainer.innerHTML += `
+                <div class="d-flex justify-content-end mb-2">
+                    <div class="bg-primary text-white p-2 rounded">${message}</div>
+                </div>
+            `;
+            
+            input.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // Show typing indicator
+            chatContainer.innerHTML += `
+                <div class="d-flex justify-content-start mb-2" id="typing-indicator">
+                    <div class="bg-light p-2 rounded">
+                        <div class="loading-spinner"></div> AI is thinking...
+                    </div>
+                </div>
+            `;
+            
+            // Call ASL AI service
+            fetch('/api/asl/support', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    message: message,
+                    context: {
+                        current_page: window.location.pathname,
+                        accessibility_needs: 'ASL support'
+                    }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove typing indicator
+                document.getElementById('typing-indicator')?.remove();
+                
+                if (data.status === 'success') {
+                    const response = data.support_response;
+                    chatContainer.innerHTML += `
+                        <div class="d-flex justify-content-start mb-2">
+                            <div class="bg-light p-2 rounded">
+                                <strong>Response:</strong> ${response.response_text}<br>
+                                ${response.asl_tips ? `<small class="text-muted">ASL tips: ${response.asl_tips}</small>` : ''}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    chatContainer.innerHTML += `
+                        <div class="d-flex justify-content-start mb-2">
+                            <div class="bg-warning p-2 rounded">
+                                Sorry, I couldn't process your request right now. Please try again later.
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            })
+            .catch(error => {
+                document.getElementById('typing-indicator')?.remove();
+                console.error('Error sending ASL message:', error);
+            });
+        }
+        
+        // Allow Enter key to send messages
+        document.getElementById('asl-chat-input')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendASLMessage();
+            }
+        });
+        
+        // Auto-open AI assistant if user seems to need help
+        setTimeout(function() {
+            if (!localStorage.getItem('asl_assistant_shown')) {
+                const modal = new bootstrap.Modal(document.getElementById('aslAssistantModal'));
+                modal.show();
+                localStorage.setItem('asl_assistant_shown', 'true');
+            }
+        }, 5000);
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
