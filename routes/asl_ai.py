@@ -13,6 +13,8 @@ import logging
 from services.ai.asl_ai_service import asl_ai_service
 from models import User
 from simple_app import db
+from config.security import security_manager
+from services.auth.auth_service import auth_service
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +25,7 @@ appointments_bp = Blueprint('appointments', __name__, url_prefix='/appointments'
 
 # ASL AI API Routes
 @asl_ai_bp.route('/interpret-text', methods=['POST'])
+@security_manager.get_limiter().limit("20 per minute")
 async def interpret_text():
     """Convert text to ASL-friendly explanation"""
     try:
@@ -45,6 +48,7 @@ async def interpret_text():
         }), 500
 
 @asl_ai_bp.route('/explain-term', methods=['POST'])
+@security_manager.get_limiter().limit("20 per minute")
 def explain_term():
     """Get ASL explanation for a financial term"""
     try:
@@ -75,6 +79,7 @@ def explain_term():
         }), 500
 
 @asl_ai_bp.route('/support', methods=['POST'])
+@security_manager.get_limiter().limit("10 per minute")
 def real_time_support():
     """Provide real-time ASL support"""
     try:
@@ -128,6 +133,7 @@ def get_emergency_phrases():
 
 # Authentication Routes
 @auth_bp.route('/register', methods=['GET', 'POST'])
+@security_manager.get_limiter().limit("5 per minute")
 def register():
     """User registration with accessibility preferences"""
     if request.method == 'GET':
@@ -153,6 +159,7 @@ def register():
         return render_template('auth/register.html', title='Create Account')
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
+@security_manager.get_limiter().limit("5 per minute")
 def login():
     """User login with accessibility support"""
     if request.method == 'GET':

@@ -1,0 +1,343 @@
+{% extends "base.html" %}
+
+{% block title %}Bluetooth Security for Hearing Aids - MBTQ Group LLC{% endblock %}
+
+{% block content %}
+<div class="container bluetooth-security-page">
+    <!-- Skip to main content -->
+    <a href="#main-content" class="skip-link deaf-ui-skip">Skip to main content</a>
+
+    <main id="main-content" class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <!-- Header -->
+            <div class="security-header text-center mb-5">
+                <div class="security-icon">
+                    <i class="fas fa-shield-alt text-primary"></i>
+                </div>
+                <h1 class="h2 mt-3">Bluetooth Security for Hearing Aids</h1>
+                <p class="lead text-muted">Protecting your hearing aid connections on financial platforms</p>
+            </div>
+
+            <!-- Security Policy Alert -->
+            <div class="alert alert-warning deaf-ui-visual-alert border-start border-warning border-4" role="alert">
+                <div class="d-flex align-items-start">
+                    <i class="fas fa-exclamation-triangle fa-2x me-3 mt-1" aria-hidden="true"></i>
+                    <div>
+                        <h2 class="h5 mb-2">Important Security Policy</h2>
+                        <p class="mb-0">
+                            <strong>Web Bluetooth is disabled</strong> on this platform for your security. 
+                            This protects your hearing aids and financial data from potential cyber threats.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Why This Matters -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title h4">
+                        <i class="fas fa-question-circle text-primary me-2"></i>
+                        Why This Security Measure?
+                    </h2>
+                    
+                    <div class="security-reasons">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="reason-item">
+                                    <div class="reason-icon">
+                                        <i class="fas fa-user-secret text-danger"></i>
+                                    </div>
+                                    <h3 class="h6">Prevent Eavesdropping</h3>
+                                    <p class="small">Malicious websites could potentially intercept audio from your hearing aids.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <div class="reason-item">
+                                    <div class="reason-icon">
+                                        <i class="fas fa-dollar-sign text-warning"></i>
+                                    </div>
+                                    <h3 class="h6">Financial Data Protection</h3>
+                                    <p class="small">Financial discussions could be overheard through compromised hearing aid connections.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <div class="reason-item">
+                                    <div class="reason-icon">
+                                        <i class="fas fa-microphone-slash text-success"></i>
+                                    </div>
+                                    <h3 class="h6">Privacy First</h3>
+                                    <p class="small">Your conversations about finances and personal matters stay completely private.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <div class="reason-item">
+                                    <div class="reason-icon">
+                                        <i class="fas fa-shield-alt text-info"></i>
+                                    </div>
+                                    <h3 class="h6">Industry Best Practice</h3>
+                                    <p class="small">Financial platforms disable Web Bluetooth as a security standard.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secure Pairing Instructions -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h4 mb-0">
+                        <i class="fas fa-tools text-primary me-2"></i>
+                        Safe Hearing Aid Connection Guide
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <p class="mb-4">Always pair your hearing aids through your device's operating system settings, never through websites:</p>
+                    
+                    <div class="row">
+                        <div class="col-lg-6 mb-4">
+                            <div class="platform-guide">
+                                <div class="platform-header">
+                                    <i class="fab fa-apple text-primary me-2"></i>
+                                    <h3 class="h5">iOS/iPhone</h3>
+                                </div>
+                                <ol class="platform-steps">
+                                    <li>Open <strong>Settings</strong> app</li>
+                                    <li>Go to <strong>Accessibility</strong></li>
+                                    <li>Select <strong>Hearing Devices</strong></li>
+                                    <li>Follow pairing instructions</li>
+                                    <li>Verify connection in Control Center</li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6 mb-4">
+                            <div class="platform-guide">
+                                <div class="platform-header">
+                                    <i class="fab fa-android text-success me-2"></i>
+                                    <h3 class="h5">Android</h3>
+                                </div>
+                                <ol class="platform-steps">
+                                    <li>Open <strong>Settings</strong> app</li>
+                                    <li>Go to <strong>Accessibility</strong></li>
+                                    <li>Select <strong>Hearing aids</strong></li>
+                                    <li>Complete pairing process</li>
+                                    <li>Test connection with sample audio</li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6 mb-4">
+                            <div class="platform-guide">
+                                <div class="platform-header">
+                                    <i class="fab fa-windows text-info me-2"></i>
+                                    <h3 class="h5">Windows</h3>
+                                </div>
+                                <ol class="platform-steps">
+                                    <li>Open <strong>Settings</strong></li>
+                                    <li>Go to <strong>Devices</strong></li>
+                                    <li>Select <strong>Bluetooth & other devices</strong></li>
+                                    <li>Add Bluetooth device</li>
+                                    <li>Follow hearing aid instructions</li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6 mb-4">
+                            <div class="platform-guide">
+                                <div class="platform-header">
+                                    <i class="fab fa-apple text-secondary me-2"></i>
+                                    <h3 class="h5">macOS</h3>
+                                </div>
+                                <ol class="platform-steps">
+                                    <li>Open <strong>System Preferences</strong></li>
+                                    <li>Click <strong>Bluetooth</strong></li>
+                                    <li>Put hearing aids in pairing mode</li>
+                                    <li>Click <strong>Connect</strong> when they appear</li>
+                                    <li>Configure audio settings if needed</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Best Practices -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title h4">
+                        <i class="fas fa-lightbulb text-warning me-2"></i>
+                        Additional Security Tips
+                    </h2>
+                    
+                    <div class="tips-grid">
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-wifi text-primary"></i>
+                            </div>
+                            <h3 class="h6">Use Trusted Networks</h3>
+                            <p class="small">Only connect to secure, password-protected Wi-Fi networks when accessing financial services.</p>
+                        </div>
+                        
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-eye-slash text-info"></i>
+                            </div>
+                            <h3 class="h6">Private Browsing</h3>
+                            <p class="small">Consider using private/incognito mode when accessing sensitive financial information.</p>
+                        </div>
+                        
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-mobile-alt text-success"></i>
+                            </div>
+                            <h3 class="h6">Keep Software Updated</h3>
+                            <p class="small">Regularly update your hearing aid firmware and device operating system.</p>
+                        </div>
+                        
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-user-lock text-warning"></i>
+                            </div>
+                            <h3 class="h6">Sign Out Completely</h3>
+                            <p class="small">Always log out completely from financial platforms when finished.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support Section -->
+            <div class="support-section text-center">
+                <h2 class="h4 mb-3">
+                    <i class="fas fa-headset text-primary me-2"></i>
+                    Need Help?
+                </h2>
+                <p class="mb-3">Our support team understands the unique needs of deaf and hard-of-hearing users.</p>
+                <div class="btn-group" role="group">
+                    <a href="mailto:accessibility@mbtqgroup.com" class="btn btn-primary deaf-ui-button">
+                        <i class="fas fa-envelope me-2"></i>
+                        Email Support
+                    </a>
+                    <a href="{{ url_for('index') }}" class="btn btn-outline-primary deaf-ui-button">
+                        <i class="fas fa-home me-2"></i>
+                        Return to Platform
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+.bluetooth-security-page {
+    padding: 2rem 0;
+}
+
+.security-header .security-icon {
+    font-size: 4rem;
+    color: var(--bs-primary);
+}
+
+.deaf-ui-visual-alert {
+    font-size: 1.1rem;
+    padding: 1.5rem;
+}
+
+.security-reasons .reason-item {
+    text-align: center;
+    padding: 1.5rem 1rem;
+}
+
+.reason-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.platform-guide {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--bs-primary);
+    height: 100%;
+}
+
+.platform-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.platform-header i {
+    font-size: 1.5rem;
+}
+
+.platform-steps {
+    margin-bottom: 0;
+    padding-left: 1.2rem;
+}
+
+.platform-steps li {
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.tip-item {
+    text-align: center;
+}
+
+.tip-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.deaf-ui-button {
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-width: 2px;
+}
+
+.deaf-ui-button:focus {
+    outline: 3px solid var(--bs-primary-rgb, 13, 110, 253);
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .platform-guide {
+        border-width: 3px;
+        border-color: #000;
+    }
+    
+    .reason-item, .tip-item {
+        border: 2px solid #000;
+        border-radius: 0.375rem;
+        background: #fff;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .security-icon {
+        animation: none;
+    }
+}
+
+/* Large text support */
+.deaf-ui.large-text .platform-steps {
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+</style>
+{% endblock %}

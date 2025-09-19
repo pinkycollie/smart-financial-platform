@@ -5,20 +5,28 @@ from sqlalchemy.orm import DeclarativeBase
 import os
 import logging
 
+# Import security configuration
+from config.security import security_manager
+
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
 # Initialize Flask app
 app = Flask(__name__)
 
+# Initialize enterprise security
+security_manager.init_app(app)
+
 # Configure app
-app.secret_key = os.environ.get("SESSION_SECRET")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_recycle": 300,
     "pool_pre_ping": True,
 }
+
+# Session security is now handled by security_manager
+# SECRET_KEY, CSRF protection, and security headers are configured automatically
 
 # Configure API services
 app.config['MUX_TOKEN_ID'] = os.environ.get('MUX_TOKEN_ID', '')
@@ -67,7 +75,8 @@ app.register_blueprint(insurance_bp)
 app.register_blueprint(business_bp)
 app.register_blueprint(vsl_bp)
 
-# Register ASL AI blueprints
+# Register ASL AI blueprints with rate limiting
+limiter = security_manager.get_limiter()
 app.register_blueprint(asl_ai_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(appointments_bp)

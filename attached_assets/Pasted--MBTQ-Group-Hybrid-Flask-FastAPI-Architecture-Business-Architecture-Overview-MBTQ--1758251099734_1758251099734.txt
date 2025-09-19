@@ -1,0 +1,480 @@
+# MBTQ Group: Hybrid Flask/FastAPI Architecture
+
+## 🏢 **Business Architecture Overview**
+
+```
+MBTQ Group LLC (mbtqgroup.com)
+├── MBTQ Tax & Insurance (Core Platform)
+├── MBTQ Properties (mbtqproperties.com)
+│   └── SIDE Partnership Integration
+└── Magician_API (GCP AI Infrastructure)
+    ├── GPU/TPU Clusters
+    ├── Quantum Computing Interface
+    └── High-Performance I/O Operations
+```
+
+## 🔧 **Hybrid Technology Stack**
+
+### Frontend Layer (Deaf-First UI)
+
+```python
+# Flask for user-facing interfaces and forms
+# app/frontend/flask_app.py
+from flask import Flask, render_template
+from flask_socketio import SocketIO
+
+app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins="*")
+
+@app.route('/tax/upload')
+def tax_upload_form():
+    """Deaf-accessible tax document upload"""
+    return render_template('tax/upload_form.html')
+
+@socketio.on('document_processing_status')
+def handle_status_update(data):
+    """Real-time updates via WebSocket"""
+    emit('processing_update', {
+        'status': data['status'],
+        'sign_video_url': data.get('sign_explanation')
+    })
+```
+
+### API Layer (High-Performance Backend)
+
+```python
+# FastAPI for AI/ML operations and external integrations
+# app/api/fastapi_app.py
+from fastapi import FastAPI, WebSocket, BackgroundTasks
+import asyncio
+import httpx
+
+app = FastAPI(
+    title="MBTQ Magician API",
+    description="High-performance AI infrastructure for deaf-first services"
+)
+
+@app.post("/api/v1/tax/process-document")
+async def process_tax_document(
+    file: UploadFile,
+    background_tasks: BackgroundTasks
+):
+    """Async document processing with GPU acceleration"""
+    
+    # Send to GCP AI infrastructure
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "https://magician-api.gcp.mbtqgroup.com/process",
+            files={"document": file.file},
+            headers={"X-API-Key": settings.MAGICIAN_API_KEY}
+        )
+    
+    # Queue background sign language generation
+    background_tasks.add_task(
+        generate_sign_language_explanation,
+        response.json()["analysis"]
+    )
+    
+    return {"job_id": response.json()["job_id"]}
+
+@app.websocket("/ws/processing/{job_id}")
+async def websocket_endpoint(websocket: WebSocket, job_id: str):
+    """WebSocket for real-time processing updates"""
+    await websocket.accept()
+    
+    while True:
+        # Poll Magician API for updates
+        status = await check_processing_status(job_id)
+        await websocket.send_json(status)
+        
+        if status["complete"]:
+            break
+            
+        await asyncio.sleep(1)
+```
+
+## 🤖 **Magician_API (GCP AI Infrastructure)**
+
+### Core AI Services Architecture
+
+```python
+# magician_api/main.py (FastAPI on GCP)
+from fastapi import FastAPI
+from google.cloud import aiplatform
+import tensorflow as tf
+
+app = FastAPI()
+
+class MagicianAI:
+    def __init__(self):
+        self.gpu_client = tf.config.list_physical_devices('GPU')
+        self.tpu_client = None  # Initialize TPU if available
+        
+    async def process_tax_document(self, document_bytes):
+        """AI processing with GPU acceleration"""
+        
+        # OCR + NLP Pipeline
+        text = await self.extract_text_gpu(document_bytes)
+        
+        # Tax categorization using quantum-inspired algorithms
+        categories = await self.quantum_categorize(text)
+        
+        # Generate deaf-accessible explanations
+        explanations = await self.generate_accessibility_content(
+            text, categories
+        )
+        
+        return {
+            "extracted_text": text,
+            "categories": categories,
+            "sign_language_script": explanations["sign_script"],
+            "visual_summary": explanations["visual_data"]
+        }
+        
+    async def quantum_categorize(self, text):
+        """Quantum-inspired tax categorization"""
+        # Implementation using quantum algorithms for pattern matching
+        # This would interface with quantum computing services
+        pass
+
+@app.post("/process")
+async def process_document(file: UploadFile):
+    magician = MagicianAI()
+    result = await magician.process_tax_document(await file.read())
+    return result
+```
+
+## 🏠 **SIDE Real Estate Integration**
+
+### Plugin Architecture for SIDE Platform
+
+```python
+# app/integrations/side_plugin.py
+from side_api import SIDEClient
+from app.core.accessibility import AccessibilityProcessor
+
+class SIDEDeafFirstPlugin:
+    def __init__(self):
+        self.side_client = SIDEClient(api_key=settings.SIDE_API_KEY)
+        self.accessibility = AccessibilityProcessor()
+        
+    async def sync_properties(self):
+        """Sync SIDE properties with deaf-accessible enhancements"""
+        
+        # Get properties from SIDE
+        properties = await self.side_client.get_properties()
+        
+        for property in properties:
+            # Enhance with accessibility features
+            enhanced_property = await self.enhance_property_accessibility(property)
+            
+            # Store in MBTQ Properties database
+            await self.store_enhanced_property(enhanced_property)
+    
+    async def enhance_property_accessibility(self, property_data):
+        """Add deaf-first features to property listings"""
+        
+        # Generate sign language property description
+        sign_description = await self.accessibility.text_to_sign(
+            property_data["description"]
+        )
+        
+        # Create visual floor plans with accessibility markers
+        visual_floorplan = await self.accessibility.create_visual_floorplan(
+            property_data["floorplan_url"]
+        )
+        
+        # Generate video tour with sign language narration
+        if property_data.get("video_tour_url"):
+            accessible_tour = await self.accessibility.add_sign_narration(
+                property_data["video_tour_url"]
+            )
+        
+        return {
+            **property_data,
+            "deaf_accessible_features": {
+                "sign_description_url": sign_description["video_url"],
+                "visual_floorplan_url": visual_floorplan["enhanced_url"],
+                "accessible_tour_url": accessible_tour.get("enhanced_video_url")
+            }
+        }
+```
+
+## 📊 **Load Balancing Architecture**
+
+### Nginx Configuration
+
+```nginx
+# nginx.conf
+upstream flask_frontend {
+    server flask-app-1:5000;
+    server flask-app-2:5000;
+    server flask-app-3:5000;
+}
+
+upstream fastapi_backend {
+    server fastapi-app-1:8000;
+    server fastapi-app-2:8000;
+    server fastapi-app-3:8000;
+}
+
+server {
+    listen 80;
+    server_name mbtqgroup.com;
+    
+    # Static content and user interfaces → Flask
+    location / {
+        proxy_pass http://flask_frontend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    
+    # API calls and AI processing → FastAPI
+    location /api/ {
+        proxy_pass http://fastapi_backend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    
+    # WebSocket connections
+    location /ws/ {
+        proxy_pass http://fastapi_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+### Docker Compose for Development
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  flask-frontend:
+    build: ./flask-app
+    ports:
+      - "5000:5000"
+    environment:
+      - FASTAPI_BACKEND_URL=http://fastapi-backend:8000
+      - MAGICIAN_API_URL=https://magician-api.gcp.mbtqgroup.com
+    depends_on:
+      - redis
+      - postgres
+
+  fastapi-backend:
+    build: ./fastapi-app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:pass@postgres:5432/mbtq
+      - REDIS_URL=redis://redis:6379/0
+      - GCP_PROJECT_ID=mbtq-ai-infrastructure
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: mbtq
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
+```
+
+## 🧮 **Quantum Algorithm Integration**
+
+### Tax Optimization with Quantum Computing
+
+```python
+# app/quantum/tax_optimizer.py
+from qiskit import QuantumCircuit, Aer, execute
+import numpy as np
+
+class QuantumTaxOptimizer:
+    def __init__(self):
+        self.backend = Aer.get_backend('qasm_simulator')
+        
+    def optimize_deductions(self, tax_data):
+        """Use quantum annealing for optimal deduction selection"""
+        
+        # Create quantum circuit for optimization problem
+        n_deductions = len(tax_data["possible_deductions"])
+        circuit = QuantumCircuit(n_deductions, n_deductions)
+        
+        # Encode deduction values as quantum amplitudes
+        for i, deduction in enumerate(tax_data["possible_deductions"]):
+            theta = np.arccos(deduction["value"] / tax_data["max_deduction"])
+            circuit.ry(theta, i)
+        
+        # Add constraint gates (quantum interference)
+        self.add_constraint_gates(circuit, tax_data["constraints"])
+        
+        # Measure optimal combination
+        circuit.measure_all()
+        
+        # Execute quantum circuit
+        job = execute(circuit, self.backend, shots=1000)
+        result = job.result()
+        counts = result.get_counts(circuit)
+        
+        # Find most probable outcome (optimal deductions)
+        optimal_state = max(counts, key=counts.get)
+        
+        return self.decode_quantum_result(optimal_state, tax_data)
+```
+
+## 📄 **Document Processing Pipeline**
+
+### HTML/DOC/TXT Processing
+
+```python
+# app/document_processing/processor.py
+import asyncio
+from typing import Union
+import aiofiles
+from bs4 import BeautifulSoup
+import python_docx
+import PyPDF2
+
+class UniversalDocumentProcessor:
+    def __init__(self):
+        self.supported_formats = ['.html', '.doc', '.docx', '.txt', '.pdf']
+        
+    async def process_document(self, file_path: str, output_format: str = 'accessible_html'):
+        """Process any document format into deaf-accessible format"""
+        
+        file_extension = Path(file_path).suffix.lower()
+        
+        if file_extension == '.html':
+            content = await self.process_html(file_path)
+        elif file_extension in ['.doc', '.docx']:
+            content = await self.process_word(file_path)
+        elif file_extension == '.txt':
+            content = await self.process_text(file_path)
+        elif file_extension == '.pdf':
+            content = await self.process_pdf(file_path)
+        else:
+            raise ValueError(f"Unsupported format: {file_extension}")
+            
+        # Convert to accessible format
+        accessible_content = await self.make_accessible(content, output_format)
+        
+        return accessible_content
+        
+    async def process_html(self, file_path: str):
+        """Process HTML with accessibility enhancements"""
+        async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+            html_content = await f.read()
+            
+        soup = BeautifulSoup(html_content, 'html.parser')
+        
+        # Extract structured data
+        return {
+            'title': soup.title.string if soup.title else '',
+            'headings': [h.get_text().strip() for h in soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])],
+            'paragraphs': [p.get_text().strip() for p in soup.find_all('p')],
+            'lists': [self.extract_list_items(ul) for ul in soup.find_all(['ul', 'ol'])],
+            'images': [{'src': img.get('src'), 'alt': img.get('alt', '')} for img in soup.find_all('img')],
+            'links': [{'href': a.get('href'), 'text': a.get_text().strip()} for a in soup.find_all('a')]
+        }
+        
+    async def make_accessible(self, content: dict, output_format: str):
+        """Convert content to deaf-accessible format"""
+        
+        accessible_content = {
+            'original_content': content,
+            'accessibility_features': {}
+        }
+        
+        # Generate sign language videos for key content
+        if content.get('title'):
+            accessible_content['accessibility_features']['title_sign_video'] = \
+                await self.generate_sign_video(content['title'])
+                
+        # Simplify complex paragraphs
+        simplified_paragraphs = []
+        for paragraph in content.get('paragraphs', []):
+            simplified = await self.simplify_text(paragraph)
+            simplified_paragraphs.append({
+                'original': paragraph,
+                'simplified': simplified,
+                'sign_video_url': await self.generate_sign_video(simplified)
+            })
+        accessible_content['accessibility_features']['paragraphs'] = simplified_paragraphs
+        
+        # Create visual representations
+        if content.get('lists'):
+            accessible_content['accessibility_features']['visual_lists'] = \
+                await self.create_visual_lists(content['lists'])
+                
+        return accessible_content
+```
+
+## 🚀 **Deployment Strategy**
+
+### GCP Infrastructure
+
+```python
+# deployment/gcp_infrastructure.py
+from google.cloud import run_v2
+from google.cloud import compute_v1
+
+class GCPDeployment:
+    def __init__(self):
+        self.run_client = run_v2.ServicesClient()
+        self.compute_client = compute_v1.InstancesClient()
+        
+    def deploy_magician_api(self):
+        """Deploy high-performance AI API to Cloud Run"""
+        
+        service_config = {
+            "template": {
+                "spec": {
+                    "containers": [{
+                        "image": "gcr.io/mbtq-ai/magician-api:latest",
+                        "resources": {
+                            "limits": {
+                                "cpu": "4",
+                                "memory": "8Gi"
+                            }
+                        },
+                        "env": [
+                            {"name": "GPU_ENABLED", "value": "true"},
+                            {"name": "TPU_ENABLED", "value": "true"}
+                        ]
+                    }],
+                    "scaling": {
+                        "min_instance_count": 2,
+                        "max_instance_count": 100
+                    }
+                }
+            }
+        }
+        
+        return self.run_client.create_service(
+            parent="projects/mbtq-ai-infrastructure/locations/us-central1",
+            service=service_config
+        )
+```
+
+## 📈 **Revenue Integration Points**
+
+1. **Tax Processing**: $X per document processed through Magician_API
+1. **Real Estate**: Commission split with SIDE + accessibility premium
+1. **Insurance**: Partner commissions + document processing fees
+1. **API Licensing**: Other companies paying for deaf-accessibility APIs
+
+This hybrid architecture gives you the best of both worlds - Flask’s simplicity for user interfaces and FastAPI’s performance for AI operations, all while maintaining your deaf-first mission!

@@ -33,6 +33,7 @@
                         {% endwith %}
 
                         <form method="POST" class="needs-validation" novalidate>
+                            {{ csrf_token() }}
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="deaf-form-group">
@@ -218,8 +219,17 @@
                             </p>
                         </div>
 
+                        <!-- Security Notice -->
+                        <div class="mt-4 p-3 bg-info bg-opacity-10 border-start border-info border-4">
+                            <h6 class="text-info mb-2">
+                                <i class="fas fa-shield-alt me-2"></i>Account Security
+                            </h6>
+                            <p class="small mb-2">Your financial data will be encrypted and protected with enterprise-grade security measures.</p>
+                            <p class="small mb-0"><i class="fas fa-lock me-1"></i>We never share your information with third parties.</p>
+                        </div>
+                        
                         <!-- Why MBTQ Group LLC -->
-                        <div class="mt-4 p-3 bg-light rounded">
+                        <div class="mt-3 p-3 bg-light rounded">
                             <h6 class="text-primary mb-2">
                                 <i class="fas fa-heart me-2"></i>Why Choose MBTQ Group LLC?
                             </h6>
