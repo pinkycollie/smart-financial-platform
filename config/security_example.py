@@ -130,6 +130,12 @@ def _validate_oauth_token(token: str) -> list:
     4. Return the granted scopes
     
     This is a placeholder implementation.
+    
+    Args:
+        token: OAuth access token
+        
+    Returns:
+        list: List of scope strings granted to the token (e.g., ['read', 'write'])
     """
     # Placeholder: In production, use a proper OAuth library
     # like Authlib or python-oauth2
@@ -269,8 +275,19 @@ class RateLimiter:
     """
     Simple rate limiter for API endpoints.
     
-    In production, use a proper rate limiting library like
-    Flask-Limiter with Redis backend.
+    WARNING: This in-memory implementation will not work across multiple
+    server instances. In production, use a proper rate limiting library like
+    Flask-Limiter with Redis backend for distributed rate limiting.
+    
+    Example production setup:
+        from flask_limiter import Limiter
+        from flask_limiter.util import get_remote_address
+        
+        limiter = Limiter(
+            app,
+            key_func=get_remote_address,
+            storage_uri="redis://localhost:6379"
+        )
     """
     
     def __init__(self, max_requests=100, window=60):

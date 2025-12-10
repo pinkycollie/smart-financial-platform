@@ -93,9 +93,19 @@ def submit_needs_assessment():
                 'message': 'Missing required field: hearing_aid_claims_history'
             }), 400
         
+        # TODO: Extract client_id from authentication context
+        # In production, get client_id from validated OAuth token or session
+        # For now, using placeholder to indicate this needs authentication
+        client_id = data.get('client_id')
+        if not client_id:
+            return jsonify({
+                'status': 'error',
+                'message': 'Client ID required. Please authenticate.'
+            }), 401
+        
         # Submit assessment
         result = needs_assessment_service.submit_assessment(
-            client_id=data.get('client_id', 'TEMP'),  # In production, get from auth
+            client_id=client_id,
             hearing_aid_claims_history=data['hearing_aid_claims_history'],
             benefit_program_eligibility=data.get('benefit_program_eligibility', []),
             tax_deductions_focus=data.get('tax_deductions_focus', [])

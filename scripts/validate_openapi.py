@@ -11,7 +11,18 @@ from pathlib import Path
 
 
 def load_openapi_spec(spec_path: str) -> dict:
-    """Load the OpenAPI specification from a JSON file."""
+    """
+    Load the OpenAPI specification from a JSON file.
+    
+    Args:
+        spec_path: Path to the OpenAPI JSON specification file
+        
+    Returns:
+        dict: Parsed OpenAPI specification
+        
+    Raises:
+        SystemExit: If file not found or invalid JSON
+    """
     try:
         with open(spec_path, 'r') as f:
             return json.load(f)
@@ -24,7 +35,18 @@ def load_openapi_spec(spec_path: str) -> dict:
 
 
 def validate_structure(spec: dict) -> list:
-    """Validate the basic structure of the OpenAPI specification."""
+    """
+    Validate the basic structure of the OpenAPI specification.
+    
+    Checks for required top-level fields (openapi, info, paths) and validates
+    the OpenAPI version is 3.x.
+    
+    Args:
+        spec: OpenAPI specification dictionary
+        
+    Returns:
+        list: List of validation error messages, empty if valid
+    """
     errors = []
     
     # Check required top-level fields
@@ -43,7 +65,17 @@ def validate_structure(spec: dict) -> list:
 
 
 def validate_info(spec: dict) -> list:
-    """Validate the info section."""
+    """
+    Validate the info section of the OpenAPI specification.
+    
+    Ensures required info fields (title, version) are present.
+    
+    Args:
+        spec: OpenAPI specification dictionary
+        
+    Returns:
+        list: List of validation error messages, empty if valid
+    """
     errors = []
     
     if 'info' not in spec:
@@ -60,7 +92,20 @@ def validate_info(spec: dict) -> list:
 
 
 def validate_paths(spec: dict) -> list:
-    """Validate the paths section."""
+    """
+    Validate the paths section of the OpenAPI specification.
+    
+    Checks that:
+    - Paths section exists and is not empty
+    - Each path has at least one HTTP method defined
+    - Each operation has a responses section
+    
+    Args:
+        spec: OpenAPI specification dictionary
+        
+    Returns:
+        list: List of validation error messages, empty if valid
+    """
     errors = []
     
     if 'paths' not in spec:
@@ -101,7 +146,21 @@ def validate_paths(spec: dict) -> list:
 
 
 def validate_schemas(spec: dict) -> list:
-    """Validate the components/schemas section."""
+    """
+    Validate the components/schemas section.
+    
+    Checks that:
+    - Components and schemas sections exist
+    - All DHH-specific schemas are present
+    - Schemas have required 'type' field
+    - Object schemas have 'properties' field
+    
+    Args:
+        spec: OpenAPI specification dictionary
+        
+    Returns:
+        list: List of validation error messages, empty if valid
+    """
     errors = []
     
     if 'components' not in spec:
@@ -143,7 +202,20 @@ def validate_schemas(spec: dict) -> list:
 
 
 def validate_dhh_requirements(spec: dict) -> list:
-    """Validate DHH-specific requirements."""
+    """
+    Validate DHH-specific requirements.
+    
+    Checks that:
+    - All required DHH endpoints are present
+    - DHHClientIntake schema has communication_preference field
+    - Communication preferences include all expected values
+    
+    Args:
+        spec: OpenAPI specification dictionary
+        
+    Returns:
+        list: List of validation error messages, empty if valid
+    """
     errors = []
     
     # Check for DHH-specific endpoints
@@ -184,7 +256,17 @@ def validate_dhh_requirements(spec: dict) -> list:
 
 
 def validate_security(spec: dict) -> list:
-    """Validate security configuration."""
+    """
+    Validate security configuration.
+    
+    Checks that security schemes are defined (OAuth 2.0 or API Key).
+    
+    Args:
+        spec: OpenAPI specification dictionary
+        
+    Returns:
+        list: List of validation error messages, empty if valid
+    """
     errors = []
     
     components = spec.get('components', {})
