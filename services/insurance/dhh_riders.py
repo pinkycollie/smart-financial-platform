@@ -4,7 +4,7 @@ Insurance Service - DHH-Specific Riders
 This module handles insurance quote generation with DHH-specific coverage options.
 """
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any, Union
 from decimal import Decimal
 from datetime import datetime
 import uuid
@@ -45,7 +45,7 @@ class DHHInsuranceRider:
         
         return total
     
-    def get_rider_details(self, rider_type: str) -> Dict[str, any]:
+    def get_rider_details(self, rider_type: str) -> Dict[str, Any]:
         """
         Get detailed information about a specific rider.
         
@@ -102,7 +102,7 @@ class InsuranceQuoteGenerator:
         interpreter_service_rider: bool = False,
         assistive_equipment_rider: bool = False,
         current_policy_exception_summary: str = ""
-    ) -> Dict[str, any]:
+    ) -> Dict[str, Union[str, float, List[Dict[str, Any]]]]:
         """
         Generate an insurance quote with DHH-specific riders.
         

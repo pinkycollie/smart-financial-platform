@@ -4,7 +4,7 @@ Client Service - DHH Client Intake
 This module handles client intake and needs assessment for DHH clients.
 """
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 from datetime import datetime
 import uuid
 
@@ -36,7 +36,7 @@ class DHHClientIntakeService:
         communication_preference: str,
         interpreter_needed: bool = False,
         interpreter_contracting_status: str = "Not_Required"
-    ) -> Dict[str, any]:
+    ) -> Dict[str, str]:
         """
         Register a new DHH client.
         
@@ -122,7 +122,7 @@ class NeedsAssessmentService:
         hearing_aid_claims_history: str,
         benefit_program_eligibility: List[str] = None,
         tax_deductions_focus: List[str] = None
-    ) -> Dict[str, any]:
+    ) -> Dict[str, Any]:
         """
         Submit a needs assessment for a DHH client.
         

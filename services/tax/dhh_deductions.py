@@ -5,7 +5,7 @@ This module handles tax-related calculations with a focus on
 Deaf and Hard of Hearing specific deductions.
 """
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any, Union
 from decimal import Decimal
 
 
@@ -149,7 +149,7 @@ class TaxRefundEstimator:
         deductions_standard: float = 12950.00,
         special_deduction_amount: float = 0.00,
         withholding: float = 0.00
-    ) -> Dict[str, any]:
+    ) -> Dict[str, Union[float, bool, str, Dict[str, float]]]:
         """
         Estimate tax refund.
         

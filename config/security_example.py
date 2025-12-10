@@ -7,6 +7,7 @@ with OAuth 2.0 and API key authentication as specified in the OpenAPI spec.
 
 import os
 from functools import wraps
+from typing import Dict, List, Tuple, Optional, Any
 from flask import request, jsonify
 import logging
 
@@ -155,7 +156,7 @@ def add_security_headers(response):
     return response
 
 
-def validate_input(data: dict, required_fields: list, schema: dict = None) -> tuple:
+def validate_input(data: Dict[str, Any], required_fields: List[str], schema: Dict[str, Any] = None) -> Tuple[bool, Optional[str]]:
     """
     Validate input data against required fields and schema.
     
@@ -195,7 +196,7 @@ def validate_input(data: dict, required_fields: list, schema: dict = None) -> tu
     return True, None
 
 
-def sanitize_output(data: dict, sensitive_fields: list = None) -> dict:
+def sanitize_output(data: Dict[str, Any], sensitive_fields: List[str] = None) -> Dict[str, Any]:
     """
     Sanitize output data by masking sensitive fields.
     
