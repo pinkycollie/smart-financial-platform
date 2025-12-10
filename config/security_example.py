@@ -275,9 +275,14 @@ class RateLimiter:
     """
     Simple rate limiter for API endpoints.
     
-    WARNING: This in-memory implementation will not work across multiple
-    server instances. In production, use a proper rate limiting library like
-    Flask-Limiter with Redis backend for distributed rate limiting.
+    WARNING: This in-memory implementation will NOT work across multiple
+    server instances or containers. This limitation is critical for:
+    - Load-balanced deployments
+    - Kubernetes/Docker multi-replica deployments
+    - Any horizontal scaling scenario
+    
+    In production, use a proper rate limiting library like Flask-Limiter
+    with Redis backend for distributed rate limiting across all instances.
     
     Example production setup:
         from flask_limiter import Limiter

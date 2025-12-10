@@ -93,9 +93,17 @@ def submit_needs_assessment():
                 'message': 'Missing required field: hearing_aid_claims_history'
             }), 400
         
-        # TODO: Extract client_id from authentication context
-        # In production, get client_id from validated OAuth token or session
-        # For now, using placeholder to indicate this needs authentication
+        # TODO: SECURITY - Extract client_id from authentication context
+        # IMPORTANT: This is a security vulnerability placeholder.
+        # In production, client_id MUST be extracted from the validated OAuth token
+        # or authenticated session to prevent unauthorized access to other clients' data.
+        # Example production code:
+        #   from flask_login import current_user
+        #   client_id = current_user.client_id
+        # Or from OAuth token:
+        #   token_data = validate_token(request.headers.get('Authorization'))
+        #   client_id = token_data['client_id']
+        
         client_id = data.get('client_id')
         if not client_id:
             return jsonify({

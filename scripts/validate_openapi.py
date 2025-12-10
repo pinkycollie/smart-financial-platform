@@ -8,9 +8,10 @@ This script validates the OpenAPI specification for correctness and completeness
 import json
 import sys
 from pathlib import Path
+from typing import Dict, Any, List
 
 
-def load_openapi_spec(spec_path: str) -> dict:
+def load_openapi_spec(spec_path: str) -> Dict[str, Any]:
     """
     Load the OpenAPI specification from a JSON file.
     
