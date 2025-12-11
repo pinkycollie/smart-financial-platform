@@ -1,0 +1,391 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MBTQ Smart Tax & Insurance API for DHH Community",
+    "version": "1.0.0",
+    "description": "Unified API structure for MBTQ's Tax and Insurance Platform, specifically engineered to support the unique needs of the Deaf and Hard of Hearing (DHH) community, including interpreter services, specialized deductions, and insurance exceptions."
+  },
+  "servers": [
+    {
+      "url": "https://api.mbtquniverse.com",
+      "description": "Production server"
+    },
+    {
+      "url": "http://localhost:5000",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/api/intake/tax-client": {
+      "post": {
+        "summary": "Registers a new DHH client for tax services, capturing communication needs.",
+        "tags": ["Client Intake"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DHHClientIntake"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Client successfully registered.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientConfirmation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid client data provided."
+          }
+        }
+      }
+    },
+    "/api/intake/needs-assessment": {
+      "post": {
+        "summary": "Submits a detailed needs assessment to identify DHH-specific financial opportunities.",
+        "tags": ["Client Intake"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NeedsAssessmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Assessment successfully recorded and analyzed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandardSuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tax/refund-estimate": {
+      "post": {
+        "summary": "Calculates an estimated tax refund, considering DHH-specific deductions (e.g., interpreter fees).",
+        "tags": ["Tax Services"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaxDataInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Estimated refund calculated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefundEstimateResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/insurance/quote/request": {
+      "post": {
+        "summary": "Requests an insurance quote with specific riders for DHH needs (e.g., hearing aid coverage).",
+        "tags": ["Insurance Services"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InsuranceQuoteRequestDHH"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Quote request submitted. Quote ID returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteConfirmation"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/internal/health": {
+      "get": {
+        "summary": "Checks the health status of the API.",
+        "tags": ["Internal"],
+        "responses": {
+          "200": {
+            "description": "API is healthy and operational.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "UP"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DHHClientIntake": {
+        "type": "object",
+        "description": "Detailed intake form for a DHH tax or insurance client, prioritizing communication and access.",
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "description": "Full legal name of the client"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Primary email address for communication"
+          },
+          "communication_preference": {
+            "type": "string",
+            "enum": [
+              "ASL_Interpreter",
+              "VRI",
+              "Captioned_Phone",
+              "Text_Only"
+            ],
+            "description": "Preferred method for communication during consultations."
+          },
+          "interpreter_needed": {
+            "type": "boolean",
+            "description": "Does the client require an interpreter for services?"
+          },
+          "interpreter_contracting_status": {
+            "type": "string",
+            "description": "Status related to interpreter contracting (e.g., 'Pending', 'Approved', 'Self-Provided')."
+          }
+        },
+        "required": [
+          "full_name",
+          "email",
+          "communication_preference"
+        ]
+      },
+      "ClientConfirmation": {
+        "type": "object",
+        "properties": {
+          "client_id": {
+            "type": "string",
+            "description": "Unique identifier for the newly created client."
+          },
+          "status": {
+            "type": "string",
+            "example": "Registered"
+          },
+          "next_step": {
+            "type": "string",
+            "description": "Suggested next action, e.g., 'Proceed to Needs Assessment'."
+          }
+        }
+      },
+      "NeedsAssessmentRequest": {
+        "type": "object",
+        "description": "Assessment to identify unique DHH-related financial needs and potential deductions.",
+        "properties": {
+          "hearing_aid_claims_history": {
+            "type": "string",
+            "description": "Summary of past hearing aid insurance claims or expenses."
+          },
+          "benefit_program_eligibility": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "SSI",
+                "SSDI",
+                "Vocational_Rehab",
+                "Other"
+              ]
+            },
+            "description": "List of relevant benefit programs the client is interested in or receiving."
+          },
+          "tax_deductions_focus": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Medical_Expenses",
+                "Work_Related_Interpreter_Fees",
+                "Specialized_Equipment"
+              ]
+            },
+            "description": "Potential unique tax deductions related to deafness."
+          }
+        },
+        "required": [
+          "hearing_aid_claims_history"
+        ]
+      },
+      "TaxDataInput": {
+        "type": "object",
+        "description": "Core data required for tax refund estimation.",
+        "properties": {
+          "income_w2": {
+            "type": "number",
+            "format": "float",
+            "description": "W-2 income for the tax year"
+          },
+          "deductions_standard": {
+            "type": "number",
+            "format": "float",
+            "description": "Standard deduction amount"
+          },
+          "special_deduction_amount": {
+            "type": "number",
+            "format": "float",
+            "description": "Calculated amount for DHH-specific deductions (e.g., interpreter costs, specialized software)."
+          }
+        },
+        "required": [
+          "income_w2"
+        ]
+      },
+      "RefundEstimateResponse": {
+        "type": "object",
+        "description": "Result of the tax refund calculation.",
+        "properties": {
+          "estimated_refund": {
+            "type": "number",
+            "format": "float",
+            "description": "The final estimated refund amount."
+          },
+          "dhh_benefit_applied": {
+            "type": "boolean",
+            "description": "Indicates if DHH-specific deductions were successfully applied in this estimate."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Personalized notes on potential further deductions or required documentation for e-filing."
+          }
+        },
+        "required": [
+          "estimated_refund",
+          "dhh_benefit_applied"
+        ]
+      },
+      "InsuranceQuoteRequestDHH": {
+        "type": "object",
+        "description": "Request for an insurance quote with specific DHH-related coverage needs.",
+        "properties": {
+          "insurance_type": {
+            "type": "string",
+            "enum": [
+              "Health",
+              "Life",
+              "Home",
+              "Auto"
+            ],
+            "description": "Type of insurance coverage requested"
+          },
+          "hearing_aid_coverage_required": {
+            "type": "boolean",
+            "description": "Is explicit hearing aid replacement/repair coverage a priority?"
+          },
+          "interpreter_service_rider": {
+            "type": "boolean",
+            "description": "Requesting a rider to cover interpreter services for medical appointments."
+          },
+          "current_policy_exception_summary": {
+            "type": "string",
+            "description": "Summary of any current policy exceptions related to deafness or specialized equipment."
+          }
+        },
+        "required": [
+          "insurance_type",
+          "hearing_aid_coverage_required"
+        ]
+      },
+      "QuoteConfirmation": {
+        "type": "object",
+        "properties": {
+          "quote_id": {
+            "type": "string",
+            "description": "Unique ID for tracking the requested quote."
+          },
+          "estimated_premium_range": {
+            "type": "string",
+            "description": "A preliminary range for the premium (e.g., '$150 - $200/month')."
+          }
+        }
+      },
+      "StandardSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "success"
+          },
+          "message": {
+            "type": "string",
+            "example": "Operation completed successfully. Your request is being processed."
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://api.mbtquniverse.com/oauth/authorize",
+            "tokenUrl": "https://api.mbtquniverse.com/oauth/token",
+            "scopes": {
+              "read": "Read access to client data",
+              "write": "Write access to client data",
+              "admin": "Administrative access"
+            }
+          }
+        }
+      },
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth2": ["read", "write"]
+    }
+  ]
+}
