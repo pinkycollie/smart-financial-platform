@@ -84,3 +84,52 @@ replit.nix
 
 # Lock files (keep uv.lock as it's in the repo)
 # uv.lock
+
+# Private/Business Documents
+budget_breakdown.md
+executive_summary.md
+funding_proposal.md
+funding_pitch_slides.md
+risk_mitigation.md
+impact_metrics.md
+EULA.txt
+WHITELIST_RESELLER_SYSTEM.md
+attached_assets/
+
+# Security and Configuration
+config/security.py
+**/config.py
+!**/config_example.py
+*.key
+*.pem
+*.cert
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# Demo and Test Files
+create_reseller_demo.py
+create_education_tables.py
+test_reseller.py
+route_test.py
+
+# Model files (internal structure)
+models_additions.py
+models_asl_support.py
+models_education.py
+models_import.py
+models_licensing.py
+models_reseller.py
+
+# Scripts and utilities (internal use)
+scripts/
+wsgi.py
+
+# Replit specific
+.replit
+replit.nix
+replit.md
+
+# Generated icons and internal assets
+generated-icon.png
