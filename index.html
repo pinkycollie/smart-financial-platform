@@ -951,7 +951,7 @@
             </div>
             <div class="stat-item">
                 <span class="stat-number">WCAG 2.1</span>
-                <span class="stat-label">AAA Compliant</span>
+                <span class="stat-label">Guidelines Followed</span>
             </div>
         </div>
     </section>
@@ -1127,7 +1127,11 @@
 
         // Accessibility indicator click
         document.querySelector('.indicator-btn')?.addEventListener('click', function() {
-            alert('ASL Support: Live interpreters available 24/7. Video relay services and text support also available.');
+            // In a production environment, this would open an accessible modal
+            // For now, we'll log to console and could implement a proper modal
+            const message = 'ASL Support: Live interpreters available 24/7. Video relay services and text support also available.';
+            console.log(message);
+            // Future: Implement accessible modal dialog here
         });
     </script>
 </body>
