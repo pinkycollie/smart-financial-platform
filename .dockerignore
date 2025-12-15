@@ -1,0 +1,112 @@
+# Docker ignore file for MBTQ Smart Financial Platform
+# Prevents unnecessary files from being copied into Docker images
+
+# Version Control
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment Files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Documentation (not needed in container)
+*.md
+!README.md
+docs/
+
+# CI/CD
+.github/
+.circleci/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Business Documents (as per .gitignore)
+budget_breakdown.md
+executive_summary.md
+funding_proposal.md
+funding_pitch_slides.md
+risk_mitigation.md
+impact_metrics.md
+EULA.txt
+WHITELIST_RESELLER_SYSTEM.md
+attached_assets/
+
+# Demo and Test Files
+create_reseller_demo.py
+create_education_tables.py
+test_reseller.py
+route_test.py
+
+# Model files (if using separate model repository)
+models_additions.py
+models_asl_support.py
+models_education.py
+models_import.py
+models_licensing.py
+models_reseller.py
+
+# Scripts (run separately)
+scripts/
+
+# Replit specific
+.replit
+replit.nix
+replit.md
+
+# Generated icons
+generated-icon.png
+
+# Node modules (if any)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Docker files themselves
+Dockerfile*
+docker-compose*.yml
+.dockerignore

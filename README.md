@@ -165,16 +165,32 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed architecture documentation.
 
 ```bash
 # All tests
+python -m unittest discover tests
+
+# With pytest (if installed)
 pytest
 
 # Unit tests only
 pytest tests/unit/
 
-# Integration tests
-pytest tests/integration/
-
 # With coverage
-pytest --cov=./ --cov-report=html
+pytest --cov=services --cov=api --cov-report=html
+```
+
+### Linting & Code Quality
+
+```bash
+# Format code with Black
+black .
+
+# Lint with Flake8
+flake8 .
+
+# Advanced linting with Pylint
+pylint services/ api/
+
+# Run all quality checks
+black --check . && flake8 . && pylint services/ api/
 ```
 
 ### API Testing
@@ -183,9 +199,59 @@ pytest --cov=./ --cov-report=html
 # Validate OpenAPI spec
 npx @apidevtools/swagger-cli validate api/specs/openapi.json
 
-# Property-based testing with Schemathesis
+# Property-based testing with Schemathesis (if installed)
 schemathesis run api/specs/openapi.json --base-url http://localhost:5000
 ```
+
+## Production Deployment
+
+### Quick Start with Docker
+
+```bash
+# Build and run with Docker Compose
+docker-compose up -d
+
+# Check status
+docker-compose ps
+
+# View logs
+docker-compose logs -f web
+```
+
+### Manual Deployment
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for comprehensive deployment instructions including:
+- Traditional server deployment (Ubuntu/CentOS)
+- Cloud platform deployment (AWS, GCP, Azure, Heroku)
+- Docker/Kubernetes deployment
+- Database configuration
+- SSL/TLS setup
+- Monitoring and logging
+
+### Environment Configuration
+
+1. Copy the environment template:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Configure for your environment:
+   - **Development**: `FLASK_ENV=development`
+   - **Staging**: `FLASK_ENV=staging`
+   - **Production**: `FLASK_ENV=production`
+
+3. Set required environment variables (see `.env.example` for complete list)
+
+### CI/CD Pipeline
+
+The project includes automated CI/CD workflows:
+- **Linting**: Code quality checks (Black, Flake8, Pylint)
+- **Testing**: Unit and integration tests with coverage
+- **Security**: Dependency scanning (Safety, Bandit)
+- **API Validation**: OpenAPI specification validation
+- **Docker**: Container building and testing
+
+See `.github/workflows/ci-cd.yml` for details.
 
 ## Security
 
@@ -193,20 +259,44 @@ This platform handles sensitive financial and personal data. Key security measur
 
 - **Authentication**: OAuth 2.0 and API Key authentication
 - **Authorization**: Role-Based Access Control (RBAC)
-- **Encryption**: TLS 1.2+ in transit, encrypted at rest
-- **Compliance**: HIPAA-compliant for health data
-- **Rate Limiting**: 100 requests/minute per client
-- **Security Headers**: Flask-Talisman for CSP, HSTS, etc.
+- **Encryption**: TLS 1.2+ in transit, AES-256 at rest
+- **Compliance**: HIPAA-compliant for health data, WCAG 2.1 AA for accessibility
+- **Rate Limiting**: 100 requests/minute per client (configurable)
+- **Security Headers**: Flask-Talisman for CSP, HSTS, X-Frame-Options, etc.
+- **Dependency Scanning**: Automated vulnerability scanning with Safety and Bandit
+- **Secrets Management**: Environment-based configuration with secrets manager support
 
-See [docs/security.md](docs/security.md) for details.
+See [SECURITY.md](SECURITY.md) for:
+- Security policy and reporting procedures
+- Vulnerability disclosure process
+- Security best practices
+- Compliance standards
+
+## Accessibility
+
+The MBTQ Smart Financial Platform is designed with accessibility as a core principle:
+
+- **WCAG 2.1 Level AA Compliance**: Meets or exceeds standards
+- **DHH-Focused Features**: ASL videos, captions, visual notifications
+- **Communication Options**: ASL interpreter, VRI, captioned phone, text-only
+- **Keyboard Navigation**: Full keyboard accessibility
+- **Screen Reader Support**: Tested with NVDA, JAWS, VoiceOver
+
+See [ACCESSIBILITY.md](ACCESSIBILITY.md) for:
+- WCAG 2.1 compliance details
+- DHH-specific accessibility features
+- Testing guidelines and tools
+- Implementation checklist
 
 ## Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
 - Code of conduct
 - Development workflow
-- Coding standards
+- Coding standards and style guide
+- Testing requirements
 - Pull request process
+- DHH-specific contribution guidelines
 
 ## Roadmap
 
