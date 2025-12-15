@@ -1,0 +1,169 @@
+# =============================================================================
+# Docker Compose Configuration for MBTQ Smart Financial Platform
+# Development and Testing Environment
+# =============================================================================
+
+version: '3.9'
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL Database
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:15-alpine
+    container_name: mbtq-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mbtq_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-mbtq_dev_password}
+      POSTGRES_DB: mbtq_platform
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mbtq_user -d mbtq_platform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mbtq-network
+
+  # ---------------------------------------------------------------------------
+  # Redis Cache & Session Store
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: mbtq-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-mbtq_redis_password}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mbtq-network
+
+  # ---------------------------------------------------------------------------
+  # Web Application
+  # ---------------------------------------------------------------------------
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mbtq-web
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Flask Configuration
+      FLASK_ENV: ${FLASK_ENV:-development}
+      FLASK_DEBUG: ${FLASK_DEBUG:-True}
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-me}
+      
+      # Database Configuration
+      DATABASE_URL: postgresql://mbtq_user:${DB_PASSWORD:-mbtq_dev_password}@db:5432/mbtq_platform
+      
+      # Redis Configuration
+      REDIS_URL: redis://:${REDIS_PASSWORD:-mbtq_redis_password}@redis:6379/0
+      
+      # External APIs (provide your own keys)
+      MUX_TOKEN_ID: ${MUX_TOKEN_ID}
+      MUX_TOKEN_SECRET: ${MUX_TOKEN_SECRET}
+      VSL_API_KEY: ${VSL_API_KEY}
+      APRIL_CLIENT_ID: ${APRIL_CLIENT_ID}
+      APRIL_CLIENT_SECRET: ${APRIL_CLIENT_SECRET}
+      BOOST_CLIENT_ID: ${BOOST_CLIENT_ID}
+      BOOST_CLIENT_SECRET: ${BOOST_CLIENT_SECRET}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      
+      # Feature Flags
+      FEATURE_RESELLER_SYSTEM: ${FEATURE_RESELLER_SYSTEM:-True}
+      FEATURE_MINIAPPS: ${FEATURE_MINIAPPS:-True}
+      FEATURE_ASL_AI: ${FEATURE_ASL_AI:-True}
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./logs:/app/logs
+      - ./static/uploads:/app/static/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/internal/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - mbtq-network
+
+  # ---------------------------------------------------------------------------
+  # Nginx Reverse Proxy (Optional - for production-like setup)
+  # ---------------------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: mbtq-nginx
+    restart: unless-stopped
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./static:/app/static:ro
+      - nginx_logs:/var/log/nginx
+    networks:
+      - mbtq-network
+    profiles:
+      - production
+
+  # ---------------------------------------------------------------------------
+  # PgAdmin (Database Management - Development Only)
+  # ---------------------------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: mbtq-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@mbtq.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - db
+    networks:
+      - mbtq-network
+    profiles:
+      - development
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  nginx_logs:
+    driver: local
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  mbtq-network:
+    driver: bridge

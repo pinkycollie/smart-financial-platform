@@ -1,0 +1,89 @@
+[MASTER]
+# Pylint configuration for MBTQ Smart Financial Platform
+
+# Python code to execute
+init-hook='import sys; sys.path.append(".")'
+
+# Files or directories to be skipped
+ignore=CVS,.git,__pycache__,.pytest_cache,venv,env,.venv,build,dist,node_modules,attached_assets
+
+# Pickle collected data for later comparisons
+persistent=yes
+
+# Use multiple processes to speed up Pylint
+jobs=4
+
+[MESSAGES CONTROL]
+# Disable specific warnings and errors
+disable=
+    C0103,  # Invalid name (handled by team conventions)
+    C0111,  # Missing docstring
+    C0114,  # Missing module docstring
+    C0115,  # Missing class docstring
+    C0116,  # Missing function docstring
+    R0903,  # Too few public methods
+    R0913,  # Too many arguments
+    W0212,  # Access to protected member
+    W0621,  # Redefining name from outer scope
+
+[REPORTS]
+# Set the output format
+output-format=text
+
+# Display statistics
+reports=no
+
+# Evaluate score
+score=yes
+
+[BASIC]
+# Good variable names
+good-names=i,j,k,ex,Run,_,id,pk,db,app,e
+
+# Regular expressions for naming conventions
+module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
+const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__))$
+class-rgx=[A-Z_][a-zA-Z0-9]+$
+function-rgx=[a-z_][a-z0-9_]{2,30}$
+method-rgx=[a-z_][a-z0-9_]{2,30}$
+attr-rgx=[a-z_][a-z0-9_]{2,30}$
+argument-rgx=[a-z_][a-z0-9_]{2,30}$
+variable-rgx=[a-z_][a-z0-9_]{2,30}$
+
+[FORMAT]
+# Maximum line length
+max-line-length=127
+
+# Maximum number of lines in a module
+max-module-lines=1000
+
+# String used for indentation
+indent-string='    '
+
+[DESIGN]
+# Maximum number of arguments
+max-args=7
+
+# Maximum number of attributes
+max-attributes=10
+
+# Maximum number of boolean expressions
+max-bool-expr=5
+
+# Maximum number of branches
+max-branches=12
+
+# Maximum number of locals
+max-locals=15
+
+# Maximum number of parents
+max-parents=7
+
+# Maximum number of public methods
+max-public-methods=20
+
+# Maximum number of return statements
+max-returns=6
+
+# Maximum number of statements
+max-statements=50

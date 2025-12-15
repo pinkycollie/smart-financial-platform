@@ -1,0 +1,25 @@
+# Black Configuration for MBTQ Smart Financial Platform
+# https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html
+
+[tool.black]
+line-length = 127
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | node_modules
+  | attached_assets
+  | static/vendor
+)/
+'''

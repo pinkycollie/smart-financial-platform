@@ -1,0 +1,58 @@
+[flake8]
+# Flake8 Configuration for MBTQ Smart Financial Platform
+
+# Maximum line length
+max-line-length = 127
+
+# Maximum complexity
+max-complexity = 10
+
+# Files and directories to exclude
+exclude =
+    .git,
+    __pycache__,
+    .pytest_cache,
+    venv,
+    env,
+    .venv,
+    ENV,
+    build,
+    dist,
+    *.egg-info,
+    .eggs,
+    .tox,
+    .nox,
+    migrations,
+    node_modules,
+    attached_assets,
+    static/vendor,
+    tmp,
+    temp
+
+# Ignore specific error codes
+ignore =
+    E203,  # whitespace before ':'
+    E501,  # line too long (handled by black)
+    W503,  # line break before binary operator
+    W504,  # line break after binary operator
+
+# Select error codes to check
+select = E,W,F,C
+
+# Show source code for errors
+show-source = True
+
+# Show statistics
+statistics = True
+
+# Count errors
+count = True
+
+# Format output
+format = default
+
+# Per-file ignores
+per-file-ignores =
+    __init__.py:F401,F403
+    */tests/*:E501,F401
+    */test_*.py:E501,F401
