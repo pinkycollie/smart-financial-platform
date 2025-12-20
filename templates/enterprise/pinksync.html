@@ -1,0 +1,259 @@
+{% extends "layout.html" %}
+
+{% block title %}PinkSync Partnership - DEAF FIRST{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('enterprise.index') }}">Enterprise Portal</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">PinkSync</li>
+                </ol>
+            </nav>
+            
+            <div class="text-center mb-5">
+                <h1 class="display-4 mb-3">
+                    <i class="fas fa-universal-access me-3 text-info"></i>
+                    PinkSync Partnership
+                </h1>
+                <p class="lead">Full accessibility suite with automatic deployment and gloss ASL conversion</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card bg-gradient text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-3">Complete Accessibility Solution</h2>
+                            <p class="mb-4">PinkSync provides the most comprehensive accessibility suite designed specifically for financial platforms. We handle everything from video chat to ASL interpretation to gloss conversion.</p>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2"><i class="fas fa-check-circle me-2"></i> Automatic video chat setup with embedded interpreters</li>
+                                <li class="mb-2"><i class="fas fa-check-circle me-2"></i> AI-powered gloss ASL conversion for heavy financial context</li>
+                                <li class="mb-2"><i class="fas fa-check-circle me-2"></i> Real-time translation and captioning</li>
+                                <li class="mb-2"><i class="fas fa-check-circle me-2"></i> 24/7 interpreter availability</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-hands fa-5x mb-3"></i>
+                            <p class="h5">Partners & Subscribe</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Key Features -->
+    <div class="row mb-5">
+        <div class="col-12 mb-4">
+            <h2 class="text-center">Key Features</h2>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-video fa-3x text-info mb-3"></i>
+                    <h3 class="h5">Video Chat Integration</h3>
+                    <p>Automatically deploy video chat with embedded ASL interpreter. Works with all major providers.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-language fa-3x text-info mb-3"></i>
+                    <h3 class="h5">Gloss ASL Conversion</h3>
+                    <p>Convert complex financial terminology and heavy context into accessible gloss ASL format.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-robot fa-3x text-info mb-3"></i>
+                    <h3 class="h5">AI Translation</h3>
+                    <p>Advanced AI-powered translation between English and ASL with financial terminology support.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-clock fa-3x text-info mb-3"></i>
+                    <h3 class="h5">24/7 Availability</h3>
+                    <p>Round-the-clock interpreter availability with instant connection for urgent needs.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Subscription Tiers -->
+    <div class="row mb-5">
+        <div class="col-12 mb-4">
+            <h2 class="text-center">Subscription Tiers</h2>
+            <p class="text-center text-muted">Choose the plan that fits your organization's needs</p>
+        </div>
+        
+        {% for tier in subscription_tiers %}
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100 {% if tier.name == 'Professional' %}border-info{% endif %}">
+                {% if tier.name == 'Professional' %}
+                <div class="card-header bg-info text-white text-center">
+                    <span class="badge bg-warning text-dark">Most Popular</span>
+                </div>
+                {% endif %}
+                <div class="card-body text-center">
+                    <h3 class="h4 mb-3">{{ tier.name }}</h3>
+                    <p class="h2 mb-4">{{ tier.price }}</p>
+                    <ul class="list-unstyled mb-4">
+                        {% for feature in tier.features %}
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            {{ feature }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="{{ url_for('enterprise.inquiry') }}" class="btn {% if tier.name == 'Professional' %}btn-info{% else %}btn-outline-info{% endif %} w-100">
+                        {% if tier.name == 'Enterprise' %}
+                        Contact Sales
+                        {% else %}
+                        Subscribe Now
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- How It Works -->
+    <div class="row mb-5">
+        <div class="col-12 mb-4">
+            <h2 class="text-center">How It Works</h2>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="rounded-circle bg-info text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <span class="h3 mb-0">1</span>
+                    </div>
+                    <h3 class="h5">Subscribe</h3>
+                    <p>Choose your subscription tier and complete registration</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="rounded-circle bg-info text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <span class="h3 mb-0">2</span>
+                    </div>
+                    <h3 class="h5">Automatic Setup</h3>
+                    <p>Our team deploys templates and configures your integration</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="rounded-circle bg-info text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <span class="h3 mb-0">3</span>
+                    </div>
+                    <h3 class="h5">Integration</h3>
+                    <p>Embed video chat, interpreters, and ASL conversion in your app</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="rounded-circle bg-info text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <span class="h3 mb-0">4</span>
+                    </div>
+                    <h3 class="h5">Go Live</h3>
+                    <p>Launch with full accessibility support and ongoing monitoring</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Use Cases -->
+    <div class="row mb-5">
+        <div class="col-12 mb-4">
+            <h2 class="text-center">Use Cases</h2>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5"><i class="fas fa-chart-line text-info me-2"></i> Financial Advisors</h3>
+                    <p>Connect with deaf clients through video consultations with embedded interpreters. Convert complex investment strategies to gloss ASL for easy understanding.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5"><i class="fas fa-university text-info me-2"></i> Banks</h3>
+                    <p>Provide accessible banking services with real-time ASL interpretation for account management, loan applications, and financial planning.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5"><i class="fas fa-file-invoice-dollar text-info me-2"></i> Tax Services</h3>
+                    <p>Automatically convert tax forms and financial documents to gloss ASL. Conduct tax consultations with embedded interpreter support.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="h5"><i class="fas fa-shield-alt text-info me-2"></i> Insurance</h3>
+                    <p>Explain policy details in ASL, conduct claims consultations with interpreters, and make insurance accessible to the deaf community.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CTA -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center py-5">
+                    <h2 class="mb-4">Ready to Partner with PinkSync?</h2>
+                    <p class="lead mb-4">Join the leading financial platforms making their services accessible to the deaf community</p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{{ url_for('enterprise.inquiry') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-envelope me-2"></i> Contact Sales
+                        </a>
+                        <a href="{{ url_for('enterprise.deployment_templates') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-file-code me-2"></i> View Templates
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

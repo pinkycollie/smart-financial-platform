@@ -1,0 +1,144 @@
+{% extends "layout.html" %}
+
+{% block title %}Enterprise Plugins - DEAF FIRST{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('enterprise.index') }}">Enterprise Portal</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Plugins</li>
+                </ol>
+            </nav>
+            
+            <h1 class="mb-3">
+                <i class="fas fa-puzzle-piece me-2 text-info"></i>
+                Enterprise Plugins
+            </h1>
+            <p class="lead">Browse and manage pluggable components for your integration</p>
+        </div>
+    </div>
+    
+    <!-- Currently Registered -->
+    {% if registered_plugins %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h2 class="h4 mb-0">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Currently Registered Plugins
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Plugin Name</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for plugin in registered_plugins %}
+                                <tr>
+                                    <td><strong>{{ plugin.name }}</strong></td>
+                                    <td><code>{{ plugin.type }}</code></td>
+                                    <td>
+                                        {% if plugin.enabled %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Available Plugins -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="mb-4">Available Plugins</h2>
+        </div>
+        
+        {% for category, plugins in available_plugins.items() %}
+        <div class="col-12 mb-4">
+            <h3 class="h4 text-info mb-3">
+                <i class="fas fa-angle-right me-2"></i>
+                {{ category }}
+            </h3>
+            <div class="row">
+                {% for plugin in plugins %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start mb-3">
+                                <i class="{{ plugin.icon }} fa-2x text-info me-3"></i>
+                                <div>
+                                    <h4 class="h5 mb-1">{{ plugin.name }}</h4>
+                                    <p class="text-muted small mb-0">{{ plugin.class }}</p>
+                                </div>
+                            </div>
+                            <p class="mb-3">{{ plugin.description }}</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <button class="btn btn-info btn-sm w-100" onclick="registerPlugin('{{ plugin.name }}', '{{ plugin.class }}')">
+                                <i class="fas fa-plus-circle me-2"></i> Register Plugin
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Info Box -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">
+                        <i class="fas fa-info-circle me-2 text-info"></i>
+                        About Plugins
+                    </h3>
+                    <p class="mb-2">Plugins are modular components that can be easily integrated into your enterprise system. Each plugin:</p>
+                    <ul class="mb-3">
+                        <li>Implements a standard interface for consistency</li>
+                        <li>Can be independently configured and managed</li>
+                        <li>Supports interchangeable providers (e.g., switch from Twilio to Zoom)</li>
+                        <li>Includes comprehensive documentation and examples</li>
+                    </ul>
+                    <p class="mb-0">
+                        <strong>Need a custom plugin?</strong> 
+                        <a href="{{ url_for('enterprise.inquiry') }}">Contact our enterprise team</a> 
+                        to discuss your specific requirements.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function registerPlugin(pluginName, pluginClass) {
+    if (confirm('Register ' + pluginName + ' plugin?\n\nThis will make the plugin available for configuration in your dashboard.')) {
+        // In production, this would make an API call to register the plugin
+        alert('Plugin registration initiated. Please configure it in your dashboard.');
+        window.location.href = "{{ url_for('enterprise.dashboard') }}";
+    }
+}
+</script>
+{% endblock %}

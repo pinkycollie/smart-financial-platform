@@ -1,0 +1,186 @@
+{% extends "layout.html" %}
+
+{% block title %}Enterprise Integration Portal - DEAF FIRST{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Enterprise Portal</li>
+                </ol>
+            </nav>
+            
+            <div class="text-center mb-5">
+                <h1 class="display-4 mb-3">
+                    <i class="fas fa-building me-3 text-info"></i>
+                    Enterprise Integration Portal
+                </h1>
+                <p class="lead">Pluggable architecture for seamless integration with your enterprise systems</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100 border-info">
+                <div class="card-body">
+                    <h2 class="h3 mb-4"><i class="fas fa-plug me-2 text-info"></i> Fully Pluggable</h2>
+                    <p>Our platform is designed from the ground up to integrate seamlessly with enterprise systems:</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> <strong>Interchangeable APIs</strong> - Connect to Bloomberg, TurboTax, major banks</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> <strong>Video Integration</strong> - Embed Twilio, Zoom, or custom solutions</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> <strong>ASL Services</strong> - VSL Labs, SignASL, or PinkSync interpreters</li>
+                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> <strong>Custom UI Components</strong> - White-label and customize</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100 bg-info text-white">
+                <div class="card-body">
+                    <h2 class="h3 mb-4"><i class="fas fa-rocket me-2"></i> Quick Start</h2>
+                    <p>Get started with enterprise integration in minutes:</p>
+                    <div class="d-grid gap-3">
+                        <a href="{{ url_for('enterprise.list_plugins') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-puzzle-piece me-2"></i> Browse Plugins
+                        </a>
+                        <a href="{{ url_for('enterprise.deployment_templates') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-file-code me-2"></i> Deployment Templates
+                        </a>
+                        <a href="{{ url_for('enterprise.inquiry') }}" class="btn btn-warning btn-lg">
+                            <i class="fas fa-envelope me-2"></i> Contact Enterprise Team
+                        </a>
+                        <a href="{{ url_for('enterprise.dashboard') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-cog me-2"></i> Configuration Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Features -->
+    <div class="row mb-5">
+        <div class="col-12 mb-4">
+            <h2 class="text-center"><i class="fas fa-star me-2 text-info"></i> Enterprise Features</h2>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-exchange-alt fa-3x text-info mb-3"></i>
+                    <h3 class="h5">API Connectors</h3>
+                    <p>Pre-built connectors for Bloomberg, TurboTax, banks, and custom APIs. Plug and play integration.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-video fa-3x text-info mb-3"></i>
+                    <h3 class="h5">Video Chat</h3>
+                    <p>Embedded video chat with interpreter support. Works with Twilio, Zoom, or your preferred provider.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-hands fa-3x text-info mb-3"></i>
+                    <h3 class="h5">ASL Interpretation</h3>
+                    <p>Multiple ASL service options including AI interpretation, live interpreters, and gloss ASL conversion.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-paint-brush fa-3x text-info mb-3"></i>
+                    <h3 class="h5">White Label</h3>
+                    <p>Fully customizable UI components and branding to match your corporate identity.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-shield-alt fa-3x text-info mb-3"></i>
+                    <h3 class="h5">Enterprise Security</h3>
+                    <p>SOC 2 compliant, HIPAA ready, with enterprise-grade encryption and access controls.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <i class="fas fa-headset fa-3x text-info mb-3"></i>
+                    <h3 class="h5">Dedicated Support</h3>
+                    <p>24/7 enterprise support with dedicated account managers and SLA guarantees.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contact CTA -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card bg-gradient text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body text-center py-5">
+                    <h2 class="mb-4">Ready to Integrate?</h2>
+                    <p class="lead mb-4">Contact our enterprise architecture team to discuss your integration needs</p>
+                    <div class="mb-4">
+                        <p class="mb-2"><i class="fas fa-envelope me-2"></i> <strong>architect@360magicians.com</strong></p>
+                        <p class="mb-2"><i class="fas fa-envelope me-2"></i> <strong>architect@mbtq.dev</strong></p>
+                    </div>
+                    <a href="{{ url_for('enterprise.inquiry') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-paper-plane me-2"></i> Send Inquiry
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Trusted By -->
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-center mb-4">Designed For</h3>
+            <div class="row text-center">
+                <div class="col-md-3 mb-3">
+                    <div class="p-3">
+                        <i class="fas fa-university fa-3x text-muted mb-2"></i>
+                        <p class="mb-0">Banks & Financial Institutions</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="p-3">
+                        <i class="fas fa-chart-line fa-3x text-muted mb-2"></i>
+                        <p class="mb-0">Investment Firms</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="p-3">
+                        <i class="fas fa-file-invoice-dollar fa-3x text-muted mb-2"></i>
+                        <p class="mb-0">Tax Preparation Services</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="p-3">
+                        <i class="fas fa-shield-alt fa-3x text-muted mb-2"></i>
+                        <p class="mb-0">Insurance Companies</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

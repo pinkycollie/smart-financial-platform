@@ -1,0 +1,149 @@
+{% extends "layout.html" %}
+
+{% block title %}Enterprise Inquiry - DEAF FIRST{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('enterprise.index') }}">Enterprise Portal</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Inquiry</li>
+                </ol>
+            </nav>
+            
+            <h1 class="mb-3">
+                <i class="fas fa-envelope me-2 text-info"></i>
+                Enterprise Integration Inquiry
+            </h1>
+            <p class="lead">Let's discuss how we can integrate with your enterprise systems</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h2 class="h4 mb-0">Contact Form</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('enterprise.inquiry') }}">
+                        <!-- Company Information -->
+                        <h3 class="h5 mb-3">Company Information</h3>
+                        
+                        <div class="mb-3">
+                            <label for="company_name" class="form-label">Company Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="company_name" name="company_name" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="company_type" class="form-label">Company Type <span class="text-danger">*</span></label>
+                            <select class="form-select" id="company_type" name="company_type" required>
+                                <option value="">Select...</option>
+                                {% for ctype in company_types %}
+                                <option value="{{ ctype }}">{{ ctype }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <!-- Contact Information -->
+                        <h3 class="h5 mb-3">Contact Information</h3>
+                        
+                        <div class="mb-3">
+                            <label for="contact_name" class="form-label">Your Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="contact_name" name="contact_name" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="contact_email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="contact_email" name="contact_email" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="phone">
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <!-- Integration Details -->
+                        <h3 class="h5 mb-3">Integration Requirements</h3>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Integration Type <span class="text-danger">*</span></label>
+                            {% for itype in integration_types %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="integration_type" value="{{ itype }}" id="int_{{ loop.index }}">
+                                <label class="form-check-label" for="int_{{ loop.index }}">
+                                    {{ itype }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Additional Details</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" placeholder="Tell us about your integration needs, timeline, and any specific requirements..."></textarea>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Our enterprise architecture team will respond within 24 hours to discuss your needs and provide a customized integration plan.
+                        </div>
+                        
+                        <button type="submit" class="btn btn-info btn-lg w-100">
+                            <i class="fas fa-paper-plane me-2"></i> Send Inquiry
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="h5 mb-0">Contact Information</h3>
+                </div>
+                <div class="card-body">
+                    <h4 class="h6 mb-3">Enterprise Architecture Team</h4>
+                    <p class="mb-2">
+                        <i class="fas fa-envelope text-info me-2"></i>
+                        <a href="mailto:architect@360magicians.com">architect@360magicians.com</a>
+                    </p>
+                    <p class="mb-2">
+                        <i class="fas fa-envelope text-info me-2"></i>
+                        <a href="mailto:architect@mbtq.dev">architect@mbtq.dev</a>
+                    </p>
+                    
+                    <hr>
+                    
+                    <h4 class="h6 mb-3">What to Expect</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Response within 24 hours</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Technical consultation call</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Custom integration plan</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Deployment templates</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">
+                        <i class="fas fa-universal-access me-2"></i>
+                        PinkSync Partnership
+                    </h3>
+                    <p>Looking for full accessibility suite with automatic setup?</p>
+                    <a href="{{ url_for('enterprise.pinksync_partner') }}" class="btn btn-light w-100">
+                        <i class="fas fa-arrow-right me-2"></i> Learn About PinkSync
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
