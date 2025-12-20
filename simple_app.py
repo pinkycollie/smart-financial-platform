@@ -70,6 +70,12 @@ try:
 except ImportError as e:
     app.logger.warning(f"Could not import some blueprints: {e}")
 
+# Import enterprise routes
+try:
+    from routes.enterprise.routes import enterprise_bp
+except ImportError as e:
+    app.logger.warning(f"Could not import enterprise blueprint: {e}")
+
 # Register blueprints
 app.register_blueprint(insurance_bp)
 app.register_blueprint(business_bp)
@@ -96,6 +102,13 @@ try:
     app.logger.info("Advisors blueprint registered")
 except NameError:
     app.logger.warning("Advisors blueprint not available")
+
+# Register enterprise blueprint
+try:
+    app.register_blueprint(enterprise_bp)
+    app.logger.info("Enterprise blueprint registered")
+except NameError:
+    app.logger.warning("Enterprise blueprint not available")
 
 # Define routes
 @app.route('/')

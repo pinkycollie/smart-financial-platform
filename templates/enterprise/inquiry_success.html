@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+
+{% block title %}Inquiry Received - DEAF FIRST{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center my-5">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle fa-5x text-success"></i>
+                </div>
+                <h1 class="mb-4">Thank You!</h1>
+                <p class="lead mb-4">Your enterprise inquiry has been received successfully.</p>
+                
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="h4 mb-3">What Happens Next?</h2>
+                        <div class="text-start">
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-clock fa-2x text-info"></i>
+                                </div>
+                                <div>
+                                    <h3 class="h5 mb-1">Within 24 Hours</h3>
+                                    <p class="mb-0">Our enterprise architecture team will review your inquiry and reach out to you.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-phone fa-2x text-info"></i>
+                                </div>
+                                <div>
+                                    <h3 class="h5 mb-1">Initial Consultation</h3>
+                                    <p class="mb-0">We'll schedule a call to discuss your integration requirements in detail.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-file-alt fa-2x text-info"></i>
+                                </div>
+                                <div>
+                                    <h3 class="h5 mb-1">Custom Proposal</h3>
+                                    <p class="mb-0">Receive a detailed integration plan with timelines and deployment templates.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex">
+                                <div class="me-3">
+                                    <i class="fas fa-rocket fa-2x text-info"></i>
+                                </div>
+                                <div>
+                                    <h3 class="h5 mb-1">Implementation</h3>
+                                    <p class="mb-0">Our team will work with you to deploy and configure the integration.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <p class="mb-0">
+                        <i class="fas fa-envelope me-2"></i>
+                        A confirmation email has been sent to your address. If you need immediate assistance, contact us at 
+                        <strong>architect@360magicians.com</strong> or <strong>architect@mbtq.dev</strong>
+                    </p>
+                </div>
+                
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="{{ url_for('enterprise.index') }}" class="btn btn-info">
+                        <i class="fas fa-arrow-left me-2"></i> Back to Enterprise Portal
+                    </a>
+                    <a href="{{ url_for('enterprise.deployment_templates') }}" class="btn btn-outline-info">
+                        <i class="fas fa-file-code me-2"></i> View Templates
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

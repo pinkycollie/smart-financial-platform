@@ -1,0 +1,225 @@
+{% extends "layout.html" %}
+
+{% block title %}Deployment Templates - DEAF FIRST{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('enterprise.index') }}">Enterprise Portal</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Templates</li>
+                </ol>
+            </nav>
+            
+            <h1 class="mb-3">
+                <i class="fas fa-file-code me-2 text-info"></i>
+                Deployment Templates
+            </h1>
+            <p class="lead">Pre-built templates for rapid integration and deployment</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        {% for template in templates %}
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h2 class="h4 mb-0">
+                        <i class="{{ template.icon }} me-2"></i>
+                        {{ template.name }}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">{{ template.description }}</p>
+                    
+                    <h3 class="h5 mb-2">Features:</h3>
+                    <ul class="mb-4">
+                        {% for feature in template.features %}
+                        <li>{{ feature }}</li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-info" onclick="requestTemplate('{{ template.name }}')">
+                            <i class="fas fa-download me-2"></i> Request Template
+                        </button>
+                        <button class="btn btn-outline-info" onclick="viewDocs('{{ template.name }}')">
+                            <i class="fas fa-book me-2"></i> View Documentation
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="h4 mb-0">Template Details</h2>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="templateAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#video-chat">
+                                    Video Chat Integration Template
+                                </button>
+                            </h2>
+                            <div id="video-chat" class="accordion-collapse collapse show" data-bs-parent="#templateAccordion">
+                                <div class="accordion-body">
+                                    <h3 class="h5">Overview</h3>
+                                    <p>This template provides a complete video chat solution with ASL interpreter embedding.</p>
+                                    
+                                    <h3 class="h5 mt-3">Components Included</h3>
+                                    <ul>
+                                        <li>Twilio/Zoom video integration code</li>
+                                        <li>Interpreter embedding widgets</li>
+                                        <li>Screen sharing functionality</li>
+                                        <li>Recording and playback features</li>
+                                        <li>UI components with accessibility features</li>
+                                    </ul>
+                                    
+                                    <h3 class="h5 mt-3">Configuration</h3>
+                                    <pre class="bg-dark text-light p-3 rounded"><code>{
+  "video_provider": "twilio",
+  "api_key": "YOUR_API_KEY",
+  "interpreter_service": "vsl_labs",
+  "features": {
+    "screen_sharing": true,
+    "recording": true,
+    "asl_embedding": true
+  }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#asl-embed">
+                                    ASL Interpreter Embedding Template
+                                </button>
+                            </h2>
+                            <div id="asl-embed" class="accordion-collapse collapse" data-bs-parent="#templateAccordion">
+                                <div class="accordion-body">
+                                    <h3 class="h5">Overview</h3>
+                                    <p>Embed ASL interpreters directly into your application interface.</p>
+                                    
+                                    <h3 class="h5 mt-3">Example Code</h3>
+                                    <pre class="bg-dark text-light p-3 rounded"><code>&lt;!-- VSL Labs Interpreter Embedding --&gt;
+&lt;div id="vsl-interpreter" class="interpreter-container"&gt;
+  &lt;iframe 
+    src="https://vsl.labs/embed/{session_id}"
+    width="400"
+    height="300"
+    frameborder="0"
+    allow="camera; microphone"
+  &gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;!-- PinkSync Full Suite --&gt;
+&lt;script src="https://pinksync.com/widget.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  PinkSync.init({
+    apiKey: 'YOUR_API_KEY',
+    services: ['interpreter', 'gloss', 'captions']
+  });
+&lt;/script&gt;</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gloss-conversion">
+                                    Gloss ASL Conversion Template
+                                </button>
+                            </h2>
+                            <div id="gloss-conversion" class="accordion-collapse collapse" data-bs-parent="#templateAccordion">
+                                <div class="accordion-body">
+                                    <h3 class="h5">Overview</h3>
+                                    <p>Convert heavy financial context into accessible gloss ASL format.</p>
+                                    
+                                    <h3 class="h5 mt-3">API Usage</h3>
+                                    <pre class="bg-dark text-light p-3 rounded"><code>POST /api/asl/convert-gloss
+Content-Type: application/json
+
+{
+  "text": "The compound interest on your investment...",
+  "domain": "financial",
+  "output_format": "video"
+}
+
+Response:
+{
+  "gloss_text": "INTEREST COMPOUND YOUR INVESTMENT...",
+  "video_url": "https://pinksync.com/gloss/video/abc123",
+  "confidence": 0.95
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#api-suite">
+                                    API Integration Suite Template
+                                </button>
+                            </h2>
+                            <div id="api-suite" class="accordion-collapse collapse" data-bs-parent="#templateAccordion">
+                                <div class="accordion-body">
+                                    <h3 class="h5">Overview</h3>
+                                    <p>Complete framework for integrating with enterprise APIs.</p>
+                                    
+                                    <h3 class="h5 mt-3">Plugin Registration</h3>
+                                    <pre class="bg-dark text-light p-3 rounded"><code>from services.enterprise.plugin_registry import enterprise_registry, PluginType
+from services.enterprise.api_plugins import BloombergAPIPlugin
+
+# Register Bloomberg plugin
+enterprise_registry.register_plugin(
+    PluginType.API_CONNECTOR,
+    'bloomberg',
+    BloombergAPIPlugin,
+    config={
+        'api_key': 'YOUR_API_KEY',
+        'base_url': 'https://api.bloomberg.com'
+    }
+)
+
+# Execute plugin
+result = enterprise_registry.execute_plugin(
+    PluginType.API_CONNECTOR,
+    'bloomberg',
+    action='get_financial_data',
+    symbols=['AAPL', 'GOOGL']
+)</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function requestTemplate(templateName) {
+    // In production, this would trigger a download or email
+    alert('Template request for "' + templateName + '" has been logged. Our team will send you the template within 24 hours.');
+    
+    // Could redirect to inquiry form with template pre-selected
+    window.location.href = "{{ url_for('enterprise.inquiry') }}?template=" + encodeURIComponent(templateName);
+}
+
+function viewDocs(templateName) {
+    // In production, this would open documentation
+    alert('Documentation for "' + templateName + '" will be available soon. Contact our team for early access.');
+}
+</script>
+{% endblock %}

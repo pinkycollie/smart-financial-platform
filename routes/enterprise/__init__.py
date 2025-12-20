@@ -1,0 +1,3 @@
+"""
+Enterprise routes initialization
+"""

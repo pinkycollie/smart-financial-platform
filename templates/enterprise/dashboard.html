@@ -1,0 +1,186 @@
+{% extends "layout.html" %}
+
+{% block title %}Enterprise Dashboard - DEAF FIRST{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('enterprise.index') }}">Enterprise Portal</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                </ol>
+            </nav>
+            
+            <h1 class="mb-3">
+                <i class="fas fa-cog me-2 text-info"></i>
+                Enterprise Configuration Dashboard
+            </h1>
+        </div>
+    </div>
+    
+    <!-- Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h2 class="h6 mb-2">Total Plugins</h2>
+                    <p class="h2 mb-0">{{ total_plugins }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h2 class="h6 mb-2">Active Integrations</h2>
+                    <p class="h2 mb-0">{{ plugins_by_type|length }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h2 class="h6 mb-2">API Calls (Today)</h2>
+                    <p class="h2 mb-0">1,247</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-dark text-white">
+                <div class="card-body">
+                    <h2 class="h6 mb-2">Uptime</h2>
+                    <p class="h2 mb-0">99.9%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Plugin Status by Type -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h2 class="h5 mb-0">Registered Plugins by Type</h2>
+                </div>
+                <div class="card-body">
+                    {% if plugins_by_type %}
+                        {% for ptype, plugins in plugins_by_type.items() %}
+                        <div class="mb-4">
+                            <h3 class="h5 text-info">
+                                <i class="fas fa-plug me-2"></i>
+                                {{ ptype|replace('_', ' ')|title }}
+                                <span class="badge bg-info">{{ plugins|length }}</span>
+                            </h3>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Status</th>
+                                            <th>Type</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for plugin in plugins %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ plugin.name }}</strong>
+                                            </td>
+                                            <td>
+                                                {% if plugin.enabled %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check-circle me-1"></i> Enabled
+                                                </span>
+                                                {% else %}
+                                                <span class="badge bg-secondary">
+                                                    <i class="fas fa-times-circle me-1"></i> Disabled
+                                                </span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <code>{{ plugin.type }}</code>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-info" onclick="configurePlugin('{{ plugin.name }}')">
+                                                    <i class="fas fa-cog"></i> Configure
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-success" onclick="testPlugin('{{ plugin.name }}')">
+                                                    <i class="fas fa-play"></i> Test
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No plugins registered yet. <a href="{{ url_for('enterprise.list_plugins') }}">Browse available plugins</a> to get started.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-plus-circle fa-3x text-info mb-3"></i>
+                    <h3 class="h5">Add New Plugin</h3>
+                    <p>Browse and register new plugins for your integration</p>
+                    <a href="{{ url_for('enterprise.list_plugins') }}" class="btn btn-info">
+                        <i class="fas fa-puzzle-piece me-2"></i> Browse Plugins
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-file-code fa-3x text-info mb-3"></i>
+                    <h3 class="h5">Deploy Template</h3>
+                    <p>Use pre-built templates for rapid deployment</p>
+                    <a href="{{ url_for('enterprise.deployment_templates') }}" class="btn btn-info">
+                        <i class="fas fa-download me-2"></i> View Templates
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-book fa-3x text-info mb-3"></i>
+                    <h3 class="h5">API Documentation</h3>
+                    <p>View complete API reference and examples</p>
+                    <a href="/api/docs" class="btn btn-info">
+                        <i class="fas fa-external-link-alt me-2"></i> View Docs
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function configurePlugin(pluginName) {
+    alert('Configuration UI for "' + pluginName + '" would open here.');
+    // In production, this would open a modal or redirect to config page
+}
+
+function testPlugin(pluginName) {
+    alert('Testing plugin: ' + pluginName);
+    // In production, this would execute a test call
+}
+</script>
+{% endblock %}
